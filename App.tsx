@@ -2,7 +2,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {MD3DarkTheme, MD3LightTheme, PaperProvider} from 'react-native-paper';
 import {useColorScheme} from 'react-native';
 
-import RootNavigation from './source/navigator/RootNavigation';
+import RootNavigator from './source/navigator/RootNavigator';
 
 const App = () => {
   const colorScheme = useColorScheme();
@@ -10,8 +10,8 @@ const App = () => {
 
   return (
     <PaperProvider theme={paperTheme}>
-      <NavigationContainer theme={paperTheme}>
-        <RootNavigation />
+      <NavigationContainer>
+        <RootNavigator />
       </NavigationContainer>
     </PaperProvider>
   );
