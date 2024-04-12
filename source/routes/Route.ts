@@ -5,7 +5,7 @@ export type BottomRoutes = {
 };
 
 export type RootRoutes = {
-  LoginScreen: undefined;
+  LoginScreen: {navigation: any};
   RegisterScreen: undefined;
   BottomTabNavigator: {navigation: any};
 };
