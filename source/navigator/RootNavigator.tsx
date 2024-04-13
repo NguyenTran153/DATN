@@ -9,17 +9,11 @@ const Tabs = createNativeStackNavigator<RootRoutes>();
 
 const RootNavigator = () => {
   return (
-    <Tabs.Navigator initialRouteName="LoginScreen">
-      <Tabs.Screen
-        name="LoginScreen"
-        component={LoginScreen}
-        options={{headerShown: false}}
-      />
-      <Tabs.Screen
-        name="RegisterScreen"
-        component={RegisterScreen}
-        options={{headerShown: false}}
-      />
+    <Tabs.Navigator
+      initialRouteName="LoginScreen"
+      screenOptions={{headerShown: false}}>
+      <Tabs.Screen name="LoginScreen" component={LoginScreen} />
+      <Tabs.Screen name="RegisterScreen" component={RegisterScreen} />
       <Tabs.Screen name="BottomTabNavigator" component={BottomTabNavigator} />
     </Tabs.Navigator>
   );
