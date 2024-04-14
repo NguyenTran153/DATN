@@ -20,54 +20,54 @@ const ProfileScreen = () => {
           <Text>Address: 68894 Caleigh Trafficway Suite 387</Text>
         </View>
       </View>
-      <ScrollView style={styles.settingCenter}>
+      <ScrollView>
         <List.Section>
           <List.Item
             title="Visit History"
             description="Patient's recent visits with a healthcare provider"
-            left={() => <List.Icon icon="hospital-building" />}
+            left={() => <List.Icon style={styles.settingCenter} icon="hospital-building" />}
             right={() => <List.Icon icon="chevron-right" />}
             onPress={() => {}}
           />
           <List.Item
             title="Medical History"
             description="Patient's medical history"
-            left={() => <List.Icon icon="stethoscope" />}
+            left={() => <List.Icon style={styles.settingCenter} icon="stethoscope" />}
             right={() => <List.Icon icon="chevron-right" />}
             onPress={() => {}}
           />
           <List.Item
             title="Complaint"
             description="Patient complaint or medical concern"
-            left={() => <List.Icon icon="comment-question" />}
+            left={() => <List.Icon style={styles.settingCenter} icon="comment-question" />}
             right={() => <List.Icon icon="chevron-right" />}
             onPress={() => {}}
           />
           <List.Item
             title="Examination"
             description="Physical examinations performed over the past visits"
-            left={() => <List.Icon icon="test-tube" />}
+            left={() => <List.Icon style={styles.settingCenter} icon="test-tube" />}
             right={() => <List.Icon icon="chevron-right" />}
             onPress={() => {}}
           />
            <List.Item
             title="Medicine"
             description="Medicine prescribed to the patient"
-            left={() => <List.Icon icon="pill" />}
+            left={() => <List.Icon style={styles.settingCenter} icon="pill" />}
             right={() => <List.Icon icon="chevron-right" />}
             onPress={() => {}}
           />
            <List.Item
             title="Doctor"
             description="Doctor registration"
-            left={() => <List.Icon icon="doctor" />}
+            left={() => <List.Icon style = {styles.settingCenter} icon="doctor" />}
             right={() => <List.Icon icon="chevron-right" />}
             onPress={() => {}}
           />
           <List.Item
             title="Invitation link"
             description="Use QR code to add friend"
-            left={() => <List.Icon icon="qrcode" />}
+            left={() => <List.Icon style = {styles.settingCenter} icon="qrcode" />}
             right={() => <List.Icon icon="chevron-right" />}
             onPress={() => {}}
           />
