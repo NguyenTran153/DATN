@@ -2,15 +2,17 @@ export type RootRoutes = {
   LoginScreen: {navigation: any};
   RegisterScreen: undefined;
   BottomTabNavigator: {navigation: any};
+  ChatNavigator: undefined;
+  PrescriptionScreen: undefined;
 };
 
 export type BottomRoutes = {
   HomeScreen: undefined;
-  ChatNavigator: undefined;
+  MessagesScreen: undefined;
   ProfileScreen: undefined;
 };
 
 export type ChatRoutes = {
   MessagesScreen: undefined;
-  ChatScreen: undefined;
+  ChatScreen: {userId: string};
 };

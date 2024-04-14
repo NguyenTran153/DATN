@@ -1,35 +1,22 @@
 import Icon from 'react-native-vector-icons/FontAwesome';
-import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
-import {createNativeStackNavigator} from '@react-navigation/native-stack';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {useTheme} from 'react-native-paper';
 
 import type {BottomRoutes} from '../Routes/Route';
-import ChatNavigator from './ChatNavigator';
+import MessagesScreen from '../screens/MessagesScreen';
 import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 
-const BottomTabs = createMaterialBottomTabNavigator<BottomRoutes>();
-const BottomTabstack = createNativeStackNavigator();
+const BottomTabs = createBottomTabNavigator<BottomRoutes>();
 
 const BottomTabNavigator = ({navigation, route}: any) => {
   const theme = useTheme();
 
-  const getTabBarVisibility = (route: any) => {
-    const routeName = route.state
-      ? route.state.routes[route.state.index].name
-      : '';
-
-    if (routeName === 'ChatScreen') {
-      return false;
-    }
-    return true;
-  };
-
   return (
-    <BottomTabs.Navigator initialRouteName="ChatNavigator">
+    <BottomTabs.Navigator initialRouteName="MessagesScreen">
       <BottomTabs.Screen
-        name="ChatNavigator"
-        component={ChatNavigator}
+        name="MessagesScreen"
+        component={MessagesScreen}
         options={{
           tabBarLabel: 'Message',
           tabBarIcon: ({size, focused}: any) => (

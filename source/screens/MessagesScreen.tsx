@@ -7,6 +7,7 @@ import {
 } from 'react-native';
 import {Text, Searchbar, useTheme} from 'react-native-paper';
 import React, {useState} from 'react';
+import {Screen} from 'react-native-screens';
 
 //Fake data
 const Messages = [
@@ -135,7 +136,10 @@ const MessagesScreen = ({navigation}: {navigation: any}) => {
           <TouchableOpacity
             style={styles.card}
             onPress={() =>
-              navigation.navigate('ChatScreen', {userId: item.id})
+              navigation.navigate('ChatNavigator', {
+                screen: 'ChatScreen',
+                params: {userId: item.id},
+              })
             }>
             <View style={styles.userInfo}>
               <View style={styles.userImgWrapper}>

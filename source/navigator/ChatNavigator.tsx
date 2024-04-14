@@ -6,9 +6,9 @@ import {ChatRoutes} from '../Routes/Route';
 
 const Tabs = createNativeStackNavigator<ChatRoutes>();
 
-const ChatNavigator = () => {
+const ChatNavigator = ({navigation}: {navigation: any}) => {
   return (
-    <Tabs.Navigator initialRouteName="MessagesScreen">
+    <Tabs.Navigator>
       <Tabs.Screen
         name="MessagesScreen"
         component={MessagesScreen}
