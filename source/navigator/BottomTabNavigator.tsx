@@ -6,6 +6,7 @@ import type {BottomRoutes} from '../Routes/Route';
 import MessagesScreen from '../screens/MessagesScreen';
 import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import PrescriptionScreen from '../screens/PrescriptionScreen';
 
 const BottomTabs = createBottomTabNavigator<BottomRoutes>();
 
@@ -44,7 +45,7 @@ const BottomTabNavigator = ({navigation, route}: any) => {
       />
       <BottomTabs.Screen
         name="ProfileScreen"
-        component={ProfileScreen}
+        component={PrescriptionScreen}
         options={{
           tabBarLabel: 'Profile',
           tabBarIcon: ({size, focused}: any) => (
