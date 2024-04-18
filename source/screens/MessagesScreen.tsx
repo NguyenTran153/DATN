@@ -5,7 +5,7 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import {Text, Searchbar, useTheme} from 'react-native-paper';
+import {Text, Searchbar, useTheme, Icon, IconButton} from 'react-native-paper';
 import React, {useState} from 'react';
 import {Screen} from 'react-native-screens';
 
@@ -65,70 +65,26 @@ const MessagesScreen = ({navigation}: {navigation: any}) => {
         )
       : Messages;
 
-  const styles = StyleSheet.create({
-    container: {
-      width: '100%',
-      flex: 1,
-      paddingLeft: 20,
-      paddingRight: 20,
-      alignItems: 'center',
-      backgroundColor: theme.colors.background,
-    },
-    searchBar: {
-      marginVertical: 5,
-    },
-    card: {
-      width: '100%',
-    },
-    userInfo: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-    },
-    userImgWrapper: {
-      paddingTop: 15,
-      paddingBottom: 15,
-    },
-    userImg: {
-      width: 50,
-      height: 50,
-      borderRadius: 25,
-    },
-    textSection: {
-      flexDirection: 'column',
-      justifyContent: 'center',
-      padding: 15,
-      paddingLeft: 0,
-      marginLeft: 10,
-      width: '80%',
-      borderBottomWidth: 1,
-      borderBottomColor: theme.colors.outline,
-    },
-    userInfoText: {
-      flexDirection: 'row',
-      justifyContent: 'space-between',
-      marginBottom: 5,
-    },
-    userName: {
-      fontSize: 14,
-      fontWeight: 'bold',
-    },
-    postTime: {
-      fontSize: 12,
-      color: theme.colors.secondary,
-    },
-    messageText: {
-      fontSize: 14,
-    },
-  });
-
   return (
-    <View style={styles.container}>
-      <Searchbar
-        style={styles.searchBar}
-        placeholder="Search"
-        onChangeText={setSearchDoctor}
-        value={searchDoctor}
-      />
+    <View
+      style={[styles.container, {backgroundColor: theme.colors.background}]}>
+      <View style={styles.topbar}>
+        <Searchbar
+          style={styles.searchBar}
+          placeholder="Search"
+          onChangeText={setSearchDoctor}
+          value={searchDoctor}
+        />
+        <IconButton
+          icon="calendar"
+          size={24}
+          onPress={() =>
+            navigation.navigate('ChatNavigator', {
+              screen: 'BookingScreen',
+            })
+          }
+        />
+      </View>
       <FlatList
         data={filteredMessages}
         keyExtractor={item => item.id}
@@ -145,10 +101,14 @@ const MessagesScreen = ({navigation}: {navigation: any}) => {
               <View style={styles.userImgWrapper}>
                 <Image style={styles.userImg} source={item.userImg} />
               </View>
-              <View style={styles.textSection}>
+              <View
+                style={[
+                  styles.textSection,
+                  {borderBottomColor: theme.colors.outline},
+                ]}>
                 <View style={styles.userInfoText}>
                   <Text style={styles.userName}>{item.userName}</Text>
-                  <Text style={styles.postTime}>{item.messageTime}</Text>
+                  <Text style={[styles.postTime]}>{item.messageTime}</Text>
                 </View>
                 <Text style={styles.messageText}>{item.messageText}</Text>
               </View>
@@ -161,3 +121,65 @@ const MessagesScreen = ({navigation}: {navigation: any}) => {
 };
 
 export default MessagesScreen;
+
+const styles = StyleSheet.create({
+  container: {
+    width: '100%',
+    flex: 1,
+    alignItems: 'center',
+    gap: 10,
+  },
+  topbar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 15,
+    marginHorizontal: 10,
+    width: '100%',
+  },
+  searchBar: {
+    width: '80%',
+    marginLeft: 15,
+  },
+  card: {
+    width: '100%',
+  },
+  userInfo: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
+  userImgWrapper: {
+    paddingTop: 15,
+    paddingBottom: 15,
+  },
+  userImg: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+  },
+  textSection: {
+    flexDirection: 'column',
+    justifyContent: 'center',
+    padding: 15,
+    paddingLeft: 0,
+    marginLeft: 10,
+    width: '80%',
+    borderBottomWidth: 1,
+  },
+  userInfoText: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 5,
+  },
+  userName: {
+    fontSize: 14,
+    fontWeight: 'bold',
+  },
+  postTime: {
+    fontSize: 12,
+    // color: theme.colors.secondary,
+  },
+  messageText: {
+    fontSize: 14,
+  },
+});

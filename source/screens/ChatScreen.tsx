@@ -1,12 +1,19 @@
+import React, {useCallback, useEffect, useState} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {Text, Icon, useTheme} from 'react-native-paper';
-import React, {useCallback, useEffect, useState} from 'react';
 import {Bubble, GiftedChat, IMessage, Send} from 'react-native-gifted-chat';
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
-const ChatScreen = () => {
+import {ChatRoutes} from '../Routes/Route';
+
+type Props = NativeStackScreenProps<ChatRoutes, 'ChatScreen'>;
+
+const ChatScreen = ({route, navigation}: Props) => {
   const theme = useTheme();
 
   const [messages, setMessages] = useState<IMessage[]>([]);
+
+  const userId = route.params.userId;
 
   useEffect(() => {
     setMessages([

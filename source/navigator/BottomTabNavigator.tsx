@@ -13,7 +13,9 @@ const BottomTabNavigator = ({navigation, route}: any) => {
   const theme = useTheme();
 
   return (
-    <BottomTabs.Navigator initialRouteName="MessagesScreen">
+    <BottomTabs.Navigator
+      initialRouteName="MessagesScreen"
+      screenOptions={{headerShown: false}}>
       <BottomTabs.Screen
         name="MessagesScreen"
         component={MessagesScreen}
