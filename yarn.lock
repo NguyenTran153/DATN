@@ -7071,12 +7071,10 @@ react-native-lightbox-v2@0.9.0:
   resolved "https://registry.npmjs.org/react-native-lightbox-v2/-/react-native-lightbox-v2-0.9.0.tgz"
   integrity sha512-Fc5VFHFj2vokS+OegyTsANKb1CYoUlOtAv+EBH5wtpJn1b5cey6jVXH7136G5+8OC9JmKWSgKHc5thFwOoZTUg==
 
-react-native-paper-dates@^0.22.6:
-  version "0.22.6"
-  resolved "https://registry.yarnpkg.com/react-native-paper-dates/-/react-native-paper-dates-0.22.6.tgz#61230baf0ee0ad74522358ae8ebeff565b9028c7"
-  integrity sha512-rnwg8LPzGpWa9FsPHRokdRJlj5857VYNFkHxp2nelfKqcbL7g6+vqAOr46Z070PjoQO3f5EtdfyD+VoRGNHrEA==
-  dependencies:
-    color "^4.2.3"
+react-native-paper-dropdown@^1.0.7:
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/react-native-paper-dropdown/-/react-native-paper-dropdown-1.0.7.tgz#64fe004b05b73ca5c781873d800ac5062b35bdc9"
+  integrity sha512-St0rZFw5sC7mbXtFCOGsyEa0fIBaG6Cfz78RsjFNzTj+rKd1i9qlDY2O7eOa2zAUEnFlL+C7FXdXUY9RUNELNw==
 
 react-native-paper@^5.12.3:
   version "5.12.3"
