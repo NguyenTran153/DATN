@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useState } from 'react';
 import React from 'react';
-import DropDown from 'react-native-paper-dropdown';
+import DropDown from '../components/DropDown'
 import { List, TextInput, Button } from 'react-native-paper'
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -90,7 +90,7 @@ const MyDropdownComponent = () => {
             label={'Quantity'}
             style={styles.cell}
             onChangeText={text => setAfternoon(text)}
-            value={morning}
+            value={afternoon}
           />
         </View>
         <View style = {{margin:10}}>
@@ -99,7 +99,7 @@ const MyDropdownComponent = () => {
             label={'Quantity'}
             style={styles.cell}
             onChangeText={text => setEvening(text)}
-            value={morning}
+            value={evening}
           />
         </View>
         <View style = {{margin:10}}>
@@ -108,7 +108,7 @@ const MyDropdownComponent = () => {
             label={'Quantity'}
             style={styles.cell}
             onChangeText={text => setNight(text)}
-            value={morning}
+            value={night}
           />
         </View>
       </View>
