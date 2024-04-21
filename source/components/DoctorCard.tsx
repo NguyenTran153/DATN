@@ -27,7 +27,7 @@ const DoctorCard = ({doctorId}: {doctorId: string}) => {
             borderColor: theme.colors.primary,
           },
         ]}>
-        <Avatar.Image size={120} source={require('../asset/7677205.jpg')} />
+        <Avatar.Image size={100} source={require('../asset/7677205.jpg')} />
       </View>
       <View style={styles.inforContainer}>
         <Text variant="titleLarge">TS Bác Sĩ {doctorId}</Text>
@@ -55,11 +55,10 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     borderWidth: 0.5,
     flexDirection: 'row',
-    justifyContent: 'space-around',
   },
   avatarContainer: {
-    width: 120,
-    height: 120,
+    width: 100,
+    height: 100,
     borderWidth: 1,
     borderRadius: 120,
     marginTop: 20,
@@ -69,8 +68,9 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     marginTop: 30,
     marginLeft: 10,
+    width: '60%',
   },
   favoriteButton: {
-    marginLeft: 20,
+    right: 20,
   },
 });

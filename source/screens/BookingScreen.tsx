@@ -1,9 +1,16 @@
 import React, {useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {StyleSheet, View, ScrollView, TouchableOpacity} from 'react-native';
-import {useTheme, Button, Text, Icon, Searchbar} from 'react-native-paper';
+import {
+  useTheme,
+  Button,
+  Text,
+  Icon,
+  Searchbar,
+  Avatar,
+} from 'react-native-paper';
 import {Calendar, LocaleConfig} from 'react-native-calendars';
-
+import Svg, {Use, Image} from 'react-native-svg';
 import {ChatRoutes} from '../Routes/Route';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Horizon from '../components/Horizon';
@@ -57,7 +64,9 @@ type Props = NativeStackScreenProps<ChatRoutes, 'BookingScreen'>;
 const BookingScreen = ({route, navigation}: Props) => {
   const theme = useTheme();
 
-  const [searchSpecialty, setSearchSpecialty] = useState<string>('');
+  const [selectedSpecialty, setSelectedSpecialty] = useState<string | null>(
+    null,
+  );
   const [selectedDoctor, setSelectedDoctor] = useState<any>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedHour, setSelectedHour] = useState<string | null>(null);
@@ -85,10 +94,40 @@ const BookingScreen = ({route, navigation}: Props) => {
     // Thêm thông tin của các bác sĩ khác nếu cần
   ];
 
+  const specialties = [
+    {index: 0, name: 'Khám chức năng hô hấp', iconName: 'Respirology'},
+    {index: 1, name: 'Khám da liễu', iconName: 'Measles'}, // Measles icon might not be appropriate for dermatology
+    {index: 2, name: 'Khám điều trị vết thương', iconName: 'Bandaged'},
+    {index: 3, name: 'Khám hậu môn-trực tràng', iconName: 'Intestine'},
+    {index: 4, name: 'Khám mắt', iconName: 'Eye'},
+    {index: 5, name: 'Khám tai mũi họng', iconName: 'Ear'},
+    {index: 6, name: 'Khám nội tiết', iconName: 'Endocrinology'},
+    {index: 7, name: 'Khám phụ khoa', iconName: 'Gynecology'}, // Consider a more generic icon like 'uterus' or 'gynecology'
+    {index: 8, name: 'Khám thai', iconName: 'Fetus'},
+    {index: 9, name: 'Khám thần kinh', iconName: 'Psychology'},
+    {index: 10, name: 'Khám tiết niệu', iconName: 'Kidneys'},
+    {index: 11, name: 'Khám tiêu hoá-gan mật', iconName: 'Stomach'},
+    {index: 12, name: 'Khám tim mạch', iconName: 'Heart'},
+    {index: 13, name: 'Khám tổng quát', iconName: 'Tac'}, // CT Scan might not be appropriate for a general checkup
+    {index: 14, name: 'Khám viêm gan', iconName: 'Liver'},
+    {index: 15, name: 'Khám xương khớp', iconName: 'Joints'},
+    {
+      index: 16,
+      name: 'Lồng ngực - Mạch máu - Bướu cổ',
+      iconName: 'BloodVessel',
+    },
+    {index: 17, name: 'Thẩm mỹ - chăm sóc da', iconName: 'Allergies'}, // Allergies icon might not be appropriate for aesthetics or skincare
+  ];
+
   const resetBooking = () => {
     setSelectedDate(null);
     setSelectedHour(null);
     setSelectedDoctor(null);
+    setSelectedSpecialty(null);
+  };
+
+  const toggleSpecialtiesVisibility = () => {
+    setIsSpecialtySearch(!isSpecialtySearch);
   };
 
   const toggleDoctorVisibility = () => {
@@ -187,15 +226,50 @@ const BookingScreen = ({route, navigation}: Props) => {
             style={[
               styles.textField,
               {backgroundColor: theme.colors.onPrimary},
-            ]}>
+            ]}
+            onPress={toggleSpecialtiesVisibility}>
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Icon source="hospital" size={24} />
               <Text style={{marginLeft: 10, fontSize: 18}}>
-                {selectedDoctor ? 'Tai mũi họng' : 'Chọn chuyên khoa'}
+                {selectedSpecialty ? selectedSpecialty : 'Chọn chuyên khoa'}
               </Text>
             </View>
             <Icon source="hockey-sticks" size={24} />
           </TouchableOpacity>
+          {isSpecialtySearch && (
+            <View
+              style={{
+                flexDirection: 'column',
+                width: '90%',
+                alignSelf: 'center',
+                gap: 5,
+              }}>
+              {specialties.map(specialty => {
+                let uri = `../asset/icon/${specialty.iconName}.svg`;
+
+                return (
+                  <TouchableOpacity
+                    style={{
+                      height: 50,
+                      width: '100%',
+                      flexDirection: 'row',
+                      justifyContent: 'space-around',
+                      borderWidth: 1,
+                      borderColor: theme.colors.primary,
+                      borderRadius: 16,
+                      alignContent: 'center',
+                      alignItems: 'center',
+                    }}
+                    onPress={() => {
+                      setSelectedSpecialty(specialty.name);
+                      setIsSpecialtySearch(false);
+                    }}>
+                    <Text variant="titleLarge">{specialty.name}</Text>
+                  </TouchableOpacity>
+                );
+              })}
+            </View>
+          )}
           <Horizon />
         </View>
         <View style={styles.informationContainer}>
@@ -325,6 +399,8 @@ const styles = StyleSheet.create({
     flexDirection: 'column',
     alignItems: 'center',
     gap: 10,
+    width: '90%',
+    alignSelf: 'center',
   },
   searchBar: {
     width: '100%',
