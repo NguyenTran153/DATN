@@ -8,6 +8,7 @@ import {
   Image,
   TouchableOpacity,
   Alert,
+  ScrollView,
 } from 'react-native';
 import React, {useState} from 'react';
 import {useTheme} from 'react-native-paper';
@@ -108,7 +109,7 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
   });
   
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: theme.colors.background}}>
+    <ScrollView style={{flex: 1, backgroundColor: theme.colors.background}}>
       <View style={styles.container}>
         <QRLoginID/>
         <View style={styles.header}>
@@ -185,7 +186,7 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
           </View>
         </View>
       </View>
-    </SafeAreaView>
+    </ScrollView>
   );
 };
 
