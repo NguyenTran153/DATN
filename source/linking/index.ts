@@ -9,7 +9,7 @@ const config = {
 };
 
 const linking = {
-  prefixes: ['datn://'],
+  prefixes: ['datn://', 'https://datn.com.vn', 'http://datn.com.vn'],
   config,
 };
 
