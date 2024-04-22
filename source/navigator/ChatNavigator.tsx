@@ -4,6 +4,7 @@ import MessagesScreen from '../screens/MessagesScreen';
 import ChatScreen from '../screens/ChatScreen';
 import BookingScreen from '../screens/BookingScreen';
 import {ChatRoutes} from '../Routes/Route';
+import PrescriptionScreen from '../screens/PrescriptionScreen';
 
 const Tabs = createNativeStackNavigator<ChatRoutes>();
 
@@ -23,6 +24,14 @@ const ChatNavigator = ({navigation}: {navigation: any}) => {
           title: 'Đặt lịch khám',
         }}
       />
+      <Tabs.Screen
+        name ="PrescriptionScreen"
+        component={PrescriptionScreen}
+        options={{
+          title:'PrescriptionScreen'
+        }}
+      />
+
     </Tabs.Navigator>
   );
 };

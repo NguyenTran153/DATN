@@ -2,9 +2,11 @@ import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-nati
 import { useState } from 'react';
 import React from 'react';
 import DropDown from '../components/DropDown'
+import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import { List, TextInput, Button } from 'react-native-paper'
 import { SafeAreaView } from 'react-native-safe-area-context';
-
+import { ChatRoutes } from '../Routes/Route';
+import moment from 'moment';
 const MyDropdownComponent = () => {
   const [showDropDown, setShowDropDown] = useState(false);
   const [medicine, setMedicine] = useState("");
@@ -115,17 +117,14 @@ const MyDropdownComponent = () => {
     </View>
   );
 };
-
-const PrescriptionScreen = () => {
-  const patientName = "John Doe";
-  const patientAge = "35";
-  const patientGender = "Male";
-  const patientAddress = "123 Main Street, City, Country";
-  const patientHeight = "180";
-  const patientWeight = "75";
+type Props = NativeStackScreenProps<ChatRoutes, 'PrescriptionScreen'>;
+const PrescriptionScreen = ({route}: Props) => {
+  var date = new Date();
+  const userInfo = route.params.userInfo;
   const [components, setComponents] = useState<{ id: number, component: React.ReactNode }[]>([]);
   const [idCounter, setIdCounter] = useState(0);
   const [prescription, setPrescription] = useState('');
+  const [note, setNote] = useState('');
   const addComponent = () => {
     const newId = idCounter + 1;
     setIdCounter(newId);
@@ -133,7 +132,7 @@ const PrescriptionScreen = () => {
       ...prevComponents,
       { id: newId, component: <MyDropdownComponent key={newId} /> }
     ]);
-
+    console.log(userInfo)
   };
 
   const removeComponent = (idToRemove: number) => {
@@ -149,31 +148,31 @@ const PrescriptionScreen = () => {
         <View style={styles.row}>
           <View style={styles.infoContainer}>
             <Text style={styles.label}>Name: </Text>
-            <Text style={styles.value}>{patientName}</Text>
+            <Text style={styles.value}>{userInfo.userName}</Text>
           </View>
           <View style={styles.infoContainer}>
             <Text style={styles.label}>Gender: </Text>
-            <Text style={styles.value}>{patientGender}</Text>
+            <Text style={styles.value}>{userInfo.Gender}</Text>
           </View>
           <View style={styles.infoContainer}>
             <Text style={styles.label}>Age: </Text>
-            <Text style={styles.value}>{patientAge}</Text>
+            <Text style={styles.value}>{userInfo.Age}</Text>
           </View>
         </View>
         <View style={styles.row}>
           <View style={styles.infoContainer}>
             <Text style={styles.label}>Address: </Text>
-            <Text style={styles.value}>{patientAddress}</Text>
+            <Text style={styles.value}>{userInfo.Address}</Text>
           </View>
         </View>
         <View style={styles.row}>
           <View style={styles.infoContainer}>
             <Text style={styles.label}>Height (cm): </Text>
-            <Text style={styles.value}>{patientHeight}</Text>
+            <Text style={styles.value}>{userInfo.Height}</Text>
           </View>
           <View style={styles.infoContainer}>
             <Text style={styles.label}>Weight (kg): </Text>
-            <Text style={styles.value}>{patientWeight}</Text>
+            <Text style={styles.value}>{userInfo.Weight}</Text>
           </View>
         </View>
       </View>
@@ -194,6 +193,19 @@ const PrescriptionScreen = () => {
           </View>
         ))}
       </SafeAreaView>
+      <TextInput
+        label={'Note'}
+        onChangeText={text => setNote(text)}
+        value={note}
+      />
+      <View style={{flexDirection:'row', justifyContent:'flex-end'}}>
+        <View style={{margin:10}}>
+          <Text>{moment(date).format('DD/MM/YYYY')}</Text>
+          <Text style={{alignSelf:'center', fontSize:15, fontWeight:'bold'}}>Signature</Text>
+          <View style={{height:50, width:50}}></View>
+        </View>
+      </View>
+      <Text style={{margin:10}}>*Please keep it till the next appointment</Text>
     </ScrollView>
   );
 };

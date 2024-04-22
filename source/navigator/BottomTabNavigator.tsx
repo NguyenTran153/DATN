@@ -47,7 +47,7 @@ const BottomTabNavigator = ({navigation, route}: any) => {
       />
       <BottomTabs.Screen
         name="ProfileScreen"
-        component={PrescriptionScreen}
+        component={ProfileScreen}
         options={{
           tabBarLabel: 'Profile',
           tabBarIcon: ({size, focused}: any) => (
