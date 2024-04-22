@@ -4,6 +4,7 @@ import {useColorScheme} from 'react-native';
 
 import RootNavigator from './source/navigator/RootNavigator';
 import {createThemeFromSystemSchemes} from './source/utils/createTheme';
+import linking from './source/linking';
 
 const App = () => {
   const colorScheme = useColorScheme();
@@ -30,7 +31,7 @@ const App = () => {
 
   return (
     <PaperProvider theme={paperTheme}>
-      <NavigationContainer>
+      <NavigationContainer linking={linking}>
         <RootNavigator />
       </NavigationContainer>
     </PaperProvider>
