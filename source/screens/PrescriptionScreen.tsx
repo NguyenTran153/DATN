@@ -34,27 +34,31 @@ const MyDropdownComponent = () => {
       backgroundColor: theme.colors.background,
       borderColor: theme.colors.outline,
     },
-    text:{
-      fontStyle:'italic',
-      fontWeight:'700',
-      fontFamily:'Cochin'
+    text: {
+      fontStyle: 'italic',
+      fontWeight: '700',
+      fontFamily: 'Cochin'
     }
   })
 
   return (
     <View style={{ margin: 5 }}>
       <View style={{ flexDirection: 'row', marginHorizontal: 5, alignItems: 'center' }}>
-        <AutocompleteTextInput suggestions={medicineList} />
-        <TextInput
-          style={[styles.cell, { marginLeft: 10 }]}
-          placeholder={'Dosage'}
-          onChangeText={text => setDosage(text)}
-          value={Dosage}
-        />
+        <View style={{ width: '75%' }}>
+          <AutocompleteTextInput suggestions={medicineList} />
+        </View>
+        <View style={{ width: '25%' }}>
+          <TextInput
+            style={[styles.cell, { marginLeft: 10 }]}
+            placeholder={'Dosage'}
+            onChangeText={text => setDosage(text)}
+            value={Dosage}
+          />
+        </View>
       </View>
 
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-        <View style={{ margin: 5 }}>
+        <View style={{ margin: 5, }}>
           <Text style={styles.text}>Morning</Text>
           <TextInput
             placeholder='Quantity'
@@ -188,7 +192,7 @@ const PrescriptionScreen = ({ route }: Props) => {
         value={prescription}
       />
       <View style={{ marginHorizontal: 10, marginBottom: 10, flexDirection: 'row', alignItems: 'flex-start' }}>
-        <TouchableOpacity style={{marginRight:10}} onPress={() => removeComponent(components[components.length - 1]?.id)}>
+        <TouchableOpacity style={{ marginRight: 10 }} onPress={() => removeComponent(components[components.length - 1]?.id)}>
           <Icon source="minus" size={24} color="black" />
         </TouchableOpacity>
         <TouchableOpacity onPress={addComponent}>
