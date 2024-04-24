@@ -33,6 +33,11 @@ const MyDropdownComponent = () => {
       fontSize: 15,
       backgroundColor: theme.colors.background,
       borderColor: theme.colors.outline,
+    },
+    text:{
+      fontStyle:'italic',
+      fontWeight:'700',
+      fontFamily:'Cochin'
     }
   })
 
@@ -50,7 +55,7 @@ const MyDropdownComponent = () => {
 
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <View style={{ margin: 5 }}>
-          <Text>Morning</Text>
+          <Text style={styles.text}>Morning</Text>
           <TextInput
             placeholder='Quantity'
             style={styles.cell}
@@ -59,7 +64,7 @@ const MyDropdownComponent = () => {
           />
         </View>
         <View style={{ margin: 5 }}>
-          <Text>Afternoon</Text>
+          <Text style={styles.text}>Afternoon</Text>
           <TextInput
             placeholder='Quantity'
             style={styles.cell}
@@ -68,7 +73,7 @@ const MyDropdownComponent = () => {
           />
         </View>
         <View style={{ margin: 5 }}>
-          <Text>Evening</Text>
+          <Text style={styles.text}>Evening</Text>
           <TextInput
             placeholder='Quantity'
             style={styles.cell}
@@ -77,7 +82,7 @@ const MyDropdownComponent = () => {
           />
         </View>
         <View style={{ margin: 5 }}>
-          <Text>Night</Text>
+          <Text style={styles.text}>Night</Text>
           <TextInput
             placeholder='Quantity'
             style={styles.cell}
