@@ -1,13 +1,22 @@
-import {StyleSheet, TextInput, SafeAreaView,Text, Image, View, TouchableOpacity, Alert} from 'react-native';
-import React, { useState } from 'react';
+import {
+  StyleSheet,
+  TextInput,
+  SafeAreaView,
+  Text,
+  Image,
+  View,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
+import React, {useState} from 'react';
 import {useTheme} from 'react-native-paper';
 const RegisterScreen = () => {
   const theme = useTheme();
   const [form, setForm] = useState({
     email: '',
     password: '',
-    confirmpassword: ''
-  })
+    confirmpassword: '',
+  });
   const styles = StyleSheet.create({
     container: {
       padding: 24,
@@ -91,62 +100,71 @@ const RegisterScreen = () => {
     },
   });
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: theme.colors.background }}>
+    <SafeAreaView style={{flex: 1, backgroundColor: theme.colors.background}}>
       <View style={styles.container}>
         <View style={styles.header}>
-          <Image source={require('../asset/7677205.jpg')} style={styles.img}
-            alt='Logo'
+          <Image
+            source={require('../asset/7677205.jpg')}
+            style={styles.img}
+            alt="Logo"
           />
           <Text style={styles.title}>Sign up to MediConnect</Text>
         </View>
         <View style={styles.form}>
           <View style={styles.input}>
             <Text style={styles.inputLabel}>Email address</Text>
-            <TextInput id="email" style={styles.inputControl}
-              autoCapitalize='none'
+            <TextInput
+              id="email"
+              style={styles.inputControl}
+              autoCapitalize="none"
               autoCorrect={false}
-              keyboardType='email-address'
+              keyboardType="email-address"
               value={form.email}
-              placeholder='email@gmail.com'
+              placeholder="email@gmail.com"
               placeholderTextColor={theme.colors.secondary}
-              onChangeText={email => setForm({ ...form, email })}
+              onChangeText={email => setForm({...form, email})}
             />
           </View>
           <View style={styles.input}>
             <Text style={styles.inputLabel}>Password</Text>
-            <TextInput id="password" style={styles.inputControl}
+            <TextInput
+              id="password"
+              style={styles.inputControl}
               secureTextEntry
               value={form.password}
-              placeholder='Password'
+              placeholder="Password"
               placeholderTextColor={theme.colors.secondary}
-              onChangeText={password => setForm({ ...form, password })}
+              onChangeText={password => setForm({...form, password})}
             />
           </View>
           <View style={styles.input}>
             <Text style={styles.inputLabel}>Confirm Password</Text>
-            <TextInput id="confirm_password" style={styles.inputControl}
+            <TextInput
+              id="confirm_password"
+              style={styles.inputControl}
               secureTextEntry
               value={form.confirmpassword}
-              placeholder='Confirm password'
+              placeholder="Confirm password"
               placeholderTextColor={theme.colors.secondary}
-              onChangeText={confirmpassword => setForm({ ...form, confirmpassword })}
+              onChangeText={confirmpassword =>
+                setForm({...form, confirmpassword})
+              }
             />
           </View>
           <View style={styles.formAction}>
-            <TouchableOpacity onPress={() => {
-               let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
-               if (reg.test(form.email) === true) {
-                if(form.password === form.confirmpassword)
-                {
-                  Alert.alert("Sign up successfuly")
+            <TouchableOpacity
+              onPress={() => {
+                let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+                if (reg.test(form.email) === true) {
+                  if (form.password === form.confirmpassword) {
+                    Alert.alert('Sign up successfuly');
+                  } else {
+                    Alert.alert('Wrong email or password');
+                  }
+                } else {
+                  Alert.alert('Invalid email');
                 }
-                else{
-                  Alert.alert("Wrong email or password")
-                }}
-                else{
-                  Alert.alert("Invalid email")
-                }
-            }}>
+              }}>
               <View style={styles.btn}>
                 <Text style={styles.btnText}>Sign up</Text>
               </View>
@@ -159,4 +177,3 @@ const RegisterScreen = () => {
 };
 
 export default RegisterScreen;
-

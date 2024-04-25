@@ -62,6 +62,8 @@ LocaleConfig.defaultLocale = 'en';
 type Props = NativeStackScreenProps<ChatRoutes, 'BookingScreen'>;
 
 const BookingScreen = ({route, navigation}: Props) => {
+  console.log(JSON.stringify(route));
+
   const theme = useTheme();
 
   const [selectedSpecialty, setSelectedSpecialty] = useState<string | null>(

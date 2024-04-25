@@ -81,6 +81,9 @@ const MessagesScreen = ({navigation}: {navigation: any}) => {
           onPress={() =>
             navigation.navigate('ChatNavigator', {
               screen: 'BookingScreen',
+              params: {
+                userId: '123',
+              },
             })
           }
         />
