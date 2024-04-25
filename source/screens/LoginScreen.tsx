@@ -8,9 +8,12 @@ import {
   Image,
   TouchableOpacity,
   Alert,
+  ScrollView,
 } from 'react-native';
 import React, {useState} from 'react';
 import {useTheme} from 'react-native-paper';
+import QRLoginID from './QRLoginID';
+
 const account = {
   email: 'myaccount@gmail.com',
   password: '123456789',
@@ -106,8 +109,9 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
   });
   
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: theme.colors.background}}>
+    <ScrollView style={{flex: 1, backgroundColor: theme.colors.background}}>
       <View style={styles.container}>
+        <QRLoginID/>
         <View style={styles.header}>
           <Image
             source={require('../asset/7677205.jpg')}
@@ -182,7 +186,7 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
           </View>
         </View>
       </View>
-    </SafeAreaView>
+    </ScrollView>
   );
 };
 

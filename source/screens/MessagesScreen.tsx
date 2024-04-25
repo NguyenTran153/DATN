@@ -5,9 +5,9 @@ import {
   Image,
   TouchableOpacity,
 } from 'react-native';
-import {Text, Searchbar, useTheme, Icon, IconButton} from 'react-native-paper';
-import React, {useState} from 'react';
-import {Screen} from 'react-native-screens';
+import { Text, Searchbar, useTheme, Icon, IconButton } from 'react-native-paper';
+import React, { useState } from 'react';
+import { Screen } from 'react-native-screens';
 
 //Fake data
 const Messages = [
@@ -18,6 +18,11 @@ const Messages = [
     messageTime: '4 mins ago',
     messageText:
       'Hey there, this is my test for a post of my social app in React Native.',
+    Gender: 'Male',
+    Age: '35',
+    Address: '123 Main Street, City, Country',
+    Height: 180,
+    Weight: 75
   },
   {
     id: '2',
@@ -26,6 +31,11 @@ const Messages = [
     messageTime: '2 hours ago',
     messageText:
       'Hey there, this is my test for a post of my social app in React Native.',
+    Gender: 'Male',
+    Age: '34',
+    Address: '234 Main Street, City, Country',
+    Height: 179,
+    Weight: 76
   },
   {
     id: '3',
@@ -34,6 +44,11 @@ const Messages = [
     messageTime: '1 hours ago',
     messageText:
       'Hey there, this is my test for a post of my social app in React Native.',
+    Gender: 'Male',
+    Age: '37',
+    Address: '456 New Street, City, Country',
+    Height: 185,
+    Weight: 70
   },
   {
     id: '4',
@@ -42,6 +57,11 @@ const Messages = [
     messageTime: '1 day ago',
     messageText:
       'Hey there, this is my test for a post of my social app in React Native.',
+    Gender: 'Female',
+    Age: '25',
+    Address: '567 Nice Street, City, Country',
+    Height: 160,
+    Weight: 45
   },
   {
     id: '5',
@@ -50,10 +70,15 @@ const Messages = [
     messageTime: '2 days ago',
     messageText:
       'Hey there, this is my test for a post of my social app in React Native.',
+    Gender: 'Female',
+    Age: '28',
+    Address: '678 Old Street, City, Country',
+    Height: 165,
+    Weight: 50
   },
 ];
 
-const MessagesScreen = ({navigation}: {navigation: any}) => {
+const MessagesScreen = ({ navigation }: { navigation: any }) => {
   const theme = useTheme();
 
   const [searchDoctor, setSearchDoctor] = useState<string>('');
@@ -61,13 +86,13 @@ const MessagesScreen = ({navigation}: {navigation: any}) => {
   const filteredMessages =
     searchDoctor.length > 0
       ? Messages.filter(message =>
-          message.userName.toLowerCase().includes(searchDoctor.toLowerCase()),
-        )
+        message.userName.toLowerCase().includes(searchDoctor.toLowerCase()),
+      )
       : Messages;
 
   return (
     <View
-      style={[styles.container, {backgroundColor: theme.colors.background}]}>
+      style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <View style={styles.topbar}>
         <Searchbar
           style={styles.searchBar}
@@ -91,13 +116,13 @@ const MessagesScreen = ({navigation}: {navigation: any}) => {
       <FlatList
         data={filteredMessages}
         keyExtractor={item => item.id}
-        renderItem={({item}) => (
+        renderItem={({ item }) => (
           <TouchableOpacity
             style={styles.card}
             onPress={() =>
               navigation.navigate('ChatNavigator', {
                 screen: 'ChatScreen',
-                params: {userId: item.id},
+                params: { userId: item.id, userInfo: item },
               })
             }>
             <View style={styles.userInfo}>
@@ -107,7 +132,7 @@ const MessagesScreen = ({navigation}: {navigation: any}) => {
               <View
                 style={[
                   styles.textSection,
-                  {borderBottomColor: theme.colors.outline},
+                  { borderBottomColor: theme.colors.outline },
                 ]}>
                 <View style={styles.userInfoText}>
                   <Text style={styles.userName}>{item.userName}</Text>

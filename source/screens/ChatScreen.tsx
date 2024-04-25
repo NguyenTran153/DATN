@@ -1,10 +1,11 @@
 import React, {useCallback, useEffect, useState} from 'react';
-import {StyleSheet, View} from 'react-native';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
 import {Text, Icon, useTheme} from 'react-native-paper';
 import {Bubble, GiftedChat, IMessage, Send} from 'react-native-gifted-chat';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
 import {ChatRoutes} from '../Routes/Route';
+import { RootRoutes } from '../Routes/Route';
 
 type Props = NativeStackScreenProps<ChatRoutes, 'ChatScreen'>;
 
@@ -14,7 +15,7 @@ const ChatScreen = ({route, navigation}: Props) => {
   const [messages, setMessages] = useState<IMessage[]>([]);
 
   const userId = route.params.userId;
-
+  const userInfo = route.params.userInfo;
   useEffect(() => {
     setMessages([
       {
@@ -79,23 +80,42 @@ const ChatScreen = ({route, navigation}: Props) => {
   };
 
   return (
-    <GiftedChat
-      messages={messages}
-      onSend={messages => onSend(messages)}
-      user={{
-        _id: 1,
-      }}
-      renderBubble={renderBubble}
-      alwaysShowSend
-      renderSend={renderSend}
-      scrollToBottom
-      scrollToBottomComponent={scrollToBottomComponent}
-      keyboardShouldPersistTaps="never"
-      infiniteScroll
-    />
+    <View style={styles.container}>
+      <TouchableOpacity style={styles.button}  onPress={() =>
+            navigation.navigate('PrescriptionScreen',{
+              userInfo:userInfo,
+            })
+          }>
+        <Icon source="plus" size={24} color="black" />
+      </TouchableOpacity>
+      <GiftedChat
+        messages={messages}
+        onSend={onSend}
+        user={{
+          _id: 1,
+        }}
+        renderBubble={renderBubble}
+        alwaysShowSend
+        renderSend={renderSend}
+        scrollToBottom
+        scrollToBottomComponent={scrollToBottomComponent}
+        keyboardShouldPersistTaps="never"
+        infiniteScroll
+      />
+    </View>
   );
 };
 
 export default ChatScreen;
 
-const styles = StyleSheet.create({});
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+  button: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    zIndex: 1, // Ensure button is above chat
+  },
+});

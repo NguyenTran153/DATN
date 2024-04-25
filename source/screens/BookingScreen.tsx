@@ -10,7 +10,6 @@ import {
   Avatar,
 } from 'react-native-paper';
 import {Calendar, LocaleConfig} from 'react-native-calendars';
-import Svg, {Use, Image} from 'react-native-svg';
 import {ChatRoutes} from '../Routes/Route';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Horizon from '../components/Horizon';

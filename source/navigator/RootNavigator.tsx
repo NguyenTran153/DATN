@@ -18,7 +18,6 @@ const RootNavigator = () => {
       <Tabs.Screen name="RegisterScreen" component={RegisterScreen} />
       <Tabs.Screen name="BottomTabNavigator" component={BottomTabNavigator} />
       <Tabs.Screen name="ChatNavigator" component={ChatNavigator} />
-      <Tabs.Screen name="PrescriptionScreen" component={PrescriptionScreen} />
     </Tabs.Navigator>
   );
 };
