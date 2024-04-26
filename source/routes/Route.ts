@@ -5,18 +5,18 @@ export type RootRoutes = {
   RegisterScreen: undefined;
   BottomTabNavigator: NavigatorScreenParams<BottomRoutes>;
   ChatNavigator: NavigatorScreenParams<ChatRoutes>;
- 
 };
 
 export type BottomRoutes = {
-  HomeScreen: undefined;
+  StoreScreen: undefined;
   MessagesScreen: undefined;
   ProfileScreen: undefined;
-}
+};
 
 export type ChatRoutes = {
   MessagesScreen: undefined;
-  ChatScreen: {userId: string, userInfo: any};
+  ChatScreen: {userId: string; userInfo: any};
   BookingScreen: {route: any};
-  PrescriptionScreen:{userInfo:any}
+  PrescriptionScreen: {userInfo: any};
+  NotificationScreen: any;
 };

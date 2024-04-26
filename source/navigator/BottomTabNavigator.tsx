@@ -4,9 +4,8 @@ import {useTheme} from 'react-native-paper';
 
 import type {BottomRoutes} from '../Routes/Route';
 import MessagesScreen from '../screens/MessagesScreen';
-import HomeScreen from '../screens/HomeScreen';
+import StoreScreen from '../screens/StoreScreen';
 import ProfileScreen from '../screens/ProfileScreen';
-import PrescriptionScreen from '../screens/PrescriptionScreen';
 
 const BottomTabs = createBottomTabNavigator<BottomRoutes>();
 
@@ -32,13 +31,13 @@ const BottomTabNavigator = ({navigation, route}: any) => {
         }}
       />
       <BottomTabs.Screen
-        name="HomeScreen"
-        component={HomeScreen}
+        name="StoreScreen"
+        component={StoreScreen}
         options={{
-          tabBarLabel: 'Home',
+          tabBarLabel: 'Store',
           tabBarIcon: ({size, focused}: any) => (
             <Icon
-              name="home"
+              name="shopping-bag"
               color={focused ? theme.colors.primary : theme.colors.outline}
               size={24}
             />
@@ -52,7 +51,7 @@ const BottomTabNavigator = ({navigation, route}: any) => {
           tabBarLabel: 'Profile',
           tabBarIcon: ({size, focused}: any) => (
             <Icon
-              name="home"
+              name="user"
               color={focused ? theme.colors.primary : theme.colors.outline}
               size={24}
             />

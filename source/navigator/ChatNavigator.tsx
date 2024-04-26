@@ -5,6 +5,7 @@ import ChatScreen from '../screens/ChatScreen';
 import BookingScreen from '../screens/BookingScreen';
 import {ChatRoutes} from '../Routes/Route';
 import PrescriptionScreen from '../screens/PrescriptionScreen';
+import NotificationScreen from '../screens/NotificationScreen';
 
 const Tabs = createNativeStackNavigator<ChatRoutes>();
 
@@ -25,13 +26,19 @@ const ChatNavigator = ({navigation}: {navigation: any}) => {
         }}
       />
       <Tabs.Screen
-        name ="PrescriptionScreen"
+        name="PrescriptionScreen"
         component={PrescriptionScreen}
         options={{
-          title:'PrescriptionScreen'
+          title: 'PrescriptionScreen',
         }}
       />
-
+      <Tabs.Screen
+        name="NotificationScreen"
+        component={NotificationScreen}
+        options={{
+          title: 'NotificationScreen',
+        }}
+      />
     </Tabs.Navigator>
   );
 };

@@ -381,8 +381,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     flexDirection: 'column',
-    marginHorizontal: 10,
     gap: 10,
+    paddingHorizontal: 10,
   },
   titleContainer: {
     flexDirection: 'row',

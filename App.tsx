@@ -5,7 +5,6 @@ import {useColorScheme} from 'react-native';
 import RootNavigator from './source/navigator/RootNavigator';
 import {createThemeFromSystemSchemes} from './source/utils/createTheme';
 import linking from './source/linking';
-import QRCode from 'react-native-qrcode-svg';
 
 const App = () => {
   const colorScheme = useColorScheme();
@@ -32,10 +31,9 @@ const App = () => {
 
   return (
     <PaperProvider theme={paperTheme}>
-      <NavigationContainer linking={linking}>
+      <NavigationContainer>
         <RootNavigator />
       </NavigationContainer>
-      <QRCode value='datn://users/1' size={50}/>
     </PaperProvider>
   );
 };
