@@ -3,8 +3,9 @@ import StoreScreen from '../screens/StoreScreen';
 import ProductScreen from '../screens/ProductScreen';
 import CartScreen from '../screens/CartScreen';
 import ProductCard from '../components/ProductCard';
+import {StoreRoutes} from '../Routes/Route';
 
-const Stacks = createNativeStackNavigator<any>();
+const Stacks = createNativeStackNavigator<StoreRoutes>();
 
 const StoreNavigator = () => {
   return (
@@ -12,7 +13,6 @@ const StoreNavigator = () => {
       <Stacks.Screen name="StoreScreen" component={StoreScreen} />
       <Stacks.Screen name="ProductScreen" component={ProductScreen} />
       <Stacks.Screen name="CartScreen" component={CartScreen} />
-      <Stacks.Screen name="ProductCard" component={ProductCard} />
     </Stacks.Navigator>
   );
 };

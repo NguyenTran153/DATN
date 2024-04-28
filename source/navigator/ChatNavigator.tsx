@@ -9,7 +9,7 @@ import NotificationScreen from '../screens/NotificationScreen';
 
 const Tabs = createNativeStackNavigator<ChatRoutes>();
 
-const ChatNavigator = ({navigation}: {navigation: any}) => {
+const ChatNavigator = () => {
   return (
     <Tabs.Navigator>
       <Tabs.Screen

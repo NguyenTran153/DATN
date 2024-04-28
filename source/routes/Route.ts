@@ -5,6 +5,7 @@ export type RootRoutes = {
   RegisterScreen: undefined;
   BottomTabNavigator: NavigatorScreenParams<BottomRoutes>;
   ChatNavigator: NavigatorScreenParams<ChatRoutes>;
+  StoreNavigator: NavigatorScreenParams<StoreRoutes>;
 };
 
 export type BottomRoutes = {
@@ -19,4 +20,10 @@ export type ChatRoutes = {
   BookingScreen: {route: any};
   PrescriptionScreen: {userInfo: any};
   NotificationScreen: any;
+};
+
+export type StoreRoutes = {
+  StoreScreen: any;
+  CartScreen: any;
+  ProductScreen: any;
 };

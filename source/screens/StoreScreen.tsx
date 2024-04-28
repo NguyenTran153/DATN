@@ -4,58 +4,149 @@ import {
   FlatList,
   StatusBar,
   SafeAreaView,
-  ScrollView,
 } from 'react-native';
 import {useState} from 'react';
-import {useTheme, Text, Searchbar, SegmentedButtons} from 'react-native-paper';
-import type {StatusBarStyle} from 'react-native';
+import {
+  useTheme,
+  Text,
+  Searchbar,
+  SegmentedButtons,
+  IconButton,
+} from 'react-native-paper';
+import {useNavigation} from '@react-navigation/native';
+
 import ProductCard from '../components/ProductCard';
+import CategoryCard from '../components/CategoryCard';
+
+const fakeCategory = [
+  {
+    id: 1,
+    name: 'Thuốc giảm đau',
+    description: 'Dùng để giảm đau',
+    examples: ['Paracetamol', 'Ibuprofen', 'Aspirin'],
+  },
+  {
+    id: 2,
+    name: 'Thuốc hạ sốt',
+    description: 'Dùng để hạ sốt',
+    examples: ['Paracetamol', 'Ibuprofen', 'Acetaminophen'],
+  },
+  {
+    id: 3,
+    name: 'Thuốc kháng sinh',
+    description: 'Dùng để điều trị nhiễm trùng do vi khuẩn',
+    examples: ['Amoxicillin', 'Penicillin', 'Azithromycin'],
+  },
+  {
+    id: 4,
+    name: 'Thuốc tim mạch',
+    description: 'Dùng để điều trị các bệnh tim mạch',
+    examples: ['Aspirin', 'Atenolol', 'Lisinopril'],
+  },
+  {
+    id: 5,
+    name: 'Thuốc cao huyết áp',
+    description: 'Dùng để điều trị cao huyết áp',
+    examples: ['Losartan', 'Amlodipine', 'Hydrochlorothiazide'],
+  },
+];
 
 const fakeData = [
   {
     id: 1,
     name: 'Paracetamol',
-    type: 'Hạ sốt',
+    category: 'Hạ sốt',
     price: 5000,
     brand: 'Hapaco',
     isOff: false,
     offPercentage: 0,
-    productImage: require('../asset/7677205.jpg'),
-    category: 'medicine',
+    productImage: '../asset/7677205.jpg',
     isAvailable: true,
   },
   {
     id: 2,
     name: 'Ibuprofen',
-    type: 'Giảm đau',
+    category: 'Giảm đau',
     price: 7000,
     brand: 'Bogota',
     isOff: true,
     offPercentage: 10,
-    productImage: require('../asset/7677205.jpg'),
-    category: 'medicine',
+    productImage: '../asset/7677205.jpg',
     isAvailable: true,
   },
   {
     id: 3,
     name: 'Azithromycin',
-    type: 'Kháng sinh',
+    category: 'Kháng sinh',
     price: 15000,
     brand: 'US Pharma',
     isOff: false,
     offPercentage: 0,
-    productImage: require('../asset/7677205.jpg'),
-    category: 'medicine',
+    productImage: '../asset/7677205.jpg',
     isAvailable: true,
   },
-  // ... Thêm thêm dữ liệu giả dựa trên ProductCard
+  {
+    id: 4,
+    name: 'Azithromycinqdfwefsadqwdasdqwfwfwefewfew',
+    category: 'Kháng sinh',
+    price: 14000,
+    brand: 'US Pharma',
+    isOff: false,
+    offPercentage: 0,
+    productImage: '../asset/7677205.jpg',
+    isAvailable: true,
+  },
+  {
+    id: 5,
+    name: 'Azithromycin',
+    category: 'Kháng sinh',
+    price: 15000,
+    brand: 'US Pharma',
+    isOff: false,
+    offPercentage: 0,
+    productImage: '../asset/7677205.jpg',
+    isAvailable: true,
+  },
+  {
+    id: 6,
+    name: 'Azithromycin',
+    category: 'Kháng sinh',
+    price: 15000,
+    brand: 'US Pharma',
+    isOff: false,
+    offPercentage: 0,
+    productImage: '../asset/7677205.jpg',
+    isAvailable: true,
+  },
+  {
+    id: 7,
+    name: 'Azithromycin',
+    category: 'Kháng sinh',
+    price: 15000,
+    brand: 'US Pharma',
+    isOff: false,
+    offPercentage: 0,
+    productImage: '../asset/7677205.jpg',
+    isAvailable: true,
+  },
+  {
+    id: 8,
+    name: 'Azithromycin',
+    category: 'Kháng sinh',
+    price: 15000,
+    brand: 'US Pharma',
+    isOff: false,
+    offPercentage: 0,
+    productImage: '../asset/7677205.jpg',
+    isAvailable: true,
+  },
 ];
-const StoreScreen = () => {
+const StoreScreen = ({navigation}: {navigation: any}) => {
   const theme = useTheme();
 
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [value, setValue] = useState<string>('top');
-  const [selectedType, setSelectedType] = useState<string>('');
+  const [selectedCategory, setSelectedCategory] = useState<string>('');
 
   const [filteredData, setFilteredData] = useState<any>(fakeData);
 
@@ -63,21 +154,22 @@ const StoreScreen = () => {
     setSearchQuery(query);
     const filtered = fakeData.filter(item => {
       const nameMatch = item.name.toLowerCase().includes(query.toLowerCase());
-      const typeMatch = selectedType === '' || item.type === selectedType;
-      return nameMatch && typeMatch;
+      const CategoryMatch =
+        selectedCategory === '' || item.category === selectedCategory;
+      return nameMatch && CategoryMatch;
     });
     setFilteredData(filtered);
   };
 
-  const handleFilterByType = (type: any) => {
-    setSelectedType(type);
+  const handleFilterByCategory = (category: any) => {
+    setSelectedCategory(category);
 
     const filtered = fakeData.filter(item => {
       const nameMatch =
         searchQuery === '' ||
         item.name.toLowerCase().includes(searchQuery.toLowerCase());
-      const typeMatch = type === '' || item.type === type;
-      return nameMatch && typeMatch;
+      const CategoryMatch = category === '' || item.category === category;
+      return nameMatch && CategoryMatch;
     });
     setFilteredData(filtered);
   };
@@ -90,16 +182,41 @@ const StoreScreen = () => {
         barStyle="dark-content"
       />
 
-      <View style={{gap: 10}}>
+      <View style={{gap: 10, flexDirection: 'row'}}>
         <Searchbar
+          style={styles.searchBar}
           placeholder="Tìm đơn thuốc"
           onChangeText={setSearchQuery}
           value={searchQuery}
         />
+        <IconButton
+          icon="cart"
+          size={24}
+          onPress={() =>
+            navigation.navigate('StoreNavigator', {screen: 'CartScreen'})
+          }
+        />
       </View>
       <View>
-        <View style={{gap: 10}}>
-          <Text variant="titleLarge">Danh sách sản phẩm</Text>
+        <View style={styles.listContainer}>
+          <View style={styles.title}>
+            <Text variant="titleLarge">Danh mục</Text>
+            <Text style={{color: theme.colors.primary}}>Thêm nữa...</Text>
+          </View>
+          <FlatList
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            data={fakeCategory}
+            renderItem={({item}) => <CategoryCard item={item} />}
+            keyExtractor={item => item.id.toString()}
+          />
+        </View>
+        <View style={styles.listContainer}>
+          <View style={styles.title}>
+            <Text variant="titleLarge">Danh sách sản phẩm</Text>
+            <Text style={{color: theme.colors.primary}}>Thêm nữa...</Text>
+          </View>
+
           <SegmentedButtons
             value={value}
             onValueChange={setValue}
@@ -118,13 +235,20 @@ const StoreScreen = () => {
               },
             ]}
           />
+          <FlatList
+            style={styles.productList}
+            contentContainerStyle={{
+              alignItems: 'center',
+            }}
+            data={filteredData}
+            renderItem={({item}) => (
+              <ProductCard data={item} navigation={navigation} />
+            )}
+            keyExtractor={item => item.id}
+            numColumns={2}
+            showsVerticalScrollIndicator={false}
+          />
         </View>
-        <FlatList
-          style={{height: '100%', width: '100%'}}
-          data={filteredData}
-          renderItem={({item}) => <ProductCard data={item} />}
-          keyExtractor={item => item.id}
-        />
       </View>
     </SafeAreaView>
   );
@@ -138,9 +262,20 @@ const styles = StyleSheet.create({
     padding: 10,
     gap: 10,
   },
-  listItem: {
-    padding: 10,
-    borderRadius: 5,
-    marginBottom: 5,
+  searchBar: {
+    width: '80%',
+    marginLeft: 15,
+  },
+  title: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  listContainer: {
+    margin: 10,
+    gap: 10,
+  },
+  productList: {
+    width: '100%',
   },
 });

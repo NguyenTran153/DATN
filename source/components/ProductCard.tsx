@@ -1,67 +1,31 @@
 import {StyleSheet, TouchableOpacity, View, Image} from 'react-native';
 import React from 'react';
-import {useTheme, Text, Icon} from 'react-native-paper';
+import {useTheme, Card, Text, Icon} from 'react-native-paper';
 
-const ProductCard = (data: any, navigation: any) => {
+const ProductCard = ({navigation, data}: {navigation: any; data: any}) => {
   const theme = useTheme();
 
   return (
     <TouchableOpacity style={styles.container}>
-      <View
-        style={[
-          styles.cardContainer,
-          {backgroundColor: theme.colors.primaryContainer},
-        ]}>
-        <Image
-          source={data.productImage}
-          style={{
-            width: '80%',
-            height: '80%',
-            resizeMode: 'contain',
-          }}
+      <Card style={styles.cardContainer} mode="contained">
+        <Card.Cover
+          style={styles.img}
+          source={require('../asset/7677205.jpg')}
         />
-        <Text variant="titleLarge"> {data.name}</Text>
-        {data.isAvailable ? (
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
-            <Icon source="circle" size={12} color={theme.colors.primary} />
-
-            <Text
-              style={{
-                fontSize: 12,
-                color: theme.colors.primary,
-              }}>
-              Available
-            </Text>
-          </View>
-        ) : (
-          <View
-            style={{
-              flexDirection: 'row',
-              alignItems: 'center',
-            }}>
-            <Icon source="circle" size={12} color={theme.colors.error} />
-            <Text
-              style={{
-                fontSize: 12,
-                color: theme.colors.error,
-              }}>
-              Unavailable
-            </Text>
-            <Image
-              source={require('../asset/7677205.jpg')}
-              style={{
-                width: '80%',
-                height: '80%',
-                resizeMode: 'contain',
-              }}
-            />
-          </View>
-        )}
-      </View>
+        <View style={styles.textContainer}>
+          <Text style={{flex: 1}} variant="titleMedium" ellipsizeMode="tail">
+            {data.name}
+          </Text>
+          <Text style={{flex: 1}} variant="titleSmall">
+            {data.category}
+          </Text>
+          <Text
+            style={{flex: 1, color: theme.colors.secondary, fontWeight: 'bold'}}
+            variant="titleSmall">
+            {data.price} VNĐ
+          </Text>
+        </View>
+      </Card>
     </TouchableOpacity>
   );
 };
@@ -70,130 +34,28 @@ export default ProductCard;
 
 const styles = StyleSheet.create({
   container: {
-    width: '40%',
+    width: 180,
     margin: 18,
     gap: 10,
+    flexWrap: 'wrap',
   },
   cardContainer: {
     borderRadius: 8,
     width: '100%',
-    height: 200,
-    position: 'relative',
-    justifyContent: 'center',
+    height: 250,
     alignItems: 'center',
+    margin: 4,
+  },
+  img: {
+    width: 180,
+    height: 180,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
+  },
+  textContainer: {
+    flex: 1,
+    flexDirection: 'column',
+    marginLeft: 10,
+    flexWrap: 'wrap',
   },
 });
-
-// const ProductCard = ({data}) => {
-//     return (
-//       <TouchableOpacity
-//         onPress={() => navigation.navigate('ProductInfo', {productID: data.id})}
-//         style={{
-//           width: '48%',
-//           marginVertical: 14,
-//         }}>
-//         <View
-//           style={{
-//             width: '100%',
-//             height: 100,
-//             borderRadius: 10,
-//             backgroundColor: COLOURS.backgroundLight,
-//             position: 'relative',
-//             justifyContent: 'center',
-//             alignItems: 'center',
-//             marginBottom: 8,
-//           }}>
-//           {data.isOff ? (
-//             <View
-//               style={{
-//                 position: 'absolute',
-//                 width: '20%',
-//                 height: '24%',
-//                 backgroundColor: COLOURS.green,
-//                 top: 0,
-//                 left: 0,
-//                 borderTopLeftRadius: 10,
-//                 borderBottomRightRadius: 10,
-//                 alignItems: 'center',
-//                 justifyContent: 'center',
-//               }}>
-//               <Text
-//                 style={{
-//                   fontSize: 12,
-//                   color: COLOURS.white,
-//                   fontWeight: 'bold',
-//                   letterSpacing: 1,
-//                 }}>
-//                 {data.offPercentage}%
-//               </Text>
-//             </View>
-//           ) : null}
-//           <Image
-//             source={data.productImage}
-//             style={{
-//               width: '80%',
-//               height: '80%',
-//               resizeMode: 'contain',
-//             }}
-//           />
-//         </View>
-//         <Text
-//           style={{
-//             fontSize: 12,
-//             color: COLOURS.black,
-//             fontWeight: '600',
-//             marginBottom: 2,
-//           }}>
-//           {data.productName}
-//         </Text>
-//         {data.category == 'accessory' ? (
-//           data.isAvailable ? (
-//             <View
-//               style={{
-//                 flexDirection: 'row',
-//                 alignItems: 'center',
-//               }}>
-//               <FontAwesome
-//                 name="circle"
-//                 style={{
-//                   fontSize: 12,
-//                   marginRight: 6,
-//                   color: COLOURS.green,
-//                 }}
-//               />
-//               <Text
-//                 style={{
-//                   fontSize: 12,
-//                   color: COLOURS.green,
-//                 }}>
-//                 Available
-//               </Text>
-//             </View>
-//           ) : (
-//             <View
-//               style={{
-//                 flexDirection: 'row',
-//                 alignItems: 'center',
-//               }}>
-//               <FontAwesome
-//                 name="circle"
-//                 style={{
-//                   fontSize: 12,
-//                   marginRight: 6,
-//                   color: COLOURS.red,
-//                 }}
-//               />
-//               <Text
-//                 style={{
-//                   fontSize: 12,
-//                   color: COLOURS.red,
-//                 }}>
-//                 Unavailable
-//               </Text>
-//             </View>
-//           )
-//         ) : null}
-//         <Text>&#8377; {data.productPrice}</Text>
-//       </TouchableOpacity>
-//     );
-//   };
