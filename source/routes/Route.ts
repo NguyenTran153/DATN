@@ -27,3 +27,7 @@ export type StoreRoutes = {
   CartScreen: any;
   ProductScreen: any;
 };
+
+export type ProfileRoutes = {
+  ProfileScreen: any;
+};
