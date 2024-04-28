@@ -13,7 +13,6 @@ import {
   SegmentedButtons,
   IconButton,
 } from 'react-native-paper';
-import {useNavigation} from '@react-navigation/native';
 
 import ProductCard from '../components/ProductCard';
 import CategoryCard from '../components/CategoryCard';
@@ -240,11 +239,11 @@ const StoreScreen = ({navigation}: {navigation: any}) => {
             contentContainerStyle={{
               alignItems: 'center',
             }}
-            data={filteredData}
+            data={fakeData}
             renderItem={({item}) => (
               <ProductCard data={item} navigation={navigation} />
             )}
-            keyExtractor={item => item.id}
+            keyExtractor={item => item.id.toString()}
             numColumns={2}
             showsVerticalScrollIndicator={false}
           />
@@ -275,7 +274,5 @@ const styles = StyleSheet.create({
     margin: 10,
     gap: 10,
   },
-  productList: {
-    width: '100%',
-  },
+  productList: {},
 });

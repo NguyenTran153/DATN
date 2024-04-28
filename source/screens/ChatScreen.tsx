@@ -5,7 +5,7 @@ import {Bubble, GiftedChat, IMessage, Send} from 'react-native-gifted-chat';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
 import {ChatRoutes} from '../Routes/Route';
-import { RootRoutes } from '../Routes/Route';
+import {RootRoutes} from '../Routes/Route';
 
 type Props = NativeStackScreenProps<ChatRoutes, 'ChatScreen'>;
 
@@ -81,11 +81,13 @@ const ChatScreen = ({route, navigation}: Props) => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.button}  onPress={() =>
-            navigation.navigate('PrescriptionScreen',{
-              userInfo:userInfo,
-            })
-          }>
+      <TouchableOpacity
+        style={styles.button}
+        onPress={() =>
+          navigation.navigate('PrescriptionScreen', {
+            userInfo: userInfo,
+          })
+        }>
         <Icon source="plus" size={24} color="black" />
       </TouchableOpacity>
       <GiftedChat
@@ -116,6 +118,6 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 10,
     right: 10,
-    zIndex: 1, // Ensure button is above chat
+    zIndex: 1,
   },
 });

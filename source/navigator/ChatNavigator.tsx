@@ -15,9 +15,15 @@ const ChatNavigator = () => {
       <Tabs.Screen
         name="MessagesScreen"
         component={MessagesScreen}
-        options={{headerShown: false, title: 'Danh sách tin nhắn'}}
+        options={{headerShown: false}}
       />
-      <Tabs.Screen name="ChatScreen" component={ChatScreen} />
+      <Tabs.Screen
+        name="ChatScreen"
+        component={ChatScreen}
+        options={{
+          title: 'Tin nhắn',
+        }}
+      />
       <Tabs.Screen
         name="BookingScreen"
         component={BookingScreen}
@@ -29,14 +35,14 @@ const ChatNavigator = () => {
         name="PrescriptionScreen"
         component={PrescriptionScreen}
         options={{
-          title: 'PrescriptionScreen',
+          title: 'Đơn thuốc',
         }}
       />
       <Tabs.Screen
         name="NotificationScreen"
         component={NotificationScreen}
         options={{
-          title: 'NotificationScreen',
+          title: 'Thông báo',
         }}
       />
     </Tabs.Navigator>
