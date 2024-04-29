@@ -17,7 +17,7 @@ const Messages = [
     messageTime: '4 mins ago',
     messageText:
       'Hey there, this is my test for a post of my social app in React Native.',
-    Gender: 'Male',
+    Gender: 'Nam',
     Age: '35',
     Address: '123 Main Street, City, Country',
     Height: 180,
@@ -30,7 +30,7 @@ const Messages = [
     messageTime: '2 hours ago',
     messageText:
       'Hey there, this is my test for a post of my social app in React Native.',
-    Gender: 'Male',
+    Gender: 'Nam',
     Age: '34',
     Address: '234 Main Street, City, Country',
     Height: 179,
@@ -43,7 +43,7 @@ const Messages = [
     messageTime: '1 hours ago',
     messageText:
       'Hey there, this is my test for a post of my social app in React Native.',
-    Gender: 'Male',
+    Gender: 'Nam',
     Age: '37',
     Address: '456 New Street, City, Country',
     Height: 185,
@@ -56,7 +56,7 @@ const Messages = [
     messageTime: '1 day ago',
     messageText:
       'Hey there, this is my test for a post of my social app in React Native.',
-    Gender: 'Female',
+    Gender: 'Nữ',
     Age: '25',
     Address: '567 Nice Street, City, Country',
     Height: 160,
@@ -69,7 +69,7 @@ const Messages = [
     messageTime: '2 days ago',
     messageText:
       'Hey there, this is my test for a post of my social app in React Native.',
-    Gender: 'Female',
+    Gender: 'Nữ',
     Age: '28',
     Address: '678 Old Street, City, Country',
     Height: 165,
