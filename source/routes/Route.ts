@@ -6,6 +6,7 @@ export type RootRoutes = {
   BottomTabNavigator: NavigatorScreenParams<BottomRoutes>;
   ChatNavigator: NavigatorScreenParams<ChatRoutes>;
   StoreNavigator: NavigatorScreenParams<StoreRoutes>;
+  ProfileNavigator: NavigatorScreenParams<ProfileRoutes>;
 };
 
 export type BottomRoutes = {
@@ -30,4 +31,5 @@ export type StoreRoutes = {
 
 export type ProfileRoutes = {
   ProfileScreen: any;
+  QRScreen: any;
 };

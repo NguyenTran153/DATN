@@ -7,6 +7,7 @@ import RegisterScreen from '../screens/RegisterScreen';
 import BottomTabNavigator from './BottomTabNavigator';
 import PrescriptionScreen from '../screens/PrescriptionScreen';
 import StoreNavigator from './StoreNavigator';
+import ProfileNavigator from './ProfileNavigator';
 
 const Tabs = createNativeStackNavigator<RootRoutes>();
 
@@ -20,6 +21,7 @@ const RootNavigator = () => {
       <Tabs.Screen name="BottomTabNavigator" component={BottomTabNavigator} />
       <Tabs.Screen name="ChatNavigator" component={ChatNavigator} />
       <Tabs.Screen name="StoreNavigator" component={StoreNavigator} />
+      <Tabs.Screen name="ProfileNavigator" component={ProfileNavigator} />
     </Tabs.Navigator>
   );
 };
