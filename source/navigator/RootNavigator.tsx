@@ -2,10 +2,9 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import type {RootRoutes} from '../Routes/Route';
 import ChatNavigator from './ChatNavigator';
-import LoginScreen from '../screens/LoginScreen';
-import RegisterScreen from '../screens/RegisterScreen';
+import LoginScreen from '../screens/Authorization/LoginScreen';
+import RegisterScreen from '../screens/Authorization/RegisterScreen';
 import BottomTabNavigator from './BottomTabNavigator';
-import PrescriptionScreen from '../screens/PrescriptionScreen';
 import StoreNavigator from './StoreNavigator';
 
 const Tabs = createNativeStackNavigator<RootRoutes>();

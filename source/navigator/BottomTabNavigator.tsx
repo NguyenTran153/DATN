@@ -3,9 +3,9 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {useTheme} from 'react-native-paper';
 
 import type {BottomRoutes} from '../Routes/Route';
-import MessagesScreen from '../screens/MessagesScreen';
-import StoreScreen from '../screens/StoreScreen';
-import ProfileScreen from '../screens/ProfileScreen';
+import MessagesScreen from '../screens/Chat/MessagesScreen';
+import StoreScreen from '../screens/Store/StoreScreen';
+import ProfileScreen from '../screens/Profile/ProfileScreen';
 
 const BottomTabs = createBottomTabNavigator<BottomRoutes>();
 

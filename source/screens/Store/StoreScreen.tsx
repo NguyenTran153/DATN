@@ -14,8 +14,8 @@ import {
   IconButton,
 } from 'react-native-paper';
 
-import ProductCard from '../components/ProductCard';
-import CategoryCard from '../components/CategoryCard';
+import ProductCard from '../../components/ProductCard';
+import CategoryCard from '../../components/CategoryCard';
 
 const fakeCategory = [
   {
@@ -197,7 +197,7 @@ const StoreScreen = ({navigation}: {navigation: any}) => {
         />
       </View>
       <View>
-        <View style={styles.listContainer}>
+        {/* <View style={styles.listContainer}>
           <View style={styles.title}>
             <Text variant="titleLarge">Danh mục</Text>
             <Text style={{color: theme.colors.primary}}>Thêm nữa...</Text>
@@ -209,7 +209,7 @@ const StoreScreen = ({navigation}: {navigation: any}) => {
             renderItem={({item}) => <CategoryCard item={item} />}
             keyExtractor={item => item.id.toString()}
           />
-        </View>
+        </View> */}
         <View style={styles.listContainer}>
           <View style={styles.title}>
             <Text variant="titleLarge">Danh sách sản phẩm</Text>

@@ -7,7 +7,7 @@ const ProfileScreen = () => {
     <SafeAreaView style={styles.container}>
       <View style={styles.profile}>
         <Image
-          source={require('../asset/7677205.jpg')}
+          source={require('../../asset/7677205.jpg')}
           style={styles.img}
         />
         <View style={styles.patientInfo}>

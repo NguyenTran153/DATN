@@ -4,8 +4,8 @@ import {Text, Icon, useTheme} from 'react-native-paper';
 import {Bubble, GiftedChat, IMessage, Send} from 'react-native-gifted-chat';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 
-import {ChatRoutes} from '../Routes/Route';
-import {RootRoutes} from '../Routes/Route';
+import {ChatRoutes} from '../../Routes/Route';
+import {RootRoutes} from '../../Routes/Route';
 
 type Props = NativeStackScreenProps<ChatRoutes, 'ChatScreen'>;
 

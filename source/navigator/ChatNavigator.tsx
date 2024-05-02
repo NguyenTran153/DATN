@@ -1,7 +1,7 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
-import MessagesScreen from '../screens/MessagesScreen';
-import ChatScreen from '../screens/ChatScreen';
+import MessagesScreen from '../screens/Chat/MessagesScreen';
+import ChatScreen from '../screens/Chat/ChatScreen';
 import BookingScreen from '../screens/BookingScreen';
 import {ChatRoutes} from '../Routes/Route';
 import PrescriptionScreen from '../screens/PrescriptionScreen';

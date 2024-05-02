@@ -1,29 +1,21 @@
 import {
   StyleSheet,
-  Text,
-  View,
-  Button,
   TextInput,
   SafeAreaView,
+  Text,
   Image,
+  View,
   TouchableOpacity,
   Alert,
-  ScrollView,
 } from 'react-native';
 import React, {useState} from 'react';
 import {useTheme} from 'react-native-paper';
-import QRLoginID from './QRLoginID';
-
-const account = {
-  email: 'myaccount@gmail.com',
-  password: '123456789',
-};
-
-const LoginScreen = ({navigation}: {navigation: any}) => {
+const RegisterScreen = () => {
   const theme = useTheme();
   const [form, setForm] = useState({
     email: '',
     password: '',
+    confirmpassword: '',
   });
   const styles = StyleSheet.create({
     container: {
@@ -107,19 +99,16 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
       color: theme.colors.background,
     },
   });
-  
   return (
-    <ScrollView style={{flex: 1, backgroundColor: theme.colors.background}}>
+    <SafeAreaView style={{flex: 1, backgroundColor: theme.colors.background}}>
       <View style={styles.container}>
-        <QRLoginID/>
         <View style={styles.header}>
           <Image
-            source={require('../asset/7677205.jpg')}
+            source={require('../../asset/7677205.jpg')}
             style={styles.img}
             alt="Logo"
           />
-          <Text style={styles.title}>Sign in to MediConnect</Text>
-          <Text style={styles.subtitle}>Welcome to the Medic App!</Text>
+          <Text style={styles.title}>Sign up to MediConnect</Text>
         </View>
         <View style={styles.form}>
           <View style={styles.input}>
@@ -147,48 +136,44 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
               placeholderTextColor={theme.colors.secondary}
               onChangeText={password => setForm({...form, password})}
             />
-            <TouchableOpacity style={{marginTop: 'auto'}} onPress={() => {}}>
-              <Text style={{textDecorationLine: 'underline', color: theme.colors.primary}}>
-                Forgot password
-              </Text>
-            </TouchableOpacity>
+          </View>
+          <View style={styles.input}>
+            <Text style={styles.inputLabel}>Confirm Password</Text>
+            <TextInput
+              id="confirm_password"
+              style={styles.inputControl}
+              secureTextEntry
+              value={form.confirmpassword}
+              placeholder="Confirm password"
+              placeholderTextColor={theme.colors.secondary}
+              onChangeText={confirmpassword =>
+                setForm({...form, confirmpassword})
+              }
+            />
           </View>
           <View style={styles.formAction}>
             <TouchableOpacity
               onPress={() => {
                 let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
                 if (reg.test(form.email) === true) {
-                  if (
-                    form.email === account.email &&
-                    form.password === account.password
-                  ) {
-                    navigation.navigate('HomeScreen');
+                  if (form.password === form.confirmpassword) {
+                    Alert.alert('Sign up successfuly');
                   } else {
                     Alert.alert('Wrong email or password');
                   }
                 } else {
                   Alert.alert('Invalid email');
                 }
-                navigation.navigate('BottomTabNavigator');
               }}>
               <View style={styles.btn}>
-                <Text style={styles.btnText}>Sign in</Text>
+                <Text style={styles.btnText}>Sign up</Text>
               </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={{marginTop: 'auto'}}
-              onPress={() => navigation.navigate('RegisterScreen')}>
-              <Text style={styles.formFooter}>
-                Don't have account?{' '}
-                <Text style={{textDecorationLine: 'underline'}}>Sign up</Text>
-              </Text>
             </TouchableOpacity>
           </View>
         </View>
       </View>
-    </ScrollView>
+    </SafeAreaView>
   );
 };
 
-export default LoginScreen;
-
+export default RegisterScreen;
