@@ -13,10 +13,10 @@ const AutocompleteTextInput = ({ suggestions }: { suggestions: string[] }) => {
     },
     input: {
       borderWidth: 1,
-      borderColor: theme.colors.outline,
       padding: 10,
       height: 40,
       fontSize: 15,
+      borderRadius:5
     },
     suggestionsContainer: {
       position: 'absolute',
@@ -56,7 +56,7 @@ const AutocompleteTextInput = ({ suggestions }: { suggestions: string[] }) => {
     <View style={styles.container}>
       <TextInput
         style={styles.input}
-        placeholder="Type something..."
+        placeholder="Nhập tên thuốc"
         value={text}
         onChangeText={handleInputChange}
       />

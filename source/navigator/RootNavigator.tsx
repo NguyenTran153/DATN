@@ -6,6 +6,7 @@ import LoginScreen from '../screens/Authorization/LoginScreen';
 import RegisterScreen from '../screens/Authorization/RegisterScreen';
 import BottomTabNavigator from './BottomTabNavigator';
 import StoreNavigator from './StoreNavigator';
+import ProfileNavigator from './ProfileNavigator';
 
 const Tabs = createNativeStackNavigator<RootRoutes>();
 
@@ -19,6 +20,7 @@ const RootNavigator = () => {
       <Tabs.Screen name="BottomTabNavigator" component={BottomTabNavigator} />
       <Tabs.Screen name="ChatNavigator" component={ChatNavigator} />
       <Tabs.Screen name="StoreNavigator" component={StoreNavigator} />
+      <Tabs.Screen name="ProfileNavigator" component={ProfileNavigator} />
     </Tabs.Navigator>
   );
 };

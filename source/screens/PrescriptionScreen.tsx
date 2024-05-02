@@ -1,9 +1,9 @@
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
 import { useState } from 'react';
 import React from 'react';
 import DropDown from '../components/DropDown'
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import { List, TextInput, Button, useTheme, Icon } from 'react-native-paper'
+import { List, TextInput, Button, useTheme, Icon, Text } from 'react-native-paper'
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { ChatRoutes } from '../Routes/Route';
 import moment from 'moment';
@@ -30,27 +30,30 @@ const MyDropdownComponent = () => {
     cell: {
       borderWidth: 1,
       height: 40,
-      fontSize: 15,
+      fontSize: 14,
       backgroundColor: theme.colors.background,
-      borderColor: theme.colors.outline,
+      width: 90,
+      borderRadius: 5
     },
     text: {
       fontStyle: 'italic',
-      fontWeight: '700',
-      fontFamily: 'Cochin'
+      fontWeight: '800',
+      fontFamily: 'Cochin',
     }
   })
 
   return (
     <View style={{ margin: 5 }}>
-      <View style={{ flexDirection: 'row', marginHorizontal: 5, alignItems: 'center' }}>
-        <View style={{ width: '75%' }}>
+      <View style={{ flexDirection: 'row', marginHorizontal: 5, alignItems: 'flex-end' }}>
+        <View style={{ width: 290 }}>
+          <Text style={styles.text}>Tên thuốc</Text>
           <AutocompleteTextInput suggestions={medicineList} />
         </View>
-        <View style={{ width: '25%' }}>
+        <View style={{ marginLeft: 10 }}>
+          <Text style={styles.text}>Số lượng</Text>
           <TextInput
-            style={[styles.cell, { marginLeft: 10 }]}
-            placeholder={'Dosage'}
+            style={styles.cell}
+            placeholder='Số lượng'
             onChangeText={text => setDosage(text)}
             value={Dosage}
           />
@@ -59,36 +62,36 @@ const MyDropdownComponent = () => {
 
       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
         <View style={{ margin: 5, }}>
-          <Text style={styles.text}>Morning</Text>
+          <Text style={styles.text}>Sáng</Text>
           <TextInput
-            placeholder='Quantity'
+            placeholder='Số lượng'
             style={styles.cell}
             onChangeText={text => setMorning(text)}
             value={morning}
           />
         </View>
         <View style={{ margin: 5 }}>
-          <Text style={styles.text}>Afternoon</Text>
+          <Text style={styles.text}>Trưa</Text>
           <TextInput
-            placeholder='Quantity'
+            placeholder='Số lượng'
             style={styles.cell}
             onChangeText={text => setAfternoon(text)}
             value={afternoon}
           />
         </View>
         <View style={{ margin: 5 }}>
-          <Text style={styles.text}>Evening</Text>
+          <Text style={styles.text}>Chiều</Text>
           <TextInput
-            placeholder='Quantity'
+            placeholder='Số lượng'
             style={styles.cell}
             onChangeText={text => setEvening(text)}
             value={evening}
           />
         </View>
         <View style={{ margin: 5 }}>
-          <Text style={styles.text}>Night</Text>
+          <Text style={styles.text}>Tối</Text>
           <TextInput
-            placeholder='Quantity'
+            placeholder='Số lượng'
             style={styles.cell}
             onChangeText={text => setNight(text)}
             value={night}
@@ -128,7 +131,8 @@ const PrescriptionScreen = ({ route }: Props) => {
 
     prescriptionInput: {
       height: 100,
-      margin: 10
+      margin: 10,
+      borderRadius: 5
     },
     row: {
       flexDirection: 'row',
@@ -151,42 +155,42 @@ const PrescriptionScreen = ({ route }: Props) => {
   return (
     <ScrollView style={styles.container}>
       <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 10 }}>
-        <Text style={{ fontSize: 26, fontWeight: 'bold' }}>Prescription</Text>
+        <Text style={{ fontSize: 26, fontWeight: 'bold' }}>Đơn thuốc</Text>
       </View>
       <View>
         <View style={styles.row}>
           <View style={styles.infoContainer}>
-            <Text style={styles.label}>Name: </Text>
+            <Text style={styles.label}>Họ tên: </Text>
             <Text style={styles.value}>{userInfo.userName}</Text>
           </View>
           <View style={styles.infoContainer}>
-            <Text style={styles.label}>Gender: </Text>
+            <Text style={styles.label}>Giới tính: </Text>
             <Text style={styles.value}>{userInfo.Gender}</Text>
           </View>
           <View style={styles.infoContainer}>
-            <Text style={styles.label}>Age: </Text>
+            <Text style={styles.label}>Tuổi: </Text>
             <Text style={styles.value}>{userInfo.Age}</Text>
           </View>
         </View>
         <View style={styles.row}>
           <View style={styles.infoContainer}>
-            <Text style={styles.label}>Address: </Text>
+            <Text style={styles.label}>Địa chỉ: </Text>
             <Text style={styles.value}>{userInfo.Address}</Text>
           </View>
         </View>
         <View style={styles.row}>
           <View style={styles.infoContainer}>
-            <Text style={styles.label}>Height (cm): </Text>
+            <Text style={styles.label}>Chiều cao (cm): </Text>
             <Text style={styles.value}>{userInfo.Height}</Text>
           </View>
           <View style={styles.infoContainer}>
-            <Text style={styles.label}>Weight (kg): </Text>
+            <Text style={styles.label}>Cân nặng (kg): </Text>
             <Text style={styles.value}>{userInfo.Weight}</Text>
           </View>
         </View>
       </View>
       <TextInput
-        label={'Prescription'}
+        label='Chẩn đoán'
         style={styles.prescriptionInput}
         onChangeText={text => setPrescription(text)}
         value={prescription}
@@ -207,7 +211,7 @@ const PrescriptionScreen = ({ route }: Props) => {
         ))}
       </SafeAreaView>
       <TextInput
-        label={'Note'}
+        label='Ghi chú'
         onChangeText={text => setNote(text)}
         value={note}
         style={{ margin: 10 }}
@@ -215,11 +219,10 @@ const PrescriptionScreen = ({ route }: Props) => {
       <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
         <View style={{ margin: 20 }}>
           <Text>{moment(date).format('DD/MM/YYYY')}</Text>
-          <Text style={{ alignSelf: 'center', fontSize: 15, fontWeight: 'bold' }}>Signature</Text>
+          <Text style={{ alignSelf: 'center', fontSize: 15, fontWeight: 'bold' }}>Chữ ký</Text>
           <View style={{ height: 50, width: 50 }}></View>
         </View>
       </View>
-      <Text style={{ margin: 10 }}>*Please keep it till the next appointment</Text>
     </ScrollView>
   );
 };

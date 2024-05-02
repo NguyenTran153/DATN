@@ -1,7 +1,8 @@
 import { Text, Button, List } from 'react-native-paper';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { StyleSheet, View, Image, ScrollView } from 'react-native';
-const ProfileScreen = () => {
+import { Screen } from 'react-native-screens';
+const ProfileScreen = ({navigation}: {navigation: any}) => {
   
   return (
     <SafeAreaView style={styles.container}>
@@ -69,7 +70,7 @@ const ProfileScreen = () => {
             description="Use QR code to add friend"
             left={() => <List.Icon style = {styles.settingCenter} icon="qrcode" />}
             right={() => <List.Icon icon="chevron-right" />}
-            onPress={() => {}}
+            onPress={() => navigation.navigate('ProfileNavigator', {screen: 'QRScreen'})}
           />
         </List.Section>
       </ScrollView>
