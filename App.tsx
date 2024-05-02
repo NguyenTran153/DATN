@@ -1,10 +1,11 @@
 import {NavigationContainer} from '@react-navigation/native';
 import {MD3DarkTheme, MD3LightTheme, PaperProvider} from 'react-native-paper';
 import {useColorScheme} from 'react-native';
+import {Provider} from 'react-redux';
 
 import RootNavigator from './source/navigator/RootNavigator';
 import {createThemeFromSystemSchemes} from './source/utils/createTheme';
-import linking from './source/linking';
+import {store} from './source/redux/store';
 
 const App = () => {
   const colorScheme = useColorScheme();
@@ -30,11 +31,13 @@ const App = () => {
         };
 
   return (
-    <PaperProvider theme={paperTheme}>
-      <NavigationContainer>
-        <RootNavigator />
-      </NavigationContainer>
-    </PaperProvider>
+    <Provider store={store}>
+      <PaperProvider theme={paperTheme}>
+        <NavigationContainer>
+          <RootNavigator />
+        </NavigationContainer>
+      </PaperProvider>
+    </Provider>
   );
 };
 

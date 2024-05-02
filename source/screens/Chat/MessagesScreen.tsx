@@ -95,7 +95,7 @@ const MessagesScreen = ({navigation}: {navigation: any}) => {
       <View style={styles.topbar}>
         <Searchbar
           style={styles.searchBar}
-          placeholder="Search"
+          placeholder="Tìm kiếm"
           onChangeText={setSearchDoctor}
           value={searchDoctor}
         />

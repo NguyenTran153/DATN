@@ -6,10 +6,11 @@ import type {BottomRoutes} from '../Routes/Route';
 import MessagesScreen from '../screens/Chat/MessagesScreen';
 import StoreScreen from '../screens/Store/StoreScreen';
 import ProfileScreen from '../screens/Profile/ProfileScreen';
+import HistoryScreen from '../screens/History/HistoryScreen';
 
 const BottomTabs = createBottomTabNavigator<BottomRoutes>();
 
-const BottomTabNavigator = ({navigation, route}: any) => {
+const BottomTabNavigator = () => {
   const theme = useTheme();
 
   return (
@@ -21,7 +22,7 @@ const BottomTabNavigator = ({navigation, route}: any) => {
         component={MessagesScreen}
         options={{
           tabBarLabel: 'Message',
-          tabBarIcon: ({size, focused}: any) => (
+          tabBarIcon: ({focused}: any) => (
             <Icon
               name="home"
               color={focused ? theme.colors.primary : theme.colors.outline}
@@ -35,9 +36,23 @@ const BottomTabNavigator = ({navigation, route}: any) => {
         component={StoreScreen}
         options={{
           tabBarLabel: 'Store',
-          tabBarIcon: ({size, focused}: any) => (
+          tabBarIcon: ({focused}: any) => (
             <Icon
               name="shopping-bag"
+              color={focused ? theme.colors.primary : theme.colors.outline}
+              size={24}
+            />
+          ),
+        }}
+      />
+      <BottomTabs.Screen
+        name="HistoryScreen"
+        component={HistoryScreen}
+        options={{
+          tabBarLabel: 'History',
+          tabBarIcon: ({focused}: any) => (
+            <Icon
+              name="history"
               color={focused ? theme.colors.primary : theme.colors.outline}
               size={24}
             />
@@ -49,7 +64,7 @@ const BottomTabNavigator = ({navigation, route}: any) => {
         component={ProfileScreen}
         options={{
           tabBarLabel: 'Profile',
-          tabBarIcon: ({size, focused}: any) => (
+          tabBarIcon: ({focused}: any) => (
             <Icon
               name="user"
               color={focused ? theme.colors.primary : theme.colors.outline}

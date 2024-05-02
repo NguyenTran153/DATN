@@ -13,6 +13,7 @@ export type BottomRoutes = {
   StoreScreen: undefined;
   MessagesScreen: undefined;
   ProfileScreen: undefined;
+  HistoryScreen: any;
 };
 
 export type ChatRoutes = {

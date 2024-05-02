@@ -196,7 +196,7 @@ const StoreScreen = ({navigation}: {navigation: any}) => {
           }
         />
       </View>
-      <View>
+      <View style={{flex: 1}}>
         {/* <View style={styles.listContainer}>
           <View style={styles.title}>
             <Text variant="titleLarge">Danh mục</Text>
@@ -273,6 +273,7 @@ const styles = StyleSheet.create({
   listContainer: {
     margin: 10,
     gap: 10,
+    flex: 1,
   },
   productList: {},
 });
