@@ -1,15 +1,16 @@
-import React, {useCallback, useEffect, useState} from 'react';
-import {StyleSheet, TouchableOpacity, View} from 'react-native';
-import {Text, Icon, useTheme} from 'react-native-paper';
-import {Bubble, GiftedChat, IMessage, Send} from 'react-native-gifted-chat';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import React, { useCallback, useEffect, useState } from 'react';
+import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { Text, Icon, useTheme, IconButton } from 'react-native-paper';
+import { Bubble, GiftedChat, IMessage, Send } from 'react-native-gifted-chat';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
-import {ChatRoutes} from '../../Routes/Route';
-import {RootRoutes} from '../../Routes/Route';
+import { ChatRoutes } from '../../Routes/Route';
+import { RootRoutes } from '../../Routes/Route';
+import { TextInput } from 'react-native';
 
-type Props = NativeStackScreenProps<ChatRoutes, 'ChatScreen'>;
+type Props = NativeStackScreenProps<ChatRoutes, 'ChatScreen', 'BookingScreen'>;
 
-const ChatScreen = ({route, navigation}: Props) => {
+const ChatScreen = ({ route, navigation }: Props, { navigation1 }: { navigation1: any }) => {
   const theme = useTheme();
 
   const [messages, setMessages] = useState<IMessage[]>([]);
@@ -50,13 +51,33 @@ const ChatScreen = ({route, navigation}: Props) => {
   const renderSend = (props: any) => {
     return (
       <Send {...props}>
-        <View>
+        <View style={{ flexDirection: 'row', alignItems: 'center'}}>
+          <TouchableOpacity
+          
+            onPress={() =>
+              navigation.navigate('PrescriptionScreen', {
+                userInfo: userInfo,
+              })
+            }>
+            <Icon source="plus" size={24} />
+          </TouchableOpacity>
+          <IconButton
+            icon="calendar"
+            size={24}
+            onPress={() =>
+              navigation.navigate('BookingScreen',
+                {
+                  route: '',
+                }
+              )
+            }
+          />
           <Icon source="send-circle" size={32} />
         </View>
       </Send>
     );
   };
-
+  
   const renderBubble = (props: any) => {
     return (
       <Bubble
@@ -81,21 +102,13 @@ const ChatScreen = ({route, navigation}: Props) => {
 
   return (
     <View style={styles.container}>
-      <TouchableOpacity
-        style={styles.button}
-        onPress={() =>
-          navigation.navigate('PrescriptionScreen', {
-            userInfo: userInfo,
-          })
-        }>
-        <Icon source="plus" size={24} color="black" />
-      </TouchableOpacity>
       <GiftedChat
         messages={messages}
         onSend={onSend}
         user={{
           _id: 1,
         }}
+
         renderBubble={renderBubble}
         alwaysShowSend
         renderSend={renderSend}
@@ -114,6 +127,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
   },
+  input: {
+    flex: 1,
+    marginLeft: 10,
+    fontSize: 16,
+  },
+
+  
   button: {
     position: 'absolute',
     top: 10,
