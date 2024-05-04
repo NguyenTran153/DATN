@@ -11,9 +11,13 @@ const StoreNavigator = () => {
     <Stacks.Navigator>
       <Stacks.Screen name="StoreScreen" component={StoreScreen} />
       <Stacks.Screen name="ProductScreen" component={ProductScreen} />
-      <Stacks.Screen name="CartScreen" component={CartScreen}  options={{
+      <Stacks.Screen
+        name="CartScreen"
+        component={CartScreen}
+        options={{
           title: 'Giỏ hàng',
-        }}/>
+        }}
+      />
     </Stacks.Navigator>
   );
 };

@@ -4,6 +4,7 @@ import {
   FlatList,
   StatusBar,
   SafeAreaView,
+  TouchableOpacity,
 } from 'react-native';
 import {useState} from 'react';
 import {
@@ -241,7 +242,15 @@ const StoreScreen = ({navigation}: {navigation: any}) => {
             }}
             data={fakeData}
             renderItem={({item}) => (
-              <ProductCard data={item} navigation={navigation} />
+              <TouchableOpacity
+                onPress={() =>
+                  navigation.navigate('StoreNavigator', {
+                    screen: 'ProductScreen',
+                    params: {item: item},
+                  })
+                }>
+                <ProductCard data={item} navigation={navigation} />
+              </TouchableOpacity>
             )}
             keyExtractor={item => item.id.toString()}
             numColumns={2}

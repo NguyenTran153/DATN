@@ -2,11 +2,11 @@ import {StyleSheet, TouchableOpacity, View, Image} from 'react-native';
 import React from 'react';
 import {useTheme, Card, Text, Icon} from 'react-native-paper';
 
-const ProductCard = ({navigation, data}: {navigation: any; data: any}) => {
+const ProductCard = ({data, navigation, route}: any) => {
   const theme = useTheme();
 
   return (
-    <TouchableOpacity style={styles.container}>
+    <View style={styles.container}>
       <Card style={styles.cardContainer} mode="contained">
         <Card.Cover
           style={styles.img}
@@ -26,7 +26,7 @@ const ProductCard = ({navigation, data}: {navigation: any; data: any}) => {
           </Text>
         </View>
       </Card>
-    </TouchableOpacity>
+    </View>
   );
 };
 
