@@ -20,9 +20,7 @@ const ChatNavigator = () => {
       <Tabs.Screen
         name="ChatScreen"
         component={ChatScreen}
-        options={{
-          title: 'Tin nhắn',
-        }}
+        options={{headerShown: false}}
       />
       <Tabs.Screen
         name="BookingScreen"

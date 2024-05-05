@@ -1,6 +1,6 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Text, Icon, useTheme, IconButton } from 'react-native-paper';
+import { Text, Icon, useTheme, IconButton, Appbar, Menu } from 'react-native-paper';
 import { Bubble, GiftedChat, IMessage, Send } from 'react-native-gifted-chat';
 import { NativeStackScreenProps } from '@react-navigation/native-stack';
 
@@ -51,33 +51,13 @@ const ChatScreen = ({ route, navigation }: Props, { navigation1 }: { navigation1
   const renderSend = (props: any) => {
     return (
       <Send {...props}>
-        <View style={{ flexDirection: 'row', alignItems: 'center'}}>
-          <TouchableOpacity
-          
-            onPress={() =>
-              navigation.navigate('PrescriptionScreen', {
-                userInfo: userInfo,
-              })
-            }>
-            <Icon source="plus" size={24} />
-          </TouchableOpacity>
-          <IconButton
-            icon="calendar"
-            size={24}
-            onPress={() =>
-              navigation.navigate('BookingScreen',
-                {
-                  route: '',
-                }
-              )
-            }
-          />
+        <View>
           <Icon source="send-circle" size={32} />
         </View>
       </Send>
     );
   };
-  
+
   const renderBubble = (props: any) => {
     return (
       <Bubble
@@ -99,9 +79,52 @@ const ChatScreen = ({ route, navigation }: Props, { navigation1 }: { navigation1
   const scrollToBottomComponent = () => {
     return <Icon source="angle-double-down" size={22} />;
   };
+  const [menuVisible, setMenuVisible] = React.useState(false);
 
+  const openMenu = () => setMenuVisible(true);
+
+  const closeMenu = () => setMenuVisible(false);
+
+  const handleMenuItemPress = (route: any) => {
+    navigation.navigate(route);
+    closeMenu();
+  };
   return (
     <View style={styles.container}>
+      <Appbar.Header>
+        <Appbar.BackAction onPress={() =>
+          navigation.navigate('MessagesScreen',
+          )
+        } />
+        <Appbar.Content title="Tin nhắn" />
+        <Menu
+          visible={menuVisible}
+          onDismiss={closeMenu}
+          anchor={<Appbar.Action icon="menu" onPress={openMenu} />}
+          contentStyle={{ marginTop: 40, backgroundColor:theme.colors.background }}
+        >
+          <Menu.Item
+            onPress={() => {
+              navigation.navigate('PrescriptionScreen', {
+                userInfo: userInfo,
+              }), closeMenu()
+            }}
+            title="Kê đơn thuốc"
+          />
+          <Menu.Item
+            onPress={() => {
+              navigation.navigate('BookingScreen',
+                {
+                  route: '',
+                }
+              )
+              closeMenu()
+            }}
+            title="Tạo lịch hẹn"
+          />
+        </Menu>
+        <Appbar.Action icon="phone" onPress={()=>{}} />
+      </Appbar.Header>
       <GiftedChat
         messages={messages}
         onSend={onSend}
@@ -133,7 +156,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
 
-  
+
   button: {
     position: 'absolute',
     top: 10,
