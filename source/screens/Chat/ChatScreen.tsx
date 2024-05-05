@@ -97,6 +97,7 @@ const ChatScreen = ({ route, navigation }: Props, { navigation1 }: { navigation1
           )
         } />
         <Appbar.Content title="Tin nhắn" />
+        <Appbar.Action icon="phone" onPress={()=>{}} />
         <Menu
           visible={menuVisible}
           onDismiss={closeMenu}
@@ -123,7 +124,6 @@ const ChatScreen = ({ route, navigation }: Props, { navigation1 }: { navigation1
             title="Tạo lịch hẹn"
           />
         </Menu>
-        <Appbar.Action icon="phone" onPress={()=>{}} />
       </Appbar.Header>
       <GiftedChat
         messages={messages}
