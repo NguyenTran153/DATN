@@ -10,7 +10,7 @@ import {store} from './source/redux/store';
 const App = () => {
   const colorScheme = useColorScheme();
 
-  let primary = '#1976d2';
+  let primary = '#1626df';
 
   const systemSchemes: any = {
     light: {

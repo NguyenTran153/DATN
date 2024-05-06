@@ -182,7 +182,7 @@ const StoreScreen = ({navigation}: {navigation: any}) => {
         barStyle="dark-content"
       />
 
-      <View style={{gap: 10, flexDirection: 'row'}}>
+      <View style={styles.topbar}>
         <Searchbar
           style={styles.searchBar}
           placeholder="Tìm đơn thuốc"
@@ -197,20 +197,7 @@ const StoreScreen = ({navigation}: {navigation: any}) => {
           }
         />
       </View>
-      <View style={{flex: 1}}>
-        {/* <View style={styles.listContainer}>
-          <View style={styles.title}>
-            <Text variant="titleLarge">Danh mục</Text>
-            <Text style={{color: theme.colors.primary}}>Thêm nữa...</Text>
-          </View>
-          <FlatList
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            data={fakeCategory}
-            renderItem={({item}) => <CategoryCard item={item} />}
-            keyExtractor={item => item.id.toString()}
-          />
-        </View> */}
+      <View style={{flex: 1, padding: 10}}>
         <View style={styles.listContainer}>
           <View style={styles.title}>
             <Text variant="titleLarge">Danh sách sản phẩm</Text>
@@ -266,9 +253,17 @@ export default StoreScreen;
 
 const styles = StyleSheet.create({
   container: {
+    width: '100%',
     flex: 1,
-    padding: 10,
+    alignItems: 'center',
     gap: 10,
+  },
+  topbar: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginVertical: 15,
+    width: '100%',
   },
   searchBar: {
     width: '80%',
@@ -280,7 +275,7 @@ const styles = StyleSheet.create({
     justifyContent: 'space-between',
   },
   listContainer: {
-    margin: 10,
+    marginHorizontal: 10,
     gap: 10,
     flex: 1,
   },

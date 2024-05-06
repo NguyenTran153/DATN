@@ -99,28 +99,36 @@ const MessagesScreen = ({navigation}: {navigation: any}) => {
           onChangeText={setSearchDoctor}
           value={searchDoctor}
         />
-        <IconButton
-          icon="calendar"
-          size={24}
-          onPress={() =>
-            navigation.navigate('ChatNavigator', {
-              screen: 'BookingScreen',
-              params: {
-                userId: '123',
-              },
-            })
-          }
-        />
-        <IconButton
-          icon="bell"
-          size={24}
-          onPress={() => {
-            navigation.navigate('ChatNavigator', {
-              screen: 'NotificationScreen',
-              params: {},
-            });
-          }}
-        />
+        <View
+          style={{
+            width: '20%',
+            flexDirection: 'row',
+            justifyContent: 'space-around',
+            paddingRight: 10,
+          }}>
+          <IconButton
+            icon="calendar"
+            size={24}
+            onPress={() =>
+              navigation.navigate('ChatNavigator', {
+                screen: 'BookingScreen',
+                params: {
+                  userId: '123',
+                },
+              })
+            }
+          />
+          <IconButton
+            icon="bell"
+            size={24}
+            onPress={() => {
+              navigation.navigate('ChatNavigator', {
+                screen: 'NotificationScreen',
+                params: {},
+              });
+            }}
+          />
+        </View>
       </View>
       <FlatList
         data={filteredMessages}
@@ -168,10 +176,9 @@ const styles = StyleSheet.create({
   },
   topbar: {
     flexDirection: 'row',
-    justifyContent: 'space-around',
+    justifyContent: 'space-between',
     alignItems: 'center',
     marginVertical: 15,
-    marginHorizontal: 10,
     width: '100%',
   },
   searchBar: {

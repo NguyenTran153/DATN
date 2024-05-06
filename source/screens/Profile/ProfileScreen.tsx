@@ -1,20 +1,25 @@
-import { Text, Button, List } from 'react-native-paper';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { StyleSheet, View, Image, ScrollView } from 'react-native';
-import { Screen } from 'react-native-screens';
+import {useTheme, Text, Button, List} from 'react-native-paper';
+import {SafeAreaView} from 'react-native-safe-area-context';
+import {StyleSheet, View, Image, ScrollView} from 'react-native';
+
 const ProfileScreen = ({navigation}: {navigation: any}) => {
-  
+  const theme = useTheme();
+
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView
+      style={[styles.container, {backgroundColor: theme.colors.background}]}>
       <View style={styles.profile}>
-        <Image
-          source={require('../../asset/7677205.jpg')}
-          style={styles.img}
-        />
+        <Image source={require('../../asset/7677205.jpg')} style={styles.img} />
         <View style={styles.patientInfo}>
           <View style={styles.editContainer}>
             <Text style={styles.patientName}>Patient name</Text>
-            <Button icon='pencil' mode='text' onPress={() => { }} contentStyle={{ flexDirection: 'row-reverse' }}>edit</Button>
+            <Button
+              icon="pencil"
+              mode="text"
+              onPress={() => {}}
+              contentStyle={{flexDirection: 'row-reverse'}}>
+              edit
+            </Button>
           </View>
           <Text>Date of birth: 1991/02/01</Text>
           <Text>Gender: Female</Text>
@@ -26,51 +31,68 @@ const ProfileScreen = ({navigation}: {navigation: any}) => {
           <List.Item
             title="Visit History"
             description="Patient's recent visits with a healthcare provider"
-            left={() => <List.Icon style={styles.settingCenter} icon="hospital-building" />}
+            left={() => (
+              <List.Icon
+                style={styles.settingCenter}
+                icon="hospital-building"
+              />
+            )}
             right={() => <List.Icon icon="chevron-right" />}
             onPress={() => {}}
           />
           <List.Item
             title="Medical History"
             description="Patient's medical history"
-            left={() => <List.Icon style={styles.settingCenter} icon="stethoscope" />}
+            left={() => (
+              <List.Icon style={styles.settingCenter} icon="stethoscope" />
+            )}
             right={() => <List.Icon icon="chevron-right" />}
             onPress={() => {}}
           />
           <List.Item
             title="Complaint"
             description="Patient complaint or medical concern"
-            left={() => <List.Icon style={styles.settingCenter} icon="comment-question" />}
+            left={() => (
+              <List.Icon style={styles.settingCenter} icon="comment-question" />
+            )}
             right={() => <List.Icon icon="chevron-right" />}
             onPress={() => {}}
           />
           <List.Item
             title="Examination"
             description="Physical examinations performed over the past visits"
-            left={() => <List.Icon style={styles.settingCenter} icon="test-tube" />}
+            left={() => (
+              <List.Icon style={styles.settingCenter} icon="test-tube" />
+            )}
             right={() => <List.Icon icon="chevron-right" />}
             onPress={() => {}}
           />
-           <List.Item
+          <List.Item
             title="Medicine"
             description="Medicine prescribed to the patient"
             left={() => <List.Icon style={styles.settingCenter} icon="pill" />}
             right={() => <List.Icon icon="chevron-right" />}
             onPress={() => {}}
           />
-           <List.Item
+          <List.Item
             title="Doctor"
             description="Doctor registration"
-            left={() => <List.Icon style = {styles.settingCenter} icon="doctor" />}
+            left={() => (
+              <List.Icon style={styles.settingCenter} icon="doctor" />
+            )}
             right={() => <List.Icon icon="chevron-right" />}
             onPress={() => {}}
           />
           <List.Item
             title="Invitation link"
             description="Use QR code to add friend"
-            left={() => <List.Icon style = {styles.settingCenter} icon="qrcode" />}
+            left={() => (
+              <List.Icon style={styles.settingCenter} icon="qrcode" />
+            )}
             right={() => <List.Icon icon="chevron-right" />}
-            onPress={() => navigation.navigate('ProfileNavigator', {screen: 'QRScreen'})}
+            onPress={() =>
+              navigation.navigate('ProfileNavigator', {screen: 'QRScreen'})
+            }
           />
         </List.Section>
       </ScrollView>
@@ -89,18 +111,18 @@ const styles = StyleSheet.create({
     paddingVertical: 14,
     flexDirection: 'row',
     paddingHorizontal: 24,
-    textAlign: 'center'
+    textAlign: 'center',
   },
   settingCenter: {
-    paddingLeft:20,
+    paddingLeft: 20,
   },
   editContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   patientName: {
     fontSize: 18,
-    fontWeight: '800'
+    fontWeight: '800',
   },
   img: {
     width: 80,
@@ -110,6 +132,5 @@ const styles = StyleSheet.create({
   },
   patientInfo: {
     paddingHorizontal: 10,
-  }
-
+  },
 });

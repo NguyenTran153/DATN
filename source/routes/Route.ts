@@ -7,13 +7,14 @@ export type RootRoutes = {
   ChatNavigator: NavigatorScreenParams<ChatRoutes>;
   StoreNavigator: NavigatorScreenParams<StoreRoutes>;
   ProfileNavigator: NavigatorScreenParams<ProfileRoutes>;
+  DoctorNavigator: NavigatorScreenParams<DoctorRoutes>;
 };
 
 export type BottomRoutes = {
   StoreScreen: undefined;
   MessagesScreen: undefined;
   ProfileScreen: undefined;
-  HistoryScreen: any;
+  DoctorListScreen: any;
 };
 
 export type ChatRoutes = {
@@ -33,4 +34,9 @@ export type StoreRoutes = {
 export type ProfileRoutes = {
   ProfileScreen: any;
   QRScreen: any;
+};
+
+export type DoctorRoutes = {
+  DoctorListScreen: any;
+  ConnectDoctorScreen: any;
 };

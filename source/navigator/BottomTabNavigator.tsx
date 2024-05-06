@@ -1,12 +1,11 @@
-import Icon from 'react-native-vector-icons/FontAwesome';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
-import {useTheme} from 'react-native-paper';
+import {useTheme, Icon} from 'react-native-paper';
 
 import type {BottomRoutes} from '../Routes/Route';
 import MessagesScreen from '../screens/Chat/MessagesScreen';
 import StoreScreen from '../screens/Store/StoreScreen';
 import ProfileScreen from '../screens/Profile/ProfileScreen';
-import HistoryScreen from '../screens/History/HistoryScreen';
+import DoctorListScreen from '../screens/Doctor/DoctorListScreen';
 
 const BottomTabs = createBottomTabNavigator<BottomRoutes>();
 
@@ -21,10 +20,24 @@ const BottomTabNavigator = () => {
         name="MessagesScreen"
         component={MessagesScreen}
         options={{
-          tabBarLabel: 'Message',
+          tabBarLabel: 'Tin nhắn',
           tabBarIcon: ({focused}: any) => (
             <Icon
-              name="home"
+              source="home"
+              color={focused ? theme.colors.primary : theme.colors.outline}
+              size={24}
+            />
+          ),
+        }}
+      />
+      <BottomTabs.Screen
+        name="DoctorListScreen"
+        component={DoctorListScreen}
+        options={{
+          tabBarLabel: 'Bác sĩ',
+          tabBarIcon: ({focused}: any) => (
+            <Icon
+              source="doctor"
               color={focused ? theme.colors.primary : theme.colors.outline}
               size={24}
             />
@@ -35,24 +48,10 @@ const BottomTabNavigator = () => {
         name="StoreScreen"
         component={StoreScreen}
         options={{
-          tabBarLabel: 'Store',
+          tabBarLabel: 'Cửa hàng',
           tabBarIcon: ({focused}: any) => (
             <Icon
-              name="shopping-bag"
-              color={focused ? theme.colors.primary : theme.colors.outline}
-              size={24}
-            />
-          ),
-        }}
-      />
-      <BottomTabs.Screen
-        name="HistoryScreen"
-        component={HistoryScreen}
-        options={{
-          tabBarLabel: 'History',
-          tabBarIcon: ({focused}: any) => (
-            <Icon
-              name="history"
+              source="store"
               color={focused ? theme.colors.primary : theme.colors.outline}
               size={24}
             />
@@ -63,10 +62,10 @@ const BottomTabNavigator = () => {
         name="ProfileScreen"
         component={ProfileScreen}
         options={{
-          tabBarLabel: 'Profile',
+          tabBarLabel: 'Cá nhân',
           tabBarIcon: ({focused}: any) => (
             <Icon
-              name="user"
+              source="account"
               color={focused ? theme.colors.primary : theme.colors.outline}
               size={24}
             />

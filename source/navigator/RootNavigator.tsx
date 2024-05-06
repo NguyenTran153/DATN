@@ -7,6 +7,7 @@ import RegisterScreen from '../screens/Authorization/RegisterScreen';
 import BottomTabNavigator from './BottomTabNavigator';
 import StoreNavigator from './StoreNavigator';
 import ProfileNavigator from './ProfileNavigator';
+import DoctorNavigator from './DoctorNavigator';
 
 const Tabs = createNativeStackNavigator<RootRoutes>();
 
@@ -21,6 +22,7 @@ const RootNavigator = () => {
       <Tabs.Screen name="ChatNavigator" component={ChatNavigator} />
       <Tabs.Screen name="StoreNavigator" component={StoreNavigator} />
       <Tabs.Screen name="ProfileNavigator" component={ProfileNavigator} />
+      <Tabs.Screen name="DoctorNavigator" component={DoctorNavigator} />
     </Tabs.Navigator>
   );
 };
