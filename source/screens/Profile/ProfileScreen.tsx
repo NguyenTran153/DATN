@@ -18,19 +18,19 @@ const ProfileScreen = ({navigation}: {navigation: any}) => {
               mode="text"
               onPress={() => {}}
               contentStyle={{flexDirection: 'row-reverse'}}>
-              edit
+              Chỉnh sửa
             </Button>
           </View>
-          <Text>Date of birth: 1991/02/01</Text>
-          <Text>Gender: Female</Text>
-          <Text>Address: 68894 Caleigh Trafficway Suite 387</Text>
+          <Text>Ngày sinh: 1991/02/01</Text>
+          <Text>Giới tính: Female</Text>
+          <Text>Địa chỉ: 68894 Caleigh Trafficway Suite 387</Text>
         </View>
       </View>
       <ScrollView>
         <List.Section>
           <List.Item
-            title="Visit History"
-            description="Patient's recent visits with a healthcare provider"
+            title="Lịch sử Khám Bệnh"
+            description="Những lần khám bệnh gần đây của bệnh nhân"
             left={() => (
               <List.Icon
                 style={styles.settingCenter}
@@ -41,8 +41,8 @@ const ProfileScreen = ({navigation}: {navigation: any}) => {
             onPress={() => {}}
           />
           <List.Item
-            title="Medical History"
-            description="Patient's medical history"
+            title="Tiền Sử Bệnh Án"
+            description="Bệnh án của bệnh nhân"
             left={() => (
               <List.Icon style={styles.settingCenter} icon="stethoscope" />
             )}
@@ -50,8 +50,8 @@ const ProfileScreen = ({navigation}: {navigation: any}) => {
             onPress={() => {}}
           />
           <List.Item
-            title="Complaint"
-            description="Patient complaint or medical concern"
+            title="Phàn Nàn"
+            description="Triệu chứng hoặc vấn đề sức khỏe của bệnh nhân"
             left={() => (
               <List.Icon style={styles.settingCenter} icon="comment-question" />
             )}
@@ -59,8 +59,8 @@ const ProfileScreen = ({navigation}: {navigation: any}) => {
             onPress={() => {}}
           />
           <List.Item
-            title="Examination"
-            description="Physical examinations performed over the past visits"
+            title="Khám Lâm Sàng"
+            description="Các đợt khám sức khỏe trong quá khứ"
             left={() => (
               <List.Icon style={styles.settingCenter} icon="test-tube" />
             )}
@@ -68,15 +68,15 @@ const ProfileScreen = ({navigation}: {navigation: any}) => {
             onPress={() => {}}
           />
           <List.Item
-            title="Medicine"
-            description="Medicine prescribed to the patient"
+            title="Thuốc"
+            description="Thuốc đã được kê đơn cho bệnh nhân"
             left={() => <List.Icon style={styles.settingCenter} icon="pill" />}
             right={() => <List.Icon icon="chevron-right" />}
             onPress={() => {}}
           />
           <List.Item
-            title="Doctor"
-            description="Doctor registration"
+            title="Đăng Ký Bác Sĩ"
+            description="Đăng ký lịch khám với bác sĩ"
             left={() => (
               <List.Icon style={styles.settingCenter} icon="doctor" />
             )}
@@ -84,8 +84,8 @@ const ProfileScreen = ({navigation}: {navigation: any}) => {
             onPress={() => {}}
           />
           <List.Item
-            title="Invitation link"
-            description="Use QR code to add friend"
+            title="Liên kết lời mời"
+            description="Sử dụng mã QR để thêm bạn bè"
             left={() => (
               <List.Icon style={styles.settingCenter} icon="qrcode" />
             )}
