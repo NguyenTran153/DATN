@@ -1,16 +1,18 @@
-import React, { useCallback, useEffect, useState } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Text, Icon, useTheme, IconButton, Appbar, Menu } from 'react-native-paper';
-import { Bubble, GiftedChat, IMessage, Send } from 'react-native-gifted-chat';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
+import React, {useCallback, useEffect, useState} from 'react';
+import {StyleSheet, TouchableOpacity, View} from 'react-native';
+import {
+  Text,
+  Icon,
+  useTheme,
+  IconButton,
+  Appbar,
+  Menu,
+} from 'react-native-paper';
+import {Bubble, GiftedChat, IMessage, Send} from 'react-native-gifted-chat';
 
-import { ChatRoutes } from '../../Routes/Route';
-import { RootRoutes } from '../../Routes/Route';
-import { TextInput } from 'react-native';
+import {ChatRoutes} from '../../Routes/Route';
 
-type Props = NativeStackScreenProps<ChatRoutes, 'ChatScreen', 'BookingScreen'>;
-
-const ChatScreen = ({ route, navigation }: Props, { navigation1 }: { navigation1: any }) => {
+const ChatScreen = ({route, navigation}: any) => {
   const theme = useTheme();
 
   const [messages, setMessages] = useState<IMessage[]>([]);
@@ -92,34 +94,39 @@ const ChatScreen = ({ route, navigation }: Props, { navigation1 }: { navigation1
   return (
     <View style={styles.container}>
       <Appbar.Header>
-        <Appbar.BackAction onPress={() =>
-          navigation.navigate('MessagesScreen',
-          )
-        } />
+        <Appbar.BackAction onPress={() => navigation.goBack()} />
         <Appbar.Content title="Tin nhắn" />
-        <Appbar.Action icon="phone" onPress={()=>{}} />
+        <Appbar.Action
+          icon="phone"
+          onPress={() => {
+            navigation.navigate('CallingScreen', {
+              userInfo: userInfo,
+            });
+          }}
+        />
         <Menu
           visible={menuVisible}
           onDismiss={closeMenu}
           anchor={<Appbar.Action icon="menu" onPress={openMenu} />}
-          contentStyle={{ marginTop: 40, backgroundColor:theme.colors.background }}
-        >
+          contentStyle={{
+            marginTop: 40,
+            backgroundColor: theme.colors.background,
+          }}>
           <Menu.Item
             onPress={() => {
               navigation.navigate('PrescriptionScreen', {
                 userInfo: userInfo,
-              }), closeMenu()
+              }),
+                closeMenu();
             }}
             title="Kê đơn thuốc"
           />
           <Menu.Item
             onPress={() => {
-              navigation.navigate('BookingScreen',
-                {
-                  route: '',
-                }
-              )
-              closeMenu()
+              navigation.navigate('BookingScreen', {
+                route: '',
+              });
+              closeMenu();
             }}
             title="Tạo lịch hẹn"
           />
@@ -131,7 +138,6 @@ const ChatScreen = ({ route, navigation }: Props, { navigation1 }: { navigation1
         user={{
           _id: 1,
         }}
-
         renderBubble={renderBubble}
         alwaysShowSend
         renderSend={renderSend}
@@ -155,7 +161,6 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     fontSize: 16,
   },
-
 
   button: {
     position: 'absolute',

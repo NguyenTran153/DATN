@@ -23,6 +23,7 @@ export type ChatRoutes = {
   BookingScreen: {route: any};
   PrescriptionScreen: {userInfo: any};
   NotificationScreen: any;
+  CallingScreen: any;
 };
 
 export type StoreRoutes = {
