@@ -164,7 +164,7 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
                     form.email === account.email &&
                     form.password === account.password
                   ) {
-                    navigation.navigate('HomeScreen');
+                    navigation.navigate('BottomTabNavigator');
                   } else {
                     Alert.alert('Wrong email or password');
                   }
