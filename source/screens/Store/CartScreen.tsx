@@ -1,65 +1,19 @@
-import {
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  View,
-  TouchableOpacity,
-} from 'react-native';
+import {ScrollView, StatusBar, StyleSheet, View} from 'react-native';
 import {useTheme, Text, Button} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
 import LottieView from 'lottie-react-native';
+import {clearOrder} from '../../redux/slices/medicalOrderSlice';
 
 import CartItem from '../../components/CartItem';
 import Horizon from '../../components/Horizon';
 
 // Fake
-const CartList: any[] = [
-  {
-    id: '1',
-    name: 'T-shirt',
-    category: 'Clothing',
-    image: require('../../asset/7677205.jpg'),
-    price: 19.99,
-    quantity: 2,
-  },
-  {
-    id: '2',
-    name: 'Jeans',
-    category: 'Clothing',
-    image: require('../../asset/7677205.jpg'),
-    price: 39.99,
-    quantity: 1,
-  },
-  {
-    id: '3',
-    name: 'Book',
-    category: 'Books',
-    image: require('../../asset/7677205.jpg'),
-    price: 15.99,
-    quantity: 3,
-  },
-  {
-    id: '4',
-    name: 'Laptop',
-    category: 'Electronics',
-    image: require('../../asset/7677205.jpg'),
-    price: 799.99,
-    quantity: 1,
-  },
-  {
-    id: '5',
-    name: 'Headphones',
-    category: 'Electronics',
-    image: require('../../asset/7677205.jpg'),
-    price: 99.99,
-    quantity: 1,
-  },
-];
 
 const CartScreen = ({navigation, route}: any) => {
   const theme = useTheme();
 
   const dispatch = useDispatch();
+  const cartData = useSelector((state: any) => state.medicalOrder);
 
   return (
     <View style={{flex: 1, backgroundColor: theme.colors.background}}>
@@ -69,7 +23,7 @@ const CartScreen = ({navigation, route}: any) => {
         contentContainerStyle={{flexGrow: 1}}>
         <View style={[styles.ScrollViewInnerView]}>
           <View style={{flex: 1}}>
-            {CartList.length === 0 ? (
+            {cartData.orderList.length === 0 ? (
               <View style={{flex: 1, justifyContent: 'center'}}>
                 <LottieView
                   style={{height: 300}}
@@ -85,16 +39,18 @@ const CartScreen = ({navigation, route}: any) => {
               <>
                 <View style={styles.headerTitle}>
                   <Text variant="bodyMedium">
-                    {CartList.length} đơn thuốc trong giỏ hàng
+                    {cartData.orderList.length} đơn thuốc trong giỏ hàng
                   </Text>
-                  <Text
-                    variant="titleMedium"
-                    style={{color: theme.colors.primary}}>
-                    Thêm nữa...
-                  </Text>
+                  <Button
+                    icon="basket-remove"
+                    mode="text"
+                    textColor={theme.colors.error}
+                    onPress={() => dispatch(clearOrder())}>
+                    Dọn hết
+                  </Button>
                 </View>
                 <View style={styles.ListItemContainer}>
-                  {CartList.map((data: any) => (
+                  {cartData.orderList.map((data: any) => (
                     <CartItem
                       key={data.id}
                       id={data.id}
@@ -111,17 +67,19 @@ const CartScreen = ({navigation, route}: any) => {
                     <Text variant="titleLarge">Tổng thanh toán</Text>
                     <View style={styles.paymentTextContainer}>
                       <Text variant="titleSmall">Tổng giá trị:</Text>
-                      <Text variant="titleSmall">70.000VNĐ</Text>
+                      <Text variant="titleSmall">{cartData.orderPrice}</Text>
                     </View>
                     <View style={styles.paymentTextContainer}>
                       <Text variant="titleSmall">Phí ship:</Text>
-                      <Text variant="titleSmall">30.000VNĐ</Text>
+                      <Text variant="titleSmall">0VNĐ</Text>
                     </View>
                     <Horizon />
                     <View
                       style={[styles.paymentTextContainer, {marginTop: 20}]}>
                       <Text variant="titleMedium">Tổng tiền:</Text>
-                      <Text variant="titleMedium">100.000VNĐ</Text>
+                      <Text variant="titleMedium">
+                        {cartData.orderPrice} VNĐ
+                      </Text>
                     </View>
                   </View>
 

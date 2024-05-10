@@ -10,8 +10,6 @@ import {
 } from 'react-native-paper';
 import {Bubble, GiftedChat, IMessage, Send} from 'react-native-gifted-chat';
 
-import {ChatRoutes} from '../../Routes/Route';
-
 const ChatScreen = ({route, navigation}: any) => {
   const theme = useTheme();
 

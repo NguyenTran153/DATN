@@ -14,9 +14,10 @@ import {
   SegmentedButtons,
   IconButton,
 } from 'react-native-paper';
+import {useDispatch} from 'react-redux';
 
+import {addToCart} from '../../redux/slices/medicalOrderSlice';
 import ProductCard from '../../components/ProductCard';
-import CategoryCard from '../../components/CategoryCard';
 
 const fakeCategory = [
   {
@@ -143,6 +144,7 @@ const fakeData = [
 ];
 const StoreScreen = ({navigation}: {navigation: any}) => {
   const theme = useTheme();
+  const dispatch = useDispatch();
 
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [value, setValue] = useState<string>('top');
@@ -236,7 +238,22 @@ const StoreScreen = ({navigation}: {navigation: any}) => {
                     params: {item: item},
                   })
                 }>
-                <ProductCard data={item} navigation={navigation} />
+                <ProductCard
+                  data={item}
+                  addToCart={() =>
+                    dispatch(
+                      addToCart({
+                        id: item.id,
+                        name: item.name,
+                        category: item.category,
+                        image: item.productImage,
+                        price: item.price,
+                        quantity: 1,
+                      }),
+                    )
+                  }
+                  navigation={navigation}
+                />
               </TouchableOpacity>
             )}
             keyExtractor={item => item.id.toString()}

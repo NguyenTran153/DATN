@@ -8,10 +8,15 @@ import {
 import React from 'react';
 import {Icon, Text, useTheme} from 'react-native-paper';
 import {TouchableOpacity} from 'react-native';
+import {useDispatch} from 'react-redux';
+
+import {addToCart} from '../../redux/slices/medicalOrderSlice';
 
 const ProductScreen = ({navigation, route}: any) => {
   const theme = useTheme();
   const {item} = route.params;
+
+  const dispatch = useDispatch();
 
   return (
     <View style={{flex: 1, backgroundColor: theme.colors.background}}>
@@ -37,7 +42,20 @@ const ProductScreen = ({navigation, route}: any) => {
               Giá tiền: {item.price}VNĐ
             </Text>
 
-            <TouchableOpacity style={{flexDirection: 'row'}}>
+            <TouchableOpacity
+              style={{flexDirection: 'row'}}
+              onPress={() => {
+                dispatch(
+                  addToCart({
+                    id: item.id,
+                    name: item.name,
+                    category: item.category,
+                    image: item.image,
+                    price: item.price,
+                    quantity: 1,
+                  }),
+                );
+              }}>
               <Icon
                 source={'plus-box-outline'}
                 size={24}

@@ -1,4 +1,4 @@
-import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
+import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import {useTheme, Icon} from 'react-native-paper';
 
 import type {BottomRoutes} from '../Routes/Route';
@@ -7,15 +7,13 @@ import StoreScreen from '../screens/Store/StoreScreen';
 import ProfileScreen from '../screens/Profile/ProfileScreen';
 import DoctorListScreen from '../screens/Doctor/DoctorListScreen';
 
-const BottomTabs = createBottomTabNavigator<BottomRoutes>();
+const BottomTabs = createMaterialBottomTabNavigator<BottomRoutes>();
 
 const BottomTabNavigator = () => {
   const theme = useTheme();
 
   return (
-    <BottomTabs.Navigator
-      initialRouteName="MessagesScreen"
-      screenOptions={{headerShown: false}}>
+    <BottomTabs.Navigator initialRouteName="MessagesScreen">
       <BottomTabs.Screen
         name="MessagesScreen"
         component={MessagesScreen}

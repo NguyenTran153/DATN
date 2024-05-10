@@ -1,20 +1,22 @@
 import {createSlice, PayloadAction} from '@reduxjs/toolkit';
 
 interface MedicalOrderItem {
-  id: string; // Unique identifier for the medicine
-  name: string; // Name of the medicine
-  price: number; // Price as a string for precision
-  quantity: number; // Quantity of the medicine
+  id: number;
+  name: string;
+  category: string;
+  image: any;
+  price: number;
+  quantity: number;
 }
 
 interface MedicalOrderState {
-  orderList: MedicalOrderItem[]; // List of ordered medicines
-  orderPrice: any; // Total price of the order
+  orderList: MedicalOrderItem[];
+  orderPrice: number;
 }
 
 const initialState: MedicalOrderState = {
   orderList: [],
-  orderPrice: '0.00',
+  orderPrice: 0,
 };
 
 export const medicalOrderSlice = createSlice({
@@ -23,61 +25,63 @@ export const medicalOrderSlice = createSlice({
   reducers: {
     addToCart: (state, action: PayloadAction<MedicalOrderItem>) => {
       const newItem = action.payload;
-      const existingItemIndex = state.orderList.findIndex(
-        item => item.id === newItem.id,
-      );
+      const existingItem = state.orderList.find(item => item.id === newItem.id);
 
-      if (existingItemIndex !== -1) {
-        // Item already exists, update quantity
-        state.orderList[existingItemIndex].quantity += newItem.quantity;
+      if (existingItem) {
+        existingItem.quantity += newItem.quantity;
       } else {
-        // New item, add to the list
         state.orderList.push(newItem);
       }
 
       // Recalculate order price
-    },
-
-    removeFromCart: (state, action: PayloadAction<string>) => {
-      const itemId = action.payload;
-      const updatedOrderList = state.orderList.filter(
-        item => item.id !== itemId,
-      );
-      state.orderList = updatedOrderList;
-
-      // Recalculate order price
-    },
-
-    updateQuantity: (
-      state,
-      action: PayloadAction<{id: string; quantity: number}>,
-    ) => {
-      const {id, quantity} = action.payload;
-      const updatedOrderList = state.orderList.map(item => {
-        if (item.id === id) {
-          return {...item, quantity};
-        } else {
-          return item;
-        }
-      });
-      state.orderList = updatedOrderList;
-
-      // Recalculate order price
-    },
-
-    calculateOrderPrice: state => {
-      const totalOrderPrice = state.orderList.reduce((acc, item) => {
-        const itemTotalPrice = item.price * item.quantity; // No need for parseFloat
-        return acc + itemTotalPrice;
+      state.orderPrice = state.orderList.reduce((acc, item) => {
+        return acc + item.price * item.quantity;
       }, 0);
+    },
 
-      // Update the state directly
-      state.orderPrice = totalOrderPrice.toFixed(2);
+    removeFromCart: (state, action: PayloadAction<number>) => {
+      const itemId = action.payload;
+      const itemToRemove = state.orderList.find(item => item.id === itemId);
+
+      if (itemToRemove) {
+        state.orderList = state.orderList.filter(item => item.id !== itemId);
+      }
+
+      // Recalculate order price
+      state.orderPrice = state.orderList.reduce((acc, item) => {
+        return acc + item.price * item.quantity;
+      }, 0);
+    },
+
+    increaseQuantity: (state, action: PayloadAction<number>) => {
+      const itemId = action.payload;
+      const itemToUpdate = state.orderList.find(item => item.id === itemId);
+
+      if (itemToUpdate) {
+        itemToUpdate.quantity++;
+      }
+
+      state.orderPrice = state.orderList.reduce((acc, item) => {
+        return acc + item.price * item.quantity;
+      }, 0);
+    },
+
+    decreaseQuantity: (state, action: PayloadAction<number>) => {
+      const itemId = action.payload;
+      const itemToUpdate = state.orderList.find(item => item.id === itemId);
+
+      if (itemToUpdate && itemToUpdate.quantity > 1) {
+        itemToUpdate.quantity--;
+      }
+
+      state.orderPrice = state.orderList.reduce((acc, item) => {
+        return acc + item.price * item.quantity;
+      }, 0);
     },
 
     clearOrder: state => {
       state.orderList = [];
-      state.orderPrice = '0.00';
+      state.orderPrice = 0;
     },
   },
 });
@@ -85,9 +89,9 @@ export const medicalOrderSlice = createSlice({
 export const {
   addToCart,
   removeFromCart,
-  updateQuantity,
-  calculateOrderPrice,
   clearOrder,
+  increaseQuantity,
+  decreaseQuantity,
 } = medicalOrderSlice.actions;
 
 export default medicalOrderSlice.reducer;

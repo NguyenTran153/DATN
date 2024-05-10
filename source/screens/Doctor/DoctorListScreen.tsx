@@ -39,6 +39,20 @@ const doctors = [
   // ... Thêm dữ liệu bác sĩ
 ];
 
+const fakeData = {
+  id: '2',
+  userName: 'John Doe',
+  userImg: require('../../asset/7677205.jpg'),
+  messageTime: '2 hours ago',
+  messageText:
+    'Hey there, this is my test for a post of my social app in React Native.',
+  Gender: 'Nam',
+  Age: '34',
+  Address: '234 Main Street, City, Country',
+  Height: 179,
+  Weight: 76,
+};
+
 const DoctorListScreen = ({navigation}: {navigation: any}) => {
   const theme = useTheme();
   const [searchDoctor, setSearchDoctor] = useState<string>('');
@@ -111,12 +125,22 @@ const DoctorListScreen = ({navigation}: {navigation: any}) => {
                         <IconButton
                           icon={'chat'}
                           size={30}
-                          onPress={() => {}}
+                          onPress={() => {
+                            navigation.navigate('ChatNavigator', {
+                              screen: 'ChatScreen',
+                              params: {userId: fakeData.id, userInfo: fakeData},
+                            });
+                          }}
                         />
                         <IconButton
                           icon={'video'}
                           size={30}
-                          onPress={() => {}}
+                          onPress={() => {
+                            navigation.navigate('ChatNavigator', {
+                              screen: 'CallingScreen',
+                              params: {userInfo: fakeData},
+                            });
+                          }}
                         />
                       </View>
                     </>

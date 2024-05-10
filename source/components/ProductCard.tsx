@@ -1,8 +1,8 @@
 import {StyleSheet, TouchableOpacity, View, Image} from 'react-native';
 import React from 'react';
-import {useTheme, Card, Text, Icon} from 'react-native-paper';
+import {useTheme, Card, Text, IconButton} from 'react-native-paper';
 
-const ProductCard = ({data, navigation, route}: any) => {
+const ProductCard = ({data, addToCart, navigation, route}: any) => {
   const theme = useTheme();
 
   return (
@@ -12,18 +12,27 @@ const ProductCard = ({data, navigation, route}: any) => {
           style={styles.img}
           source={require('../asset/7677205.jpg')}
         />
-        <View style={styles.textContainer}>
-          <Text style={{flex: 1}} variant="titleMedium" ellipsizeMode="tail">
-            {data.name}
-          </Text>
-          <Text style={{flex: 1}} variant="titleSmall">
-            {data.category}
-          </Text>
-          <Text
-            style={{flex: 1, color: theme.colors.secondary, fontWeight: 'bold'}}
-            variant="titleSmall">
-            {data.price} VNĐ
-          </Text>
+        <View style={{flexDirection: 'row', flex: 1, flexWrap: 'wrap'}}>
+          <View style={styles.textContainer}>
+            <Text style={{flex: 1}} variant="titleMedium" ellipsizeMode="tail">
+              {data.name}
+            </Text>
+            <Text style={{flex: 1}} variant="titleSmall">
+              {data.category}
+            </Text>
+            <Text
+              style={{
+                flex: 1,
+                color: theme.colors.secondary,
+                fontWeight: 'bold',
+              }}
+              variant="titleSmall">
+              {data.price} VNĐ
+            </Text>
+          </View>
+          <View style={{alignItems: 'center', justifyContent: 'center'}}>
+            <IconButton icon="plus-box" size={36} onPress={addToCart} />
+          </View>
         </View>
       </Card>
     </View>

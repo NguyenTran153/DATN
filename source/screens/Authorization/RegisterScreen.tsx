@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import {useTheme} from 'react-native-paper';
-const RegisterScreen = () => {
+const RegisterScreen = ({navigation}: any) => {
   const theme = useTheme();
   const [form, setForm] = useState({
     email: '',
@@ -112,7 +112,7 @@ const RegisterScreen = () => {
         </View>
         <View style={styles.form}>
           <View style={styles.input}>
-            <Text style={styles.inputLabel}>Email address</Text>
+            <Text style={styles.inputLabel}>Email</Text>
             <TextInput
               id="email"
               style={styles.inputControl}
@@ -120,31 +120,31 @@ const RegisterScreen = () => {
               autoCorrect={false}
               keyboardType="email-address"
               value={form.email}
-              placeholder="email@gmail.com"
+              placeholder="Điền email"
               placeholderTextColor={theme.colors.secondary}
               onChangeText={email => setForm({...form, email})}
             />
           </View>
           <View style={styles.input}>
-            <Text style={styles.inputLabel}>Password</Text>
+            <Text style={styles.inputLabel}>Mật khẩu</Text>
             <TextInput
               id="password"
               style={styles.inputControl}
               secureTextEntry
               value={form.password}
-              placeholder="Password"
+              placeholder="Điền mật khẩu"
               placeholderTextColor={theme.colors.secondary}
               onChangeText={password => setForm({...form, password})}
             />
           </View>
           <View style={styles.input}>
-            <Text style={styles.inputLabel}>Confirm Password</Text>
+            <Text style={styles.inputLabel}>Xác nhận mật khẩu</Text>
             <TextInput
               id="confirm_password"
               style={styles.inputControl}
               secureTextEntry
               value={form.confirmpassword}
-              placeholder="Confirm password"
+              placeholder="Điền lại mật khẩu"
               placeholderTextColor={theme.colors.secondary}
               onChangeText={confirmpassword =>
                 setForm({...form, confirmpassword})
@@ -166,8 +166,23 @@ const RegisterScreen = () => {
                 }
               }}>
               <View style={styles.btn}>
-                <Text style={styles.btnText}>Sign up</Text>
+                <Text style={styles.btnText}>Đăng ký</Text>
               </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={{marginTop: 'auto'}}
+              onPress={() => navigation.goBack()}>
+              <Text
+                style={[styles.formFooter, {color: theme.colors.secondary}]}>
+                Đã có tài khoản?
+                <Text
+                  style={{
+                    textDecorationLine: 'underline',
+                    color: theme.colors.primary,
+                  }}>
+                  Đăng nhập
+                </Text>
+              </Text>
             </TouchableOpacity>
           </View>
         </View>

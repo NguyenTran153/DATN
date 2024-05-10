@@ -3,19 +3,12 @@ import React, {useState} from 'react';
 import AgoraUIKit from 'agora-rn-uikit';
 
 const CallingScreen = () => {
-  const [videoCall, setVideoCall] = useState(true);
   const connectionData = {
-    appId: '9f0ac2e11ab14a6c8e3e8079617d6f7c',
+    appId: 'f0c995576e8b4e39987c992d5becf7c6',
     channel: 'test',
+    token: null,
   };
-  const rtcCallbacks = {
-    EndCall: () => setVideoCall(false),
-  };
-  return videoCall ? (
-    <AgoraUIKit connectionData={connectionData} rtcCallbacks={rtcCallbacks} />
-  ) : (
-    <Text onPress={() => setVideoCall(true)}>Start Call</Text>
-  );
+  return <AgoraUIKit connectionData={connectionData} />;
 };
 
 export default CallingScreen;

@@ -1,9 +1,15 @@
 import {ImageProps, StyleSheet, View, Image} from 'react-native';
 import {useTheme, Text, IconButton} from 'react-native-paper';
 import {useEffect, useState} from 'react';
+import {useSelector, useDispatch} from 'react-redux';
+import {
+  decreaseQuantity,
+  increaseQuantity,
+  removeFromCart,
+} from '../redux/slices/medicalOrderSlice';
 
 interface CartItemProps {
-  id: string;
+  id: number;
   name: string;
   category: string;
   image: ImageProps;
@@ -20,12 +26,7 @@ const CartItem: React.FC<CartItemProps> = ({
   quantity,
 }) => {
   const theme = useTheme();
-
-  const [number, setNumber] = useState<number>(quantity);
-
-  useEffect(() => {
-    setNumber(quantity);
-  }, [quantity]);
+  const dispatch = useDispatch();
 
   return (
     <View
@@ -58,10 +59,10 @@ const CartItem: React.FC<CartItemProps> = ({
             <IconButton
               icon="minus-thick"
               size={30}
-              onPress={() => (quantity = quantity - 1)}
+              onPress={() => dispatch(decreaseQuantity(id))}
             />
           </View>
-          <Text>{number}</Text>
+          <Text>{quantity}</Text>
           <View
             style={[
               styles.iconButton,
@@ -70,7 +71,7 @@ const CartItem: React.FC<CartItemProps> = ({
             <IconButton
               icon="plus-thick"
               size={30}
-              onPress={() => (quantity = quantity + 1)}
+              onPress={() => dispatch(increaseQuantity(id))}
             />
           </View>
         </View>
@@ -81,7 +82,7 @@ const CartItem: React.FC<CartItemProps> = ({
           icon="close-circle"
           iconColor={theme.colors.error}
           size={24}
-          onPress={() => console.log('Pressed')}
+          onPress={() => dispatch(removeFromCart(id))}
         />
       </View>
     </View>
