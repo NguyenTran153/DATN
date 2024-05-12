@@ -10,15 +10,20 @@ import {
   Alert,
   ScrollView,
 } from 'react-native';
-import React, {useState} from 'react';
-import {useTheme} from 'react-native-paper';
-
-const account = {
-  email: 'myaccount@gmail.com',
-  password: '123456789',
+import React, { useState } from 'react';
+import { useTheme } from 'react-native-paper';
+import UserService from '../../services/UserService';
+import { useSelector, useDispatch } from 'react-redux';
+import { setToken } from '../../redux/slices/tokenSlice';
+import { combineSlices } from '@reduxjs/toolkit';
+type Token = {
+  email: string,
+  password: string,
 };
 
-const LoginScreen = ({navigation}: {navigation: any}) => {
+const LoginScreen = ({ navigation }: { navigation: any }) => {
+
+  const dispatch = useDispatch()
   const theme = useTheme();
   const [form, setForm] = useState({
     email: '',
@@ -26,7 +31,7 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
   });
 
   return (
-    <ScrollView style={{flex: 1, backgroundColor: theme.colors.background}}>
+    <ScrollView style={{ flex: 1, backgroundColor: theme.colors.background }}>
       <View style={styles.container}>
         <View style={styles.header}>
           <Image
@@ -34,16 +39,16 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
             style={styles.img}
             alt="Logo"
           />
-          <Text style={[styles.title, {color: theme.colors.primary}]}>
+          <Text style={[styles.title, { color: theme.colors.primary }]}>
             Sign in to MediConnect
           </Text>
-          <Text style={[styles.subtitle, {color: theme.colors.secondary}]}>
+          <Text style={[styles.subtitle, { color: theme.colors.secondary }]}>
             Welcome to the Medic App!
           </Text>
         </View>
         <View style={styles.form}>
           <View style={styles.input}>
-            <Text style={[styles.inputLabel, {color: theme.colors.primary}]}>
+            <Text style={[styles.inputLabel, { color: theme.colors.primary }]}>
               Email
             </Text>
             <TextInput
@@ -62,7 +67,7 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
               value={form.email}
               placeholder="Điền địa chỉ email"
               placeholderTextColor={theme.colors.secondary}
-              onChangeText={email => setForm({...form, email})}
+              onChangeText={email => setForm({ ...form, email })}
             />
           </View>
           <View style={styles.input}>
@@ -81,9 +86,9 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
               value={form.password}
               placeholder="Điền mật khẩu"
               placeholderTextColor={theme.colors.secondary}
-              onChangeText={password => setForm({...form, password})}
+              onChangeText={password => setForm({ ...form, password })}
             />
-            <TouchableOpacity style={{marginTop: 'auto'}} onPress={() => {}}>
+            <TouchableOpacity style={{ marginTop: 'auto' }} onPress={() => { }}>
               <Text
                 style={{
                   textDecorationLine: 'underline',
@@ -95,35 +100,45 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
           </View>
           <View style={styles.formAction}>
             <TouchableOpacity
-              onPress={() => {
+              onPress={async () => {
                 let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
                 if (reg.test(form.email) === true) {
-                  if (
-                    form.email === account.email &&
-                    form.password === account.password
-                  ) {
-                    navigation.navigate('BottomTabNavigator');
-                  } else {
+                  // if (
+                  //   form.email === account.email &&
+                  //   form.password === account.password
+                  // ) {
+                  //   navigation.navigate('BottomTabNavigator');
+                  // } else {
+                  //   Alert.alert('Wrong email or password');
+                  // }
+
+                  const token = await UserService.login(form.email, form.password)
+                  if (token?.accessToken !== "" && token?.refreshToken !== "") {
+                    console.log(token)
+                    dispatch(setToken(token!))
+                    navigation.navigate('BottomTabNavigator')
+                  }
+                  else{
                     Alert.alert('Wrong email or password');
                   }
                 } else {
                   Alert.alert('Invalid email');
                 }
-                navigation.navigate('BottomTabNavigator');
+                // navigation.navigate('BottomTabNavigator');
               }}>
               <View
-                style={[styles.btn, {backgroundColor: theme.colors.primary}]}>
+                style={[styles.btn, { backgroundColor: theme.colors.primary }]}>
                 <Text
-                  style={[styles.btnText, {color: theme.colors.background}]}>
+                  style={[styles.btnText, { color: theme.colors.background }]}>
                   Đăng nhập
                 </Text>
               </View>
             </TouchableOpacity>
             <TouchableOpacity
-              style={{marginTop: 'auto'}}
+              style={{ marginTop: 'auto' }}
               onPress={() => navigation.navigate('RegisterScreen')}>
               <Text
-                style={[styles.formFooter, {color: theme.colors.secondary}]}>
+                style={[styles.formFooter, { color: theme.colors.secondary }]}>
                 Chưa có tài khoản?
                 <Text
                   style={{
