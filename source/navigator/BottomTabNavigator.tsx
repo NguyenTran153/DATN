@@ -13,7 +13,10 @@ const BottomTabNavigator = () => {
   const theme = useTheme();
 
   return (
-    <BottomTabs.Navigator initialRouteName="MessagesScreen">
+    <BottomTabs.Navigator
+      initialRouteName="MessagesScreen"
+      activeColor={theme.colors.primary}
+      barStyle={{backgroundColor: theme.colors.background}}>
       <BottomTabs.Screen
         name="MessagesScreen"
         component={MessagesScreen}
@@ -22,7 +25,7 @@ const BottomTabNavigator = () => {
           tabBarIcon: ({focused}: any) => (
             <Icon
               source="home"
-              color={focused ? theme.colors.primary : theme.colors.outline}
+              color={focused ? theme.colors.primary : theme.colors.onBackground}
               size={24}
             />
           ),
@@ -36,7 +39,7 @@ const BottomTabNavigator = () => {
           tabBarIcon: ({focused}: any) => (
             <Icon
               source="doctor"
-              color={focused ? theme.colors.primary : theme.colors.outline}
+              color={focused ? theme.colors.primary : theme.colors.onBackground}
               size={24}
             />
           ),
@@ -50,7 +53,7 @@ const BottomTabNavigator = () => {
           tabBarIcon: ({focused}: any) => (
             <Icon
               source="store"
-              color={focused ? theme.colors.primary : theme.colors.outline}
+              color={focused ? theme.colors.primary : theme.colors.onBackground}
               size={24}
             />
           ),
@@ -64,7 +67,7 @@ const BottomTabNavigator = () => {
           tabBarIcon: ({focused}: any) => (
             <Icon
               source="account"
-              color={focused ? theme.colors.primary : theme.colors.outline}
+              color={focused ? theme.colors.primary : theme.colors.onBackground}
               size={24}
             />
           ),

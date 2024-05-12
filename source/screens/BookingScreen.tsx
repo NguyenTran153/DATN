@@ -14,6 +14,7 @@ import {ChatRoutes} from '../Routes/Route';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import Horizon from '../components/Horizon';
 import DoctorCard from '../components/DoctorCard';
+import CustomAppbar from '../components/CustomAppbar';
 
 LocaleConfig.locales['en'] = {
   formatAccessibilityLabel: "dddd d 'of' MMMM 'of' yyyy",
@@ -207,6 +208,7 @@ const BookingScreen = ({route, navigation}: Props) => {
 
   return (
     <View style={{flex: 1, backgroundColor: theme.colors.background}}>
+      <CustomAppbar title={'Đặt lịch hẹn'} goBack={() => navigation.goBack()} />
       <ScrollView
         style={[styles.container, {backgroundColor: theme.colors.background}]}
         showsVerticalScrollIndicator={false}>

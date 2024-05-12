@@ -9,13 +9,25 @@ const Stacks = createNativeStackNavigator<StoreRoutes>();
 const StoreNavigator = () => {
   return (
     <Stacks.Navigator>
-      <Stacks.Screen name="StoreScreen" component={StoreScreen} />
-      <Stacks.Screen name="ProductScreen" component={ProductScreen} />
+      <Stacks.Screen
+        name="StoreScreen"
+        component={StoreScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
+      <Stacks.Screen
+        name="ProductScreen"
+        component={ProductScreen}
+        options={{
+          headerShown: false,
+        }}
+      />
       <Stacks.Screen
         name="CartScreen"
         component={CartScreen}
         options={{
-          title: 'Giỏ hàng',
+          headerShown: false,
         }}
       />
     </Stacks.Navigator>

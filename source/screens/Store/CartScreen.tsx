@@ -6,6 +6,7 @@ import {clearOrder} from '../../redux/slices/medicalOrderSlice';
 
 import CartItem from '../../components/CartItem';
 import Horizon from '../../components/Horizon';
+import CustomAppbar from '../../components/CustomAppbar';
 
 // Fake
 
@@ -18,6 +19,8 @@ const CartScreen = ({navigation, route}: any) => {
   return (
     <View style={{flex: 1, backgroundColor: theme.colors.background}}>
       <StatusBar />
+      <CustomAppbar title={'Giỏ hàng'} goBack={() => navigation.goBack()} />
+
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={{flexGrow: 1}}>

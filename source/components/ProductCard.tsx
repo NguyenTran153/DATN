@@ -33,7 +33,7 @@ const ProductCard = ({data, addToCart, navigation, route}: any) => {
           <View style={{alignItems: 'center', justifyContent: 'center'}}>
             <IconButton icon="plus-box" size={36} onPress={addToCart} />
           </View>
-        </View>
+        </View> 
       </Card>
     </View>
   );

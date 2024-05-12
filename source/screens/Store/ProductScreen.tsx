@@ -6,11 +6,12 @@ import {
   View,
 } from 'react-native';
 import React from 'react';
-import {Icon, Text, useTheme} from 'react-native-paper';
+import {Icon, Text, useTheme, Appbar} from 'react-native-paper';
 import {TouchableOpacity} from 'react-native';
 import {useDispatch} from 'react-redux';
 
 import {addToCart} from '../../redux/slices/medicalOrderSlice';
+import CustomAppbar from '../../components/CustomAppbar';
 
 const ProductScreen = ({navigation, route}: any) => {
   const theme = useTheme();
@@ -20,6 +21,8 @@ const ProductScreen = ({navigation, route}: any) => {
 
   return (
     <View style={{flex: 1, backgroundColor: theme.colors.background}}>
+      <CustomAppbar title={item.name} goBack={() => navigation.goBack()} />
+
       <ScrollView
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.ScrollViewFlex}>
@@ -29,9 +32,6 @@ const ProductScreen = ({navigation, route}: any) => {
         />
         <View style={{margin: 10}}>
           <View style={{flexGrow: 1, flexWrap: 'nowrap'}}>
-            <Text style={{fontWeight: 'bold'}} variant="headlineLarge">
-              {item.name}
-            </Text>
             <Text variant="titleMedium">Phân loại: {item.category}</Text>
             <Text style={{color: theme.colors.primary}} variant="titleMedium">
               Thương hiệu: {item.brand}

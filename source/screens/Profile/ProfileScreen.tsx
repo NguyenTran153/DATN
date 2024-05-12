@@ -83,17 +83,6 @@ const ProfileScreen = ({navigation}: {navigation: any}) => {
             right={() => <List.Icon icon="chevron-right" />}
             onPress={() => {}}
           />
-          <List.Item
-            title="Liên kết lời mời"
-            description="Sử dụng mã QR để thêm bạn bè"
-            left={() => (
-              <List.Icon style={styles.settingCenter} icon="qrcode" />
-            )}
-            right={() => <List.Icon icon="chevron-right" />}
-            onPress={() =>
-              navigation.navigate('ProfileNavigator', {screen: 'QRScreen'})
-            }
-          />
         </List.Section>
       </ScrollView>
     </SafeAreaView>

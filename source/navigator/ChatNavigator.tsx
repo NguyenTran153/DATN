@@ -26,30 +26,22 @@ const ChatNavigator = () => {
       <Tabs.Screen
         name="BookingScreen"
         component={BookingScreen}
-        options={{
-          title: 'Đặt lịch khám',
-        }}
+        options={{headerShown: false}}
       />
       <Tabs.Screen
         name="PrescriptionScreen"
         component={PrescriptionScreen}
-        options={{
-          title: 'Đơn thuốc',
-        }}
+        options={{headerShown: false}}
       />
       <Tabs.Screen
         name="NotificationScreen"
         component={NotificationScreen}
-        options={{
-          title: 'Thông báo',
-        }}
+        options={{headerShown: false}}
       />
       <Tabs.Screen
         name="CallingScreen"
         component={CallingScreen}
-        options={{
-          title: 'Hội thoại',
-        }}
+        options={{headerShown: false}}
       />
     </Tabs.Navigator>
   );

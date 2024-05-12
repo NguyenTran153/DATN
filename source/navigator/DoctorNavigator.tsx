@@ -17,7 +17,7 @@ const DoctorNavigator = () => {
       <Stacks.Screen
         name={'ConnectDoctorScreen'}
         component={ConnectDoctorScreen}
-        options={{title:'Liên hệ bác sĩ'}}
+        options={{headerShown: false}}
       />
     </Stacks.Navigator>
   );
