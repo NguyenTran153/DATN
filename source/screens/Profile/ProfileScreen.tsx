@@ -1,10 +1,25 @@
 import {useTheme, Text, Button, List} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {StyleSheet, View, Image, ScrollView} from 'react-native';
+import { useEffect, useState } from 'react';
+import UserService from '../../services/UserService';
+import { useSelector, useDispatch } from 'react-redux';
+import { setUser } from '../../redux/slices/userSlice';
 
 const ProfileScreen = ({navigation}: {navigation: any}) => {
   const theme = useTheme();
-
+  const token = useSelector((state: any) => state.token);
+  const dispatch = useDispatch();
+  const [data, setData] = useState<UserData>();
+  console.log(token.accessToken)
+  useEffect( () => {
+      fetchData()
+      
+  }, []);
+  const fetchData = async () => {
+    setData(await UserService.getUserInfo(token.accessToken));
+    dispatch(setUser(data!))
+  }
   return (
     <SafeAreaView
       style={[styles.container, {backgroundColor: theme.colors.background}]}>
@@ -12,7 +27,7 @@ const ProfileScreen = ({navigation}: {navigation: any}) => {
         <Image source={require('../../asset/7677205.jpg')} style={styles.img} />
         <View style={styles.patientInfo}>
           <View style={styles.editContainer}>
-            <Text style={styles.patientName}>Patient name</Text>
+            <Text style={styles.patientName}>{data?.lastName + ' ' + data?.firstName}</Text>
             <Button
               icon="pencil"
               mode="text"

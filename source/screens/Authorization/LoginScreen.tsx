@@ -12,15 +12,10 @@ import {
 } from 'react-native';
 import React, { useState } from 'react';
 import { useTheme } from 'react-native-paper';
-import UserService from '../../services/UserService';
+import AuthService from '../../services/AuthService';
 import { useSelector, useDispatch } from 'react-redux';
 import { setToken } from '../../redux/slices/tokenSlice';
 import { combineSlices } from '@reduxjs/toolkit';
-type Token = {
-  email: string,
-  password: string,
-};
-
 const LoginScreen = ({ navigation }: { navigation: any }) => {
 
   const dispatch = useDispatch()
@@ -112,7 +107,7 @@ const LoginScreen = ({ navigation }: { navigation: any }) => {
                   //   Alert.alert('Wrong email or password');
                   // }
 
-                  const token = await UserService.login(form.email, form.password)
+                  const token = await AuthService.login(form.email, form.password)
                   if (token?.accessToken !== "" && token?.refreshToken !== "") {
                     console.log(token)
                     dispatch(setToken(token!))

@@ -7,14 +7,18 @@ import {
   View,
   TouchableOpacity,
   Alert,
+  ScrollView,
 } from 'react-native';
-import React, {useState} from 'react';
-import {useTheme} from 'react-native-paper';
-const RegisterScreen = ({navigation}: any) => {
+import React, { useState } from 'react';
+import { useTheme } from 'react-native-paper';
+import AuthService from '../../services/AuthService';
+const RegisterScreen = ({ navigation }: any) => {
   const theme = useTheme();
   const [form, setForm] = useState({
     email: '',
     password: '',
+    firstName: '',
+    lastName: '',
     confirmpassword: '',
   });
   const styles = StyleSheet.create({
@@ -100,7 +104,7 @@ const RegisterScreen = ({navigation}: any) => {
     },
   });
   return (
-    <SafeAreaView style={{flex: 1, backgroundColor: theme.colors.background}}>
+    <ScrollView style={{ flex: 1, backgroundColor: theme.colors.background }}>
       <View style={styles.container}>
         <View style={styles.header}>
           <Image
@@ -122,7 +126,33 @@ const RegisterScreen = ({navigation}: any) => {
               value={form.email}
               placeholder="Điền email"
               placeholderTextColor={theme.colors.secondary}
-              onChangeText={email => setForm({...form, email})}
+              onChangeText={email => setForm({ ...form, email })}
+            />
+          </View>
+          <View style={styles.input}>
+            <Text style={styles.inputLabel}>Họ</Text>
+            <TextInput
+              id="lastName"
+              style={styles.inputControl}
+              autoCapitalize="none"
+              autoCorrect={false}
+              value={form.lastName}
+              placeholder="Điền họ"
+              placeholderTextColor={theme.colors.secondary}
+              onChangeText={lastName => setForm({ ...form, lastName })}
+            />
+          </View>
+          <View style={styles.input}>
+            <Text style={styles.inputLabel}>Tên</Text>
+            <TextInput
+              id="firstName"
+              style={styles.inputControl}
+              autoCapitalize="none"
+              autoCorrect={false}
+              value={form.firstName}
+              placeholder="Điền tên"
+              placeholderTextColor={theme.colors.secondary}
+              onChangeText={firstName => setForm({ ...form, firstName })}
             />
           </View>
           <View style={styles.input}>
@@ -134,7 +164,7 @@ const RegisterScreen = ({navigation}: any) => {
               value={form.password}
               placeholder="Điền mật khẩu"
               placeholderTextColor={theme.colors.secondary}
-              onChangeText={password => setForm({...form, password})}
+              onChangeText={password => setForm({ ...form, password })}
             />
           </View>
           <View style={styles.input}>
@@ -147,16 +177,17 @@ const RegisterScreen = ({navigation}: any) => {
               placeholder="Điền lại mật khẩu"
               placeholderTextColor={theme.colors.secondary}
               onChangeText={confirmpassword =>
-                setForm({...form, confirmpassword})
+                setForm({ ...form, confirmpassword })
               }
             />
           </View>
           <View style={styles.formAction}>
             <TouchableOpacity
-              onPress={() => {
+              onPress={async () => {
                 let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
                 if (reg.test(form.email) === true) {
                   if (form.password === form.confirmpassword) {
+                    await AuthService.signUp(form.email, form.password, form.firstName, form.lastName)
                     Alert.alert('Sign up successfuly');
                   } else {
                     Alert.alert('Wrong email or password');
@@ -170,10 +201,10 @@ const RegisterScreen = ({navigation}: any) => {
               </View>
             </TouchableOpacity>
             <TouchableOpacity
-              style={{marginTop: 'auto'}}
+              style={{ marginTop: 'auto' }}
               onPress={() => navigation.goBack()}>
               <Text
-                style={[styles.formFooter, {color: theme.colors.secondary}]}>
+                style={[styles.formFooter, { color: theme.colors.secondary }]}>
                 Đã có tài khoản?
                 <Text
                   style={{
@@ -187,7 +218,7 @@ const RegisterScreen = ({navigation}: any) => {
           </View>
         </View>
       </View>
-    </SafeAreaView>
+    </ScrollView>
   );
 };
 
