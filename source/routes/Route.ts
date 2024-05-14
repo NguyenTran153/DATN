@@ -35,6 +35,7 @@ export type StoreRoutes = {
 export type ProfileRoutes = {
   ProfileScreen: any;
   QRScreen: any;
+  BecomeDoctorScreen: any;
 };
 
 export type DoctorRoutes = {

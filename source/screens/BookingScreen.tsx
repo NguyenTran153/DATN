@@ -1,20 +1,23 @@
 import React, {useState} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
-import {StyleSheet, View, ScrollView, TouchableOpacity} from 'react-native';
 import {
-  useTheme,
-  Button,
-  Text,
-  Icon,
-  Searchbar,
-  Avatar,
-} from 'react-native-paper';
+  StyleSheet,
+  View,
+  ScrollView,
+  TouchableOpacity,
+  Alert,
+} from 'react-native';
+import {useTheme, Button, Text, Icon, Searchbar} from 'react-native-paper';
 import {Calendar, LocaleConfig} from 'react-native-calendars';
+
 import {ChatRoutes} from '../Routes/Route';
-import {SafeAreaView} from 'react-native-safe-area-context';
 import Horizon from '../components/Horizon';
 import DoctorCard from '../components/DoctorCard';
 import CustomAppbar from '../components/CustomAppbar';
+import AppointmentService from '../services/AppointmentService';
+import moment from 'moment';
+import {useSelector} from 'react-redux';
+import UserService from '../services/UserService';
 
 LocaleConfig.locales['en'] = {
   formatAccessibilityLabel: "dddd d 'of' MMMM 'of' yyyy",
@@ -62,7 +65,19 @@ LocaleConfig.defaultLocale = 'en';
 type Props = NativeStackScreenProps<ChatRoutes, 'BookingScreen'>;
 
 const BookingScreen = ({route, navigation}: Props) => {
-  console.log(JSON.stringify(route));
+  const token = useSelector((state: any) => state.token);
+  const user = useSelector((state: any) => state.user);
+
+  const [data, setData] = useState<UserData>();
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    setData(await UserService.getUserInfo(token.accessToken));
+    dispatch(setUser(data!));
+  };
 
   const theme = useTheme();
 
@@ -93,24 +108,23 @@ const BookingScreen = ({route, navigation}: Props) => {
   const doctors = [
     {name: 'Huy Bình', specialty: 'Tai Mũi Họng'},
     {name: 'Phương Thảo', specialty: 'Nhi Khoa'},
-    // Thêm thông tin của các bác sĩ khác nếu cần
   ];
 
   const specialties = [
     {index: 0, name: 'Khám chức năng hô hấp', iconName: 'Respirology'},
-    {index: 1, name: 'Khám da liễu', iconName: 'Measles'}, // Measles icon might not be appropriate for dermatology
+    {index: 1, name: 'Khám da liễu', iconName: 'Measles'},
     {index: 2, name: 'Khám điều trị vết thương', iconName: 'Bandaged'},
     {index: 3, name: 'Khám hậu môn-trực tràng', iconName: 'Intestine'},
     {index: 4, name: 'Khám mắt', iconName: 'Eye'},
     {index: 5, name: 'Khám tai mũi họng', iconName: 'Ear'},
     {index: 6, name: 'Khám nội tiết', iconName: 'Endocrinology'},
-    {index: 7, name: 'Khám phụ khoa', iconName: 'Gynecology'}, // Consider a more generic icon like 'uterus' or 'gynecology'
+    {index: 7, name: 'Khám phụ khoa', iconName: 'Gynecology'},
     {index: 8, name: 'Khám thai', iconName: 'Fetus'},
     {index: 9, name: 'Khám thần kinh', iconName: 'Psychology'},
     {index: 10, name: 'Khám tiết niệu', iconName: 'Kidneys'},
     {index: 11, name: 'Khám tiêu hoá-gan mật', iconName: 'Stomach'},
     {index: 12, name: 'Khám tim mạch', iconName: 'Heart'},
-    {index: 13, name: 'Khám tổng quát', iconName: 'Tac'}, // CT Scan might not be appropriate for a general checkup
+    {index: 13, name: 'Khám tổng quát', iconName: 'Tac'},
     {index: 14, name: 'Khám viêm gan', iconName: 'Liver'},
     {index: 15, name: 'Khám xương khớp', iconName: 'Joints'},
     {
@@ -118,7 +132,7 @@ const BookingScreen = ({route, navigation}: Props) => {
       name: 'Lồng ngực - Mạch máu - Bướu cổ',
       iconName: 'BloodVessel',
     },
-    {index: 17, name: 'Thẩm mỹ - chăm sóc da', iconName: 'Allergies'}, // Allergies icon might not be appropriate for aesthetics or skincare
+    {index: 17, name: 'Thẩm mỹ - chăm sóc da', iconName: 'Allergies'},
   ];
 
   const resetBooking = () => {
@@ -204,6 +218,28 @@ const BookingScreen = ({route, navigation}: Props) => {
         ))}
       </View>
     );
+  };
+
+  const getBeginTimestamp = () => {
+    if (selectedDate && selectedHour) {
+      const [hour] = selectedHour.split('-');
+      return moment(`${selectedDate} ${hour}`, 'YYYY-MM-DD HH:mm').valueOf();
+    }
+    return null;
+  };
+
+  const handleConfirmBooking = () => {
+    const beginTimestamp = getBeginTimestamp();
+    if (beginTimestamp) {
+      console.log('API call with beginTimestamp:', beginTimestamp);
+      AppointmentService.sendAppointment(token.accessToken, user.id, {
+        beginTimestamp,
+      });
+      Alert.alert('Đã đặt lịch hẹn');
+      navigation.goBack();
+    } else {
+      Alert.alert('Hãy chọn thời gian');
+    }
   };
 
   return (
@@ -369,7 +405,12 @@ const BookingScreen = ({route, navigation}: Props) => {
             </View>
           </View>
         </View>
-        <Button style={styles.confirmButton} mode="contained">
+        <Button
+          style={styles.confirmButton}
+          mode="contained"
+          onPress={() => {
+            handleConfirmBooking();
+          }}>
           Xác nhận
         </Button>
       </ScrollView>
@@ -448,3 +489,14 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 });
+function useEffect(arg0: () => void, arg1: never[]) {
+  throw new Error('Function not implemented.');
+}
+
+function dispatch(arg0: any) {
+  throw new Error('Function not implemented.');
+}
+
+function setUser(arg0: UserData): any {
+  throw new Error('Function not implemented.');
+}
