@@ -1,8 +1,6 @@
 import {StyleSheet, Text, View} from 'react-native';
 import React from 'react';
 
-
-
 interface PhotoTakingProps {
   label: string;
   name: string;

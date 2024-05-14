@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native';
-import {Appbar} from 'react-native-paper';
+import {useTheme, Appbar} from 'react-native-paper';
 
 interface AppbarProps {
   title: string;
@@ -8,6 +8,8 @@ interface AppbarProps {
 }
 
 const CustomAppbar: React.FC<AppbarProps> = ({title, goBack}) => {
+  const theme = useTheme();
+
   return (
     <Appbar.Header>
       <Appbar.BackAction onPress={goBack} />
@@ -19,4 +21,3 @@ const CustomAppbar: React.FC<AppbarProps> = ({title, goBack}) => {
 export default CustomAppbar;
 
 const styles = StyleSheet.create({});
-

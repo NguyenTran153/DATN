@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {
   StyleSheet,
@@ -16,8 +16,9 @@ import DoctorCard from '../components/DoctorCard';
 import CustomAppbar from '../components/CustomAppbar';
 import AppointmentService from '../services/AppointmentService';
 import moment from 'moment';
-import {useSelector} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 import UserService from '../services/UserService';
+import {setUser} from '../redux/slices/userSlice';
 
 LocaleConfig.locales['en'] = {
   formatAccessibilityLabel: "dddd d 'of' MMMM 'of' yyyy",
@@ -67,6 +68,7 @@ type Props = NativeStackScreenProps<ChatRoutes, 'BookingScreen'>;
 const BookingScreen = ({route, navigation}: Props) => {
   const token = useSelector((state: any) => state.token);
   const user = useSelector((state: any) => state.user);
+  const dispatch = useDispatch();
 
   const [data, setData] = useState<UserData>();
 
@@ -489,14 +491,3 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
 });
-function useEffect(arg0: () => void, arg1: never[]) {
-  throw new Error('Function not implemented.');
-}
-
-function dispatch(arg0: any) {
-  throw new Error('Function not implemented.');
-}
-
-function setUser(arg0: UserData): any {
-  throw new Error('Function not implemented.');
-}
