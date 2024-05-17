@@ -120,7 +120,7 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
                 } else {
                   Alert.alert('Invalid email');
                 }
-                // navigation.navigate('BottomTabNavigator');
+                navigation.navigate('BottomTabNavigator');
               }}>
               <View
                 style={[styles.btn, {backgroundColor: theme.colors.primary}]}>
