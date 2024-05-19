@@ -1,7 +1,7 @@
 import {View, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
 import {useState} from 'react';
 import React from 'react';
-import DropDown from '../components/DropDown';
+import DropDown from '../../components/DropDown';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
 import {
   List,
@@ -12,10 +12,10 @@ import {
   Text,
 } from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {ChatRoutes} from '../Routes/Route';
+import {ChatRoutes} from '../../Routes/Route';
 import moment from 'moment';
-import AutocompleteTextInput from '../components/AutoComplete';
-import CustomAppbar from '../components/CustomAppbar';
+import AutocompleteTextInput from '../../components/AutoComplete';
+import CustomAppbar from '../../components/CustomAppbar';
 
 const MyDropdownComponent = () => {
   const theme = useTheme();
@@ -183,10 +183,7 @@ const PrescriptionScreen = ({route, navigation}: any) => {
 
   return (
     <>
-      <CustomAppbar
-        title={'Kê đơn thuốc'}
-        goBack={() => navigation.goBack()}
-      />
+      <CustomAppbar title={'Kê đơn thuốc'} goBack={() => navigation.goBack()} />
       <ScrollView style={styles.container}>
         <View
           style={{

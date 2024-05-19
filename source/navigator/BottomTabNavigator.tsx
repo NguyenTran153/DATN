@@ -2,7 +2,7 @@ import {createMaterialBottomTabNavigator} from '@react-navigation/material-botto
 import {useTheme, Icon} from 'react-native-paper';
 
 import type {BottomRoutes} from '../Routes/Route';
-import MessagesScreen from '../screens/Chat/MessagesScreen';
+import HomeScreen from '../screens/Home/HomeScreen';
 import StoreScreen from '../screens/Store/StoreScreen';
 import ProfileScreen from '../screens/Profile/ProfileScreen';
 import DoctorListScreen from '../screens/Doctor/DoctorListScreen';
@@ -14,14 +14,14 @@ const BottomTabNavigator = () => {
 
   return (
     <BottomTabs.Navigator
-      initialRouteName="MessagesScreen"
+      initialRouteName="HomeScreen"
       activeColor={theme.colors.primary}
       barStyle={{backgroundColor: theme.colors.background}}>
       <BottomTabs.Screen
-        name="MessagesScreen"
-        component={MessagesScreen}
+        name="HomeScreen"
+        component={HomeScreen}
         options={{
-          tabBarLabel: 'Tin nhắn',
+          tabBarLabel: 'Trang chủ',
           tabBarIcon: ({focused}: any) => (
             <Icon
               source="home"
@@ -63,7 +63,7 @@ const BottomTabNavigator = () => {
         name="ProfileScreen"
         component={ProfileScreen}
         options={{
-          tabBarLabel: 'Cá nhân',
+          tabBarLabel: 'Tài khoản',
           tabBarIcon: ({focused}: any) => (
             <Icon
               source="account"

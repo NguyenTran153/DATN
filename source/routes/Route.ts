@@ -4,7 +4,7 @@ export type RootRoutes = {
   LoginScreen: {navigation: any};
   RegisterScreen: undefined;
   BottomTabNavigator: NavigatorScreenParams<BottomRoutes>;
-  ChatNavigator: NavigatorScreenParams<ChatRoutes>;
+  HomeNavigator: NavigatorScreenParams<HomeRoutes>;
   StoreNavigator: NavigatorScreenParams<StoreRoutes>;
   ProfileNavigator: NavigatorScreenParams<ProfileRoutes>;
   DoctorNavigator: NavigatorScreenParams<DoctorRoutes>;
@@ -12,7 +12,7 @@ export type RootRoutes = {
 
 export type BottomRoutes = {
   StoreScreen: undefined;
-  MessagesScreen: undefined;
+  HomeScreen: any;
   ProfileScreen: undefined;
   DoctorListScreen: any;
 };
@@ -41,4 +41,14 @@ export type ProfileRoutes = {
 export type DoctorRoutes = {
   DoctorListScreen: any;
   ConnectDoctorScreen: any;
+};
+
+export type HomeRoutes = {
+  HomeScreen: any;
+  BookingScreen: {route: any};
+  PrescriptionScreen: any;
+  NotificationScreen: any;
+  CallingScreen: any;
+  ScheduleScreen: any;
+  PatientRecordScreen: any;
 };

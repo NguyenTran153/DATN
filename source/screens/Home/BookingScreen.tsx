@@ -10,15 +10,15 @@ import {
 import {useTheme, Button, Text, Icon, Searchbar} from 'react-native-paper';
 import {Calendar, LocaleConfig} from 'react-native-calendars';
 
-import {ChatRoutes} from '../Routes/Route';
-import Horizon from '../components/Horizon';
-import DoctorCard from '../components/DoctorCard';
-import CustomAppbar from '../components/CustomAppbar';
-import AppointmentService from '../services/AppointmentService';
+import {ChatRoutes} from '../../Routes/Route';
+import Horizon from '../../components/Horizon';
+import DoctorCard from '../../components/DoctorCard';
+import CustomAppbar from '../../components/CustomAppbar';
+import AppointmentService from '../../services/AppointmentService';
 import moment from 'moment';
 import {useDispatch, useSelector} from 'react-redux';
-import UserService from '../services/UserService';
-import {setUser} from '../redux/slices/userSlice';
+import UserService from '../../services/UserService';
+import {setUser} from '../../redux/slices/userSlice';
 
 LocaleConfig.locales['en'] = {
   formatAccessibilityLabel: "dddd d 'of' MMMM 'of' yyyy",

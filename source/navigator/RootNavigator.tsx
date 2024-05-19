@@ -1,7 +1,7 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
 import type {RootRoutes} from '../Routes/Route';
-import ChatNavigator from './ChatNavigator';
+import HomeNavigator from './HomeNavigator';
 import LoginScreen from '../screens/Authorization/LoginScreen';
 import RegisterScreen from '../screens/Authorization/RegisterScreen';
 import BottomTabNavigator from './BottomTabNavigator';
@@ -19,7 +19,7 @@ const RootNavigator = () => {
       <Tabs.Screen name="LoginScreen" component={LoginScreen} />
       <Tabs.Screen name="RegisterScreen" component={RegisterScreen} />
       <Tabs.Screen name="BottomTabNavigator" component={BottomTabNavigator} />
-      <Tabs.Screen name="ChatNavigator" component={ChatNavigator} />
+      <Tabs.Screen name="HomeNavigator" component={HomeNavigator} />
       <Tabs.Screen name="StoreNavigator" component={StoreNavigator} />
       <Tabs.Screen name="ProfileNavigator" component={ProfileNavigator} />
       <Tabs.Screen name="DoctorNavigator" component={DoctorNavigator} />

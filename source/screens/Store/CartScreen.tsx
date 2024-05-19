@@ -1,4 +1,4 @@
-import {ScrollView, StatusBar, StyleSheet, View} from 'react-native';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import {useTheme, Text, Button} from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
 import LottieView from 'lottie-react-native';
@@ -18,7 +18,6 @@ const CartScreen = ({navigation, route}: any) => {
 
   return (
     <View style={{flex: 1, backgroundColor: theme.colors.background}}>
-      <StatusBar />
       <CustomAppbar title={'Giỏ hàng'} goBack={() => navigation.goBack()} />
 
       <ScrollView

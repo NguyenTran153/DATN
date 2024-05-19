@@ -1,12 +1,13 @@
 import {StyleSheet, View, FlatList, Image} from 'react-native';
 import React from 'react';
 import {Text, useTheme} from 'react-native-paper';
+import CustomAppbar from '../../components/CustomAppbar';
 
 const data = [
   {
     id: 1,
     post_title: 'best things',
-    postimage: '../asset/7677205.jpg',
+    postimage: '../../asset/7677205.jpg',
     post_city: 'HCM',
     username: 'Doraemon',
     notification: 'link your post',
@@ -15,7 +16,7 @@ const data = [
   {
     id: 2,
     post_title: 'another post',
-    postimage: '../asset/1234567.jpg',
+    postimage: '../../asset/7677205.jpg',
     post_city: 'Hanoi',
     username: 'Nobita',
     notification: 'comment on your post',
@@ -24,7 +25,7 @@ const data = [
   {
     id: 3,
     post_title: 'yet another post',
-    postimage: '../asset/9876543.jpg',
+    postimage: '../../asset/7677205.jpg',
     post_city: 'Da Nang',
     username: 'Suneo',
     notification: 'liked your post',
@@ -33,7 +34,7 @@ const data = [
   {
     id: 4,
     post_title: 'random stuff',
-    postimage: '../asset/2345678.jpg',
+    postimage: '../../asset/7677205.jpg',
     post_city: 'Ho Chi Minh City',
     username: 'Gian',
     notification: 'shared your post',
@@ -42,7 +43,7 @@ const data = [
   {
     id: 5,
     post_title: 'interesting topic',
-    postimage: '../asset/8765432.jpg',
+    postimage: '../../asset/7677205.jpg',
     post_city: 'Hue',
     username: 'Shizuka',
     notification: 'tagged you in a post',
@@ -50,7 +51,7 @@ const data = [
   },
 ];
 
-const NotificationScreen = () => {
+const NotificationScreen = ({navigation}: any) => {
   const theme = useTheme();
   return (
     <View
@@ -58,6 +59,7 @@ const NotificationScreen = () => {
         {backgroundColor: theme.colors.background},
         styles.notificationContainer,
       ]}>
+      <CustomAppbar title="Thông báo" goBack={() => navigation.goBack()} />
       <FlatList
         data={data}
         keyExtractor={(item, index) => {
@@ -69,7 +71,7 @@ const NotificationScreen = () => {
               <View style={styles.headerLeftImageView}>
                 <Image
                   style={styles.headerLeftImage}
-                  source={require('../asset/7677205.jpg')}
+                  source={require('../../asset/7677205.jpg')}
                 />
               </View>
 

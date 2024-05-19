@@ -1,26 +1,22 @@
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 
-import MessagesScreen from '../screens/Chat/MessagesScreen';
-import ChatScreen from '../screens/Chat/ChatScreen';
+import {HomeRoutes} from '../Routes/Route';
 import BookingScreen from '../screens/Home/BookingScreen';
-import {ChatRoutes} from '../Routes/Route';
 import PrescriptionScreen from '../screens/Home/PrescriptionScreen';
 import NotificationScreen from '../screens/Home/NotificationScreen';
 import CallingScreen from '../screens/Chat/CallingScreen';
+import HomeScreen from '../screens/Home/HomeScreen';
+import ScheduleScreen from '../screens/Home/ScheduleScreen';
+import PatientRecordScreen from '../screens/Home/PatientRecordScreen';
 
-const Tabs = createNativeStackNavigator<ChatRoutes>();
+const Tabs = createNativeStackNavigator<HomeRoutes>();
 
-const ChatNavigator = () => {
+const HomeNavigator = () => {
   return (
     <Tabs.Navigator>
       <Tabs.Screen
-        name="MessagesScreen"
-        component={MessagesScreen}
-        options={{headerShown: false}}
-      />
-      <Tabs.Screen
-        name="ChatScreen"
-        component={ChatScreen}
+        name="HomeScreen"
+        component={HomeScreen}
         options={{headerShown: false}}
       />
       <Tabs.Screen
@@ -43,8 +39,18 @@ const ChatNavigator = () => {
         component={CallingScreen}
         options={{headerShown: false}}
       />
+      <Tabs.Screen
+        name="ScheduleScreen"
+        component={ScheduleScreen}
+        options={{headerShown: false}}
+      />
+      <Tabs.Screen
+        name="PatientRecordScreen"
+        component={PatientRecordScreen}
+        options={{headerShown: false}}
+      />
     </Tabs.Navigator>
   );
 };
 
-export default ChatNavigator;
+export default HomeNavigator;

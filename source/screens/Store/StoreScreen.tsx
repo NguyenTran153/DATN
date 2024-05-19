@@ -2,7 +2,6 @@ import {
   StyleSheet,
   View,
   FlatList,
-  StatusBar,
   SafeAreaView,
   TouchableOpacity,
 } from 'react-native';
@@ -179,11 +178,6 @@ const StoreScreen = ({navigation}: {navigation: any}) => {
   return (
     <SafeAreaView
       style={[styles.container, {backgroundColor: theme.colors.background}]}>
-      <StatusBar
-        backgroundColor={theme.colors.background}
-        barStyle="dark-content"
-      />
-
       <View style={styles.topbar}>
         <Searchbar
           style={styles.searchBar}
