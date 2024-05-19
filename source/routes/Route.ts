@@ -36,6 +36,8 @@ export type ProfileRoutes = {
   ProfileScreen: any;
   QRScreen: any;
   BecomeDoctorScreen: any;
+  PatientDiaryScreen: any;
+  DiaryRecordScreen: any;
 };
 
 export type DoctorRoutes = {

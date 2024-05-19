@@ -105,6 +105,32 @@ const ProfileScreen = ({navigation}: {navigation: any}) => {
               });
             }}
           />
+          <List.Item
+            title="Thêm nhật ký bệnh nhân"
+            description="Thêm nhật ký mỗi ngày để bác sĩ theo dõi"
+            left={() => (
+              <List.Icon style={styles.settingCenter} icon="nature-people" />
+            )}
+            right={() => <List.Icon icon="chevron-right" />}
+            onPress={() => {
+              navigation.navigate('ProfileNavigator', {
+                screen: 'PatientDiaryScreen',
+              });
+            }}
+          />
+          <List.Item
+            title="Nhật ký bệnh nhân"
+            description="Nhật ký được ghi lại của bệnh nhân"
+            left={() => (
+              <List.Icon style={styles.settingCenter} icon="nature-people" />
+            )}
+            right={() => <List.Icon icon="chevron-right" />}
+            onPress={() => {
+              navigation.navigate('ProfileNavigator', {
+                screen: 'DiaryRecordScreen',
+              });
+            }}
+          />
         </List.Section>
       </ScrollView>
     </SafeAreaView>
