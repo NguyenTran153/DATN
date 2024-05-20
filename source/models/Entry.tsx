@@ -1,4 +1,5 @@
 type Entry = {
+    time:string
     breakfast: string;
     lunch: string;
     dinner: string;
@@ -6,4 +7,5 @@ type Entry = {
     bloodPressure: string;
     bloodSugar: string;
     exercise: string;
+    note:string
 };

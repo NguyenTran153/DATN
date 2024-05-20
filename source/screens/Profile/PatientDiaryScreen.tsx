@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
-import { View, ScrollView, StyleSheet, Text } from 'react-native';
-import { TextInput, Button, Appbar, Divider } from 'react-native-paper';
+import { View, ScrollView, StyleSheet } from 'react-native';
+import { TextInput, Button, Text, Appbar, Divider } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
 
 const PatientDiaryScreen = () => {
     const [entries, setEntries] = useState<Entry[]>([]);
     const [form, setForm] = useState<Entry>({
+        time:new Date().toLocaleString(),
         breakfast: '',
         lunch: '',
         dinner: '',
@@ -14,6 +15,7 @@ const PatientDiaryScreen = () => {
         bloodPressure: '',
         bloodSugar: '',
         exercise: '',
+        note:''
     });
 
     const handleInputChange = (name: keyof Entry, value: string) => {
@@ -41,6 +43,7 @@ const PatientDiaryScreen = () => {
         }
 
         setForm({
+            time:new Date().toLocaleString(),
             breakfast: '',
             lunch: '',
             dinner: '',
@@ -48,6 +51,7 @@ const PatientDiaryScreen = () => {
             bloodPressure: '',
             bloodSugar: '',
             exercise: '',
+            note:''
         });
     };
 
@@ -69,6 +73,7 @@ const PatientDiaryScreen = () => {
     return (
         <ScrollView style={styles.container}>
             <View style={styles.inputContainer}>
+                <Text style={{fontSize:30, fontWeight:"bold", alignSelf:'center', marginBottom:5}}>Nhật ký bệnh nhân</Text>
                 <TextInput
                     label="Bữa sáng"
                     value={form.breakfast}
@@ -110,6 +115,12 @@ const PatientDiaryScreen = () => {
                     label="Thể dục"
                     value={form.exercise}
                     onChangeText={(text) => handleInputChange('exercise', text)}
+                    style={styles.input}
+                />
+                <TextInput
+                    label="Ghi chú"
+                    value={form.note}
+                    onChangeText={(text) => handleInputChange('note', text)}
                     style={styles.input}
                 />
                 <View style ={{flexDirection:'row', justifyContent:'space-between'}}>

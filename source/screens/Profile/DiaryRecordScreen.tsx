@@ -5,15 +5,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import EntryItem from '../../components/EntryItem';
 const PatientDiaryScreen = () => {
     const [entries, setEntries] = useState<Entry[]>([]);
-    const [form, setForm] = useState<Entry>({
-        breakfast: '',
-        lunch: '',
-        dinner: '',
-        bedtime: '',
-        bloodPressure: '',
-        bloodSugar: '',
-        exercise: '',
-    });
     const styles = StyleSheet.create({
         container: {
             flex: 1,

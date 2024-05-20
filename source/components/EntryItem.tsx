@@ -9,7 +9,8 @@ const EntryItem = ({ entry }: { entry: Entry }) => {
             flex: 1,
             marginBottom:16,
             padding:16,
-            backgroundColor: theme.colors.background
+            backgroundColor: theme.colors.background,
+            width:'100%'
         },
         listContainer: {
             padding: 16,
@@ -39,8 +40,8 @@ const EntryItem = ({ entry }: { entry: Entry }) => {
         },
     });
     return (<ScrollView style={styles.container}>
-         <Text style={styles.entryTitle}>Nhật ký sức khỏe ngày: {moment().format('DD/MM/YYYY')}</Text>
-        <DataTable >
+         <Text style={styles.entryTitle}>{entry.time}</Text>
+        <DataTable>
             <DataTable.Header>
                 <DataTable.Title style={styles.tableCell}>Hoạt động</DataTable.Title>
                 <DataTable.Title style={styles.tableCell}>Kết quả</DataTable.Title>
@@ -72,6 +73,10 @@ const EntryItem = ({ entry }: { entry: Entry }) => {
             <DataTable.Row>
                 <DataTable.Cell style={styles.tableCell}>Tập thể dục</DataTable.Cell>
                 <DataTable.Cell style={styles.tableCell}>{entry.exercise}</DataTable.Cell>
+            </DataTable.Row>
+            <DataTable.Row>
+                <DataTable.Cell style={styles.tableCell}>Ghi chú</DataTable.Cell>
+                <DataTable.Cell style={styles.tableCell}>{entry.note}</DataTable.Cell>
             </DataTable.Row>
         </DataTable>
         <Divider />
