@@ -132,7 +132,7 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
             </TouchableOpacity>
             <TouchableOpacity
               style={{marginTop: 'auto'}}
-              onPress={() => navigation.navigate('RegisterScreen')}>
+              onPress={() => navigation.navigate('PhoneNumberScreen')}>
               <Text
                 style={[styles.formFooter, {color: theme.colors.secondary}]}>
                 Chưa có tài khoản?

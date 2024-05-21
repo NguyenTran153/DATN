@@ -2,7 +2,9 @@ import {NavigatorScreenParams} from '@react-navigation/native';
 
 export type RootRoutes = {
   LoginScreen: {navigation: any};
-  RegisterScreen: undefined;
+  RegisterScreen: {token:string};
+  PhoneNumberScreen: undefined
+  OtpScreen: {pinId: string}
   BottomTabNavigator: NavigatorScreenParams<BottomRoutes>;
   HomeNavigator: NavigatorScreenParams<HomeRoutes>;
   StoreNavigator: NavigatorScreenParams<StoreRoutes>;

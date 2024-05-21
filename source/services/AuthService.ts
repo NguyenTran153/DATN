@@ -27,6 +27,7 @@ class AuthService {
     }
   }
   static async signUp(
+    token:string,
     email: string,
     password: string,
     firstName: string,
@@ -34,7 +35,7 @@ class AuthService {
   ) {
     try {
       const params = JSON.stringify({
-        email: email,
+        token: token,
         password: password,
         firstName: firstName,
         lastName: lastName,
@@ -49,6 +50,48 @@ class AuthService {
       // return response.data;
     } catch (error) {
       console.log('Error logging in:', error);
+    }
+  }
+  static async PhoneVerification(
+    phoneNumber:string
+  ) {
+    try {
+      const params = JSON.stringify({
+        phoneNumber: phoneNumber,
+      
+      });
+      const response = await axios.post('http://10.0.2.2:8080/sms/phone-verification', params, {
+        headers: {
+          'content-type': 'application/json',
+        },
+      });
+      const data = response.data;
+      console.log('Reponse:', data.pinId);
+       return data.pinId;
+    } catch (error) {
+      console.log('Error logging in:', error);
+    }
+  }
+  static async OTPVerification(
+    pinId:string,
+    code: string
+  ) {
+    try {
+      const params = JSON.stringify({
+        pinId: pinId,
+        code: code
+      });
+      const response = await axios.post('http://10.0.2.2:8080/sms/check-verification-code', params, {
+        headers: {
+          'content-type': 'application/json',
+        },
+      });
+      const data = response.data;
+      console.log('Reponse:', data.token);
+       return data.token;
+    } catch (error) {
+      console.log('Error logging in:', error);
+      return 'error'
     }
   }
 }

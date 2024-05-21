@@ -8,6 +8,9 @@ import BottomTabNavigator from './BottomTabNavigator';
 import StoreNavigator from './StoreNavigator';
 import ProfileNavigator from './ProfileNavigator';
 import DoctorNavigator from './DoctorNavigator';
+import OtpScreen from '../screens/Authorization/PhoneNumberScreen';
+import PhoneNumber from '../screens/Authorization/PhoneNumberScreen';
+import OTPScreen from '../screens/Authorization/OtpScreen';
 
 const Tabs = createNativeStackNavigator<RootRoutes>();
 
@@ -23,6 +26,8 @@ const RootNavigator = () => {
       <Tabs.Screen name="StoreNavigator" component={StoreNavigator} />
       <Tabs.Screen name="ProfileNavigator" component={ProfileNavigator} />
       <Tabs.Screen name="DoctorNavigator" component={DoctorNavigator} />
+      <Tabs.Screen name="PhoneNumberScreen" component={PhoneNumber}/>
+      <Tabs.Screen name="OtpScreen" component={OTPScreen}/>
     </Tabs.Navigator>
   );
 };

@@ -12,8 +12,9 @@ import {
 import React, { useState } from 'react';
 import { useTheme } from 'react-native-paper';
 import AuthService from '../../services/AuthService';
-const RegisterScreen = ({ navigation }: any) => {
+const RegisterScreen = ({ route,navigation }: any) => {
   const theme = useTheme();
+  const token = route.params.token
   const [form, setForm] = useState({
     email: '',
     password: '',
@@ -187,13 +188,20 @@ const RegisterScreen = ({ navigation }: any) => {
                 let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
                 if (reg.test(form.email) === true) {
                   if (form.password === form.confirmpassword) {
-                    await AuthService.signUp(form.email, form.password, form.firstName, form.lastName)
+                    await AuthService.signUp(token,form.email, form.password, form.firstName, form.lastName)
                     Alert.alert('Sign up successfuly');
                   } else {
                     Alert.alert('Wrong email or password');
                   }
                 } else {
-                  Alert.alert('Invalid email');
+                  if (form.email.length === 0) {
+                    await AuthService.signUp(token,form.email, form.password, form.firstName, form.lastName)
+                    Alert.alert('Sign up successfuly');
+                  }
+                  else{
+                    Alert.alert('Invalid email');
+                  }
+                 
                 }
               }}>
               <View style={styles.btn}>
@@ -202,7 +210,7 @@ const RegisterScreen = ({ navigation }: any) => {
             </TouchableOpacity>
             <TouchableOpacity
               style={{ marginTop: 'auto' }}
-              onPress={() => navigation.goBack()}>
+              onPress={() => navigation.navigate('LoginScreen')}>
               <Text
                 style={[styles.formFooter, { color: theme.colors.secondary }]}>
                 Đã có tài khoản?
