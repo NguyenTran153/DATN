@@ -1,10 +1,10 @@
 import axios from 'axios';
 
 class AuthService {
-  static async login(email: string, password: string) {
+  static async login(phoneNumber: string, password: string) {
     try {
       const params = JSON.stringify({
-        email: email,
+        phoneNumber: phoneNumber,
         password: password,
       });
       const response = await axios.post<Token>(

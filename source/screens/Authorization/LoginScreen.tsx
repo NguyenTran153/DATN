@@ -43,7 +43,7 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
         <View style={styles.form}>
           <View style={styles.input}>
             <Text style={[styles.inputLabel, {color: theme.colors.primary}]}>
-              Email
+              Số điện thoại
             </Text>
             <TextInput
               id="email"
@@ -59,7 +59,7 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
               autoCorrect={false}
               keyboardType="email-address"
               value={form.email}
-              placeholder="Điền địa chỉ email"
+              placeholder="Điền số điện thoại"
               placeholderTextColor={theme.colors.secondary}
               onChangeText={email => setForm({...form, email})}
             />
@@ -96,7 +96,7 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
             <TouchableOpacity
               onPress={async () => {
                 let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
-                if (reg.test(form.email) === true) {
+                if (form.email.length === 12) {
                   // if (
                   //   form.email === account.email &&
                   //   form.password === account.password
@@ -115,12 +115,12 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
                     dispatch(setToken(token!));
                     navigation.navigate('BottomTabNavigator');
                   } else {
-                    Alert.alert('Wrong email or password');
+                    Alert.alert('Sai điện thoại hoặc mật khẩu');
                   }
                 } else {
-                  Alert.alert('Invalid email');
+                  Alert.alert('Số điện thoại không hợp lệ');
                 }
-                navigation.navigate('BottomTabNavigator');
+                // navigation.navigate('BottomTabNavigator');
               }}>
               <View
                 style={[styles.btn, {backgroundColor: theme.colors.primary}]}>

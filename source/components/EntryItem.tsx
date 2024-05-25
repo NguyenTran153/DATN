@@ -2,7 +2,7 @@ import moment from "moment";
 import { ScrollView, StyleSheet, View } from "react-native";
 import { DataTable, Divider, Text, useTheme } from "react-native-paper";
 
-const EntryItem = ({ entry }: { entry: Entry }) => {
+const EntryItem = ({ entry }: { entry: any }) => {
     const theme = useTheme()
     const styles = StyleSheet.create({
         container: {
@@ -40,43 +40,31 @@ const EntryItem = ({ entry }: { entry: Entry }) => {
         },
     });
     return (<ScrollView style={styles.container}>
-         <Text style={styles.entryTitle}>{entry.time}</Text>
+         <Text style={styles.entryTitle}>{entry.data.time}</Text>
         <DataTable>
             <DataTable.Header>
                 <DataTable.Title style={styles.tableCell}>Hoạt động</DataTable.Title>
                 <DataTable.Title style={styles.tableCell}>Kết quả</DataTable.Title>
             </DataTable.Header>
             <DataTable.Row>
-                <DataTable.Cell style={styles.tableCell}>Bữa sáng</DataTable.Cell>
-                <DataTable.Cell style={styles.tableCell}>{entry.breakfast}</DataTable.Cell>
-            </DataTable.Row>
-            <DataTable.Row>
-                <DataTable.Cell style={styles.tableCell}>Bữa trưa</DataTable.Cell>
-                <DataTable.Cell style={styles.tableCell}>{entry.lunch}</DataTable.Cell>
-            </DataTable.Row>
-            <DataTable.Row>
-                <DataTable.Cell style={styles.tableCell}>Bữa chiều</DataTable.Cell>
-                <DataTable.Cell style={styles.tableCell}>{entry.dinner}</DataTable.Cell>
-            </DataTable.Row>
-            <DataTable.Row>
-                <DataTable.Cell style={styles.tableCell}>Bữa tối</DataTable.Cell>
-                <DataTable.Cell style={styles.tableCell}>{entry.bedtime}</DataTable.Cell>
+                <DataTable.Cell style={styles.tableCell}>Thức ăn</DataTable.Cell>
+                <DataTable.Cell style={styles.tableCell}>{entry.data.food}</DataTable.Cell>
             </DataTable.Row>
             <DataTable.Row>
                 <DataTable.Cell style={styles.tableCell}>Huyết áp</DataTable.Cell>
-                <DataTable.Cell style={styles.tableCell}>{entry.bloodPressure}</DataTable.Cell>
+                <DataTable.Cell style={styles.tableCell}>{entry.data.bloodPressure}</DataTable.Cell>
             </DataTable.Row>
             <DataTable.Row>
                 <DataTable.Cell style={styles.tableCell}>Đường huyết</DataTable.Cell>
-                <DataTable.Cell style={styles.tableCell}>{entry.bloodSugar}</DataTable.Cell>
+                <DataTable.Cell style={styles.tableCell}>{entry.data.bloodSugar}</DataTable.Cell>
             </DataTable.Row>
             <DataTable.Row>
                 <DataTable.Cell style={styles.tableCell}>Tập thể dục</DataTable.Cell>
-                <DataTable.Cell style={styles.tableCell}>{entry.exercise}</DataTable.Cell>
+                <DataTable.Cell style={styles.tableCell}>{entry.data.exercise}</DataTable.Cell>
             </DataTable.Row>
             <DataTable.Row>
                 <DataTable.Cell style={styles.tableCell}>Ghi chú</DataTable.Cell>
-                <DataTable.Cell style={styles.tableCell}>{entry.note}</DataTable.Cell>
+                <DataTable.Cell style={styles.tableCell}>{entry.data.note}</DataTable.Cell>
             </DataTable.Row>
         </DataTable>
         <Divider />

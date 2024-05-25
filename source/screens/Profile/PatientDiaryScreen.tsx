@@ -3,15 +3,16 @@ import { View, ScrollView, StyleSheet } from 'react-native';
 import { TextInput, Button, Text, Appbar, Divider } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import moment from 'moment';
+import DiaryService from '../../services/DiaryService';
+import { useSelector } from 'react-redux';
 
 const PatientDiaryScreen = () => {
+    const token = useSelector((state: any) => state.token);
+    const belongTo ='1';
     const [entries, setEntries] = useState<Entry[]>([]);
     const [form, setForm] = useState<Entry>({
         time:new Date().toLocaleString(),
-        breakfast: '',
-        lunch: '',
-        dinner: '',
-        bedtime: '',
+        food:'',
         bloodPressure: '',
         bloodSugar: '',
         exercise: '',
@@ -34,20 +35,24 @@ const PatientDiaryScreen = () => {
     const addEntry = async () => {
         const newEntries = [...entries, form];
         setEntries(newEntries);
-
+        const data = {
+            food: form.food,
+            bloodPressure: form.bloodPressure,
+            bloodSugar: form.bloodSugar,
+            exercise: form.exercise,
+            note: form.note
+        };
        
         try {
-            await AsyncStorage.setItem('patientActivities', JSON.stringify(newEntries));
+            // await AsyncStorage.setItem('patientActivities', JSON.stringify(newEntries));
+            await DiaryService.postDiary(token.accessToken, belongTo, data)
         } catch (error) {
             console.error('Error saving data', error);
         }
 
         setForm({
             time:new Date().toLocaleString(),
-            breakfast: '',
-            lunch: '',
-            dinner: '',
-            bedtime: '',
+            food:'',
             bloodPressure: '',
             bloodSugar: '',
             exercise: '',
@@ -75,27 +80,9 @@ const PatientDiaryScreen = () => {
             <View style={styles.inputContainer}>
                 <Text style={{fontSize:30, fontWeight:"bold", alignSelf:'center', marginBottom:5}}>Nhật ký bệnh nhân</Text>
                 <TextInput
-                    label="Bữa sáng"
-                    value={form.breakfast}
-                    onChangeText={(text) => handleInputChange('breakfast', text)}
-                    style={styles.input}
-                />
-                <TextInput
-                    label="Bữa trưa"
-                    value={form.lunch}
-                    onChangeText={(text) => handleInputChange('lunch', text)}
-                    style={styles.input}
-                />
-                <TextInput
-                    label="Bữa chiều"
-                    value={form.dinner}
-                    onChangeText={(text) => handleInputChange('dinner', text)}
-                    style={styles.input}
-                />
-                <TextInput
-                    label="Bữa tối"
-                    value={form.bedtime}
-                    onChangeText={(text) => handleInputChange('bedtime', text)}
+                    label="Thức ăn"
+                    value={form.food}
+                    onChangeText={(text) => handleInputChange('food', text)}
                     style={styles.input}
                 />
                 <TextInput

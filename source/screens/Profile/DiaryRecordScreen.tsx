@@ -3,8 +3,11 @@ import { View, ScrollView, StyleSheet, Text } from 'react-native';
 import { TextInput, Button, Appbar, Divider } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import EntryItem from '../../components/EntryItem';
+import DiaryService from '../../services/DiaryService';
+import { useSelector } from 'react-redux';
 const PatientDiaryScreen = () => {
-    const [entries, setEntries] = useState<Entry[]>([]);
+    const token = useSelector((state: any) => state.token);
+    const [entries, setEntries] = useState([]);
     const styles = StyleSheet.create({
         container: {
             flex: 1,
@@ -37,9 +40,12 @@ const PatientDiaryScreen = () => {
     });
     const loadEntries = async () => {
         try {
-            const savedData = await AsyncStorage.getItem('patientActivities');
+            // const savedData = await AsyncStorage.getItem('patientActivities');
+            const savedData = await DiaryService.getDiary(token.accessToken)
+            
+           
             if (savedData) {
-                setEntries(JSON.parse(savedData));
+                 setEntries(savedData);
             }
         } catch (error) {
             console.error('Error loading data', error);
@@ -53,8 +59,8 @@ const PatientDiaryScreen = () => {
     return (
         <ScrollView style={styles.container}>
             <View style={styles.listContainer}>
-                {entries.length !== 0 ? entries.map((entry, index) => (
-                    <EntryItem key={index} entry={entry} />)) : (<Text style={{ alignSelf: 'center' }}>Chưa có nhật ký</Text>)}
+                {entries.length !== 0 ? entries.map((entry: any) => (
+                    <EntryItem  entry={entry} />)) : (<Text style={{ alignSelf: 'center' }}>Chưa có nhật ký</Text>)}
             </View>
         </ScrollView>
     );
