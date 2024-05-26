@@ -10,7 +10,6 @@ import {
 import {useTheme, Button, Text, Icon, Searchbar} from 'react-native-paper';
 import {Calendar, LocaleConfig} from 'react-native-calendars';
 
-import {ChatRoutes} from '../../Routes/Route';
 import Horizon from '../../components/Horizon';
 import DoctorCard from '../../components/DoctorCard';
 import CustomAppbar from '../../components/CustomAppbar';
@@ -63,9 +62,7 @@ LocaleConfig.locales['en'] = {
 };
 LocaleConfig.defaultLocale = 'en';
 
-type Props = NativeStackScreenProps<ChatRoutes, 'BookingScreen'>;
-
-const BookingScreen = ({route, navigation}: Props) => {
+const BookingScreen = ({route, navigation}: any) => {
   const token = useSelector((state: any) => state.token);
   const user = useSelector((state: any) => state.user);
   const dispatch = useDispatch();
@@ -181,7 +178,7 @@ const BookingScreen = ({route, navigation}: Props) => {
               setSelectedDoctor(doctor.name);
               setIsDoctorSearch(false);
             }}>
-            <DoctorCard doctorId={doctor.name} />
+            <DoctorCard doctorId={index} />
           </TouchableOpacity>
         ))}
       </View>
@@ -286,10 +283,9 @@ const BookingScreen = ({route, navigation}: Props) => {
                 gap: 5,
               }}>
               {specialties.map(specialty => {
-                let uri = `../asset/icon/${specialty.iconName}.svg`;
-
                 return (
                   <TouchableOpacity
+                    key={specialty.index}
                     style={{
                       height: 50,
                       width: '100%',

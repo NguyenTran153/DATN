@@ -2,6 +2,7 @@ import {NavigationContainer} from '@react-navigation/native';
 import {MD3DarkTheme, MD3LightTheme, PaperProvider} from 'react-native-paper';
 import {useColorScheme} from 'react-native';
 import {Provider} from 'react-redux';
+import {AlertNotificationRoot} from 'react-native-alert-notification';
 
 import RootNavigator from './source/navigator/RootNavigator';
 import {createThemeFromSystemSchemes} from './source/utils/createTheme';
@@ -33,9 +34,11 @@ const App = () => {
   return (
     <Provider store={store}>
       <PaperProvider theme={paperTheme}>
-        <NavigationContainer>
-          <RootNavigator />
-        </NavigationContainer>
+        <AlertNotificationRoot>
+          <NavigationContainer>
+            <RootNavigator />
+          </NavigationContainer>
+        </AlertNotificationRoot>
       </PaperProvider>
     </Provider>
   );

@@ -2,7 +2,7 @@ import {StyleSheet, View} from 'react-native';
 import {useState} from 'react';
 import {Avatar, Text, useTheme, IconButton} from 'react-native-paper';
 
-const DoctorCard = ({doctorId}: {doctorId: string}) => {
+const DoctorCard = ({doctorId}: {doctorId: number}) => {
   const theme = useTheme();
   const [isFavorite, setIsFavorite] = useState(false);
 

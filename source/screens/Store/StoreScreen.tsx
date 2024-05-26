@@ -18,39 +18,6 @@ import {useDispatch} from 'react-redux';
 import {addToCart} from '../../redux/slices/medicalOrderSlice';
 import ProductCard from '../../components/ProductCard';
 
-const fakeCategory = [
-  {
-    id: 1,
-    name: 'Thuốc giảm đau',
-    description: 'Dùng để giảm đau',
-    examples: ['Paracetamol', 'Ibuprofen', 'Aspirin'],
-  },
-  {
-    id: 2,
-    name: 'Thuốc hạ sốt',
-    description: 'Dùng để hạ sốt',
-    examples: ['Paracetamol', 'Ibuprofen', 'Acetaminophen'],
-  },
-  {
-    id: 3,
-    name: 'Thuốc kháng sinh',
-    description: 'Dùng để điều trị nhiễm trùng do vi khuẩn',
-    examples: ['Amoxicillin', 'Penicillin', 'Azithromycin'],
-  },
-  {
-    id: 4,
-    name: 'Thuốc tim mạch',
-    description: 'Dùng để điều trị các bệnh tim mạch',
-    examples: ['Aspirin', 'Atenolol', 'Lisinopril'],
-  },
-  {
-    id: 5,
-    name: 'Thuốc cao huyết áp',
-    description: 'Dùng để điều trị cao huyết áp',
-    examples: ['Losartan', 'Amlodipine', 'Hydrochlorothiazide'],
-  },
-];
-
 const fakeData = [
   {
     id: 1,

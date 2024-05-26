@@ -226,7 +226,7 @@ const HomeScreen = ({navigation}: any) => {
                   },
                 ]}
                 variant="titleLarge">
-                Hỏi đáp bác sĩ
+                Tra cứu nhật ký
               </Text>
               <Icon
                 source={'chat-question'}
@@ -284,8 +284,8 @@ const HomeScreen = ({navigation}: any) => {
                     color: theme.colors.onPrimaryContainer,
                   },
                 ]}
-                variant="titleLarge">
-                Hồ sơ bệnh nhân
+                variant="titleMedium">
+                Tra cứu đơn thuốc
               </Text>
               <Icon
                 source={'information'}

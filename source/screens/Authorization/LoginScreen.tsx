@@ -2,7 +2,6 @@ import {
   StyleSheet,
   Text,
   View,
-  Button,
   TextInput,
   SafeAreaView,
   Image,
@@ -12,10 +11,14 @@ import {
 } from 'react-native';
 import React, {useState} from 'react';
 import {useTheme} from 'react-native-paper';
+import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
+
 import AuthService from '../../services/AuthService';
-import {useSelector, useDispatch} from 'react-redux';
+import {useDispatch} from 'react-redux';
 import {setToken} from '../../redux/slices/tokenSlice';
-import {combineSlices} from '@reduxjs/toolkit';
+import UserService from '../../services/UserService';
+import {setUser} from '../../redux/slices/userSlice';
+
 const LoginScreen = ({navigation}: {navigation: any}) => {
   const dispatch = useDispatch();
   const theme = useTheme();
@@ -23,6 +26,46 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
     email: '',
     password: '',
   });
+  const [data, setData] = useState<UserData>();
+
+  const handleLogin = async () => {
+    try {
+      if (form.email.length !== 0) {
+        const token = await AuthService.login(form.email, form.password);
+        if (token?.accessToken !== '' && token?.refreshToken !== '') {
+          dispatch(setToken(token!));
+          if (token) {
+            setData(await UserService.getUserInfo(token.accessToken));
+            dispatch(setUser(data!));
+          }
+          navigation.navigate('BottomTabNavigator');
+        } else {
+          Dialog.show({
+            type: ALERT_TYPE.DANGER,
+            title: 'Đăng nhập thất bại',
+            textBody: 'Số điện thoại hoặc mật khẩu sai',
+            button: 'Đóng',
+          });
+        }
+      } else {
+        Dialog.show({
+          type: ALERT_TYPE.DANGER,
+          title: 'Đăng nhập thất bại',
+          textBody: 'Số điện thoại không hợp lệ',
+          button: 'Đóng',
+        });
+      }
+      // navigation.navigate('BottomTabNavigator');
+    } catch (error) {
+      console.log(error);
+      Dialog.show({
+        type: ALERT_TYPE.DANGER,
+        title: 'Đăng nhập thất bại',
+        textBody: 'Số điện thoại không hợp lệ',
+        button: 'Đóng',
+      });
+    }
+  };
 
   return (
     <ScrollView style={{flex: 1, backgroundColor: theme.colors.background}}>
@@ -93,35 +136,7 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
             </TouchableOpacity>
           </View>
           <View style={styles.formAction}>
-            <TouchableOpacity
-              onPress={async () => {
-                let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
-                if (form.email.length === 12) {
-                  // if (
-                  //   form.email === account.email &&
-                  //   form.password === account.password
-                  // ) {
-                  //   navigation.navigate('BottomTabNavigator');
-                  // } else {
-                  //   Alert.alert('Wrong email or password');
-                  // }
-
-                  const token = await AuthService.login(
-                    form.email,
-                    form.password,
-                  );
-                  if (token?.accessToken !== '' && token?.refreshToken !== '') {
-                    console.log(token);
-                    dispatch(setToken(token!));
-                    navigation.navigate('BottomTabNavigator');
-                  } else {
-                    Alert.alert('Sai điện thoại hoặc mật khẩu');
-                  }
-                } else {
-                  Alert.alert('Số điện thoại không hợp lệ');
-                }
-                // navigation.navigate('BottomTabNavigator');
-              }}>
+            <TouchableOpacity onPress={handleLogin}>
               <View
                 style={[styles.btn, {backgroundColor: theme.colors.primary}]}>
                 <Text
