@@ -5,7 +5,10 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import EntryItem from '../../components/EntryItem';
 import DiaryService from '../../services/DiaryService';
 import { useSelector } from 'react-redux';
-const PatientDiaryScreen = () => {
+const PatientDiaryScreen = ({route}: any) => {
+    const userData = useSelector((state: any) => state.user);
+    //Kiểm tra id của bệnh nhân
+    const patientId = route.params.patientId ? route.params.patientId : userData.id;
     const token = useSelector((state: any) => state.token);
     const [entries, setEntries] = useState([]);
     const styles = StyleSheet.create({
@@ -42,8 +45,7 @@ const PatientDiaryScreen = () => {
         try {
             // const savedData = await AsyncStorage.getItem('patientActivities');
             const savedData = await DiaryService.getDiary(token.accessToken)
-            
-           
+            // const savedData = await DiaryService.getDiaryByID(token.accessToken, patientId)
             if (savedData) {
                  setEntries(savedData);
             }

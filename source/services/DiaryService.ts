@@ -38,6 +38,23 @@ class DiaryService {
           console.log('Error logging in:', error);
         }
       }
+      static async getDiaryByID(accessToken: string, ID:string) {
+        try {
+          const response = await axios.get(
+            `http://10.0.2.2:8080/diaries/user-diaries/${ID}`,
+            {
+              headers: {
+                'content-type': 'application/json',
+                Authorization: `Bearer ${accessToken}`,
+              },
+            },
+          );
+          console.log(response.data);
+          return response.data;
+        } catch (error) {
+          console.log('Error logging in:', error);
+        }
+      }
 }
 
 export default DiaryService

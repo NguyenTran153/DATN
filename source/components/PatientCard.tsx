@@ -49,6 +49,7 @@ const PatientCard: React.FC<PatientCardProps> = ({patientId, navigation}) => {
       onPress: () =>
         navigation.navigate('ProfileNavigator', {
           screen: 'DiaryRecordScreen',
+          params: {patientId: patientId},
         }),
     },
     {
@@ -57,7 +58,7 @@ const PatientCard: React.FC<PatientCardProps> = ({patientId, navigation}) => {
       onPress: () =>
         navigation.navigate('ProfileNavigator', {
           screen: 'PatientDiaryScreen',
-          params: {id: userData.id},
+          params: {patientId: userData.id},
         }),
     },
     {
