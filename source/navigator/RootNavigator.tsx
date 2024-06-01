@@ -11,6 +11,9 @@ import DoctorNavigator from './DoctorNavigator';
 import OtpScreen from '../screens/Authorization/PhoneNumberScreen';
 import PhoneNumber from '../screens/Authorization/PhoneNumberScreen';
 import OTPScreen from '../screens/Authorization/OtpScreen';
+import ResetPasswordScreen from '../screens/Authorization/ResetPasswordScreen';
+import OTPResetPassword from '../screens/Authorization/OTPResetPassword';
+import ForgotPasswordScreen from '../screens/Authorization/ForgotPasswordScreen';
 
 const Tabs = createNativeStackNavigator<RootRoutes>();
 
@@ -28,6 +31,9 @@ const RootNavigator = () => {
       <Tabs.Screen name="DoctorNavigator" component={DoctorNavigator} />
       <Tabs.Screen name="PhoneNumberScreen" component={PhoneNumber}/>
       <Tabs.Screen name="OtpScreen" component={OTPScreen}/>
+      <Tabs.Screen name="ResetPasswordScreen" component={ResetPasswordScreen} />
+      <Tabs.Screen name="OTPResetPassword" component={OTPResetPassword}/>
+      <Tabs.Screen name="ForgotPasswordScreen" component={ForgotPasswordScreen}/>
     </Tabs.Navigator>
   );
 };

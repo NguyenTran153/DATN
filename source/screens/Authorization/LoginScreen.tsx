@@ -146,7 +146,10 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
               placeholderTextColor={theme.colors.secondary}
               onChangeText={password => setForm({...form, password})}
             />
-            <TouchableOpacity style={{marginTop: 'auto'}} onPress={() => {}}>
+            <TouchableOpacity style={{marginTop: 'auto'}} onPress={() => {
+
+              navigation.navigate('ForgotPasswordScreen')
+            }}>
               <Text
                 style={{
                   textDecorationLine: 'underline',
