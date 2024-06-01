@@ -115,6 +115,7 @@ const ProfileScreen = ({navigation}: {navigation: any}) => {
             onPress={() => {
               navigation.navigate('ProfileNavigator', {
                 screen: 'PatientDiaryScreen',
+                params: {id: null}
               });
             }}
           />
