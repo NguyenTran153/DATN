@@ -14,7 +14,7 @@ const PatientDiaryScreen = ({route}: any) => {
   //   let belongTo =
   // }  
   const userData = useSelector((state: any) => state.user);
-  const belongTo = route.params.id ? route.params.id : userData.id;
+  const patientId = route.params.patientId ? route.params.patientId : userData.id;
   const token = useSelector((state: any) => state.token);
   
   const [entries, setEntries] = useState<Entry[]>([]);
@@ -53,7 +53,7 @@ const PatientDiaryScreen = ({route}: any) => {
 
     try {
       // await AsyncStorage.setItem('patientActivities', JSON.stringify(newEntries));
-      await DiaryService.postDiary(token.accessToken, belongTo, data);
+      await DiaryService.postDiary(token.accessToken, patientId, data);
     } catch (error) {
       console.error('Error saving data', error);
     }

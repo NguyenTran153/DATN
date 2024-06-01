@@ -91,13 +91,21 @@ const HomeScreen = ({navigation}: any) => {
             </>
           </TouchableRipple>
           <TouchableRipple
+          
             style={[
               styles.pressContainer,
               {
                 borderColor: theme.colors.onBackground,
                 backgroundColor: theme.colors.background,
               },
-            ]}>
+            ]}
+            onPress={() => {
+              navigation.navigate('ProfileNavigator', {
+                screen: 'PatientDiaryScreen',
+                params: {patientId: null},
+              });
+            }}
+            >
             <>
               <Text
                 style={[
@@ -129,7 +137,7 @@ const HomeScreen = ({navigation}: any) => {
             onPress={() => {
               navigation.navigate('HomeNavigator', {
                 screen: 'PrescriptionScreen',
-                params: {userInfo: userInfo},
+                params: {patientId: null},
               });
             }}>
             <>
@@ -216,7 +224,13 @@ const HomeScreen = ({navigation}: any) => {
                 borderColor: theme.colors.onBackground,
                 backgroundColor: theme.colors.background,
               },
-            ]}>
+            ]}
+            onPress={() => {
+              navigation.navigate('ProfileNavigator', {
+                screen: 'DiaryRecordScreen',
+                params: {patientId: null},
+              });
+            }}>
             <>
               <Text
                 style={[
