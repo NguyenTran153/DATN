@@ -91,7 +91,6 @@ const HomeScreen = ({navigation}: any) => {
             </>
           </TouchableRipple>
           <TouchableRipple
-          
             style={[
               styles.pressContainer,
               {
@@ -104,8 +103,7 @@ const HomeScreen = ({navigation}: any) => {
                 screen: 'PatientDiaryScreen',
                 params: {patientId: null},
               });
-            }}
-            >
+            }}>
             <>
               <Text
                 style={[
@@ -136,8 +134,7 @@ const HomeScreen = ({navigation}: any) => {
             ]}
             onPress={() => {
               navigation.navigate('HomeNavigator', {
-                screen: 'PrescriptionScreen',
-                params: {patientId: null},
+                screen: 'PrescriptionListScreen',
               });
             }}>
             <>
@@ -148,8 +145,8 @@ const HomeScreen = ({navigation}: any) => {
                     color: theme.colors.onPrimaryContainer,
                   },
                 ]}
-                variant="titleLarge">
-                Đơn thuốc
+                variant="titleMedium">
+                Tra cứu đơn thuốc
               </Text>
               <Icon
                 source={'pill'}
@@ -208,10 +205,10 @@ const HomeScreen = ({navigation}: any) => {
                   },
                 ]}
                 variant="titleMedium">
-                Tìm kiếm phòng khám gần nhất
+                Tra cứu kết quả khám bệnh
               </Text>
               <Icon
-                source={'map-search-outline'}
+                source={'text-box-search-outline'}
                 size={64}
                 color={theme.colors.onPrimaryContainer}
               />
@@ -244,65 +241,6 @@ const HomeScreen = ({navigation}: any) => {
               </Text>
               <Icon
                 source={'chat-question'}
-                size={64}
-                color={theme.colors.onPrimaryContainer}
-              />
-            </>
-          </TouchableRipple>
-        </View>
-        <View style={styles.rowView}>
-          <TouchableRipple
-            style={[
-              styles.pressContainer,
-              {
-                borderColor: theme.colors.onBackground,
-                backgroundColor: theme.colors.background,
-              },
-            ]}>
-            <>
-              <Text
-                style={[
-                  styles.textButton,
-                  {
-                    color: theme.colors.onPrimaryContainer,
-                  },
-                ]}
-                variant="titleMedium">
-                Tra cứu kết quả khám bệnh
-              </Text>
-              <Icon
-                source={'text-box-search-outline'}
-                size={64}
-                color={theme.colors.onPrimaryContainer}
-              />
-            </>
-          </TouchableRipple>
-          <TouchableRipple
-            style={[
-              styles.pressContainer,
-              {
-                borderColor: theme.colors.onBackground,
-                backgroundColor: theme.colors.background,
-              },
-            ]}
-            onPress={() => {
-              navigation.navigate('HomeNavigator', {
-                screen: 'PatientRecordScreen',
-              });
-            }}>
-            <>
-              <Text
-                style={[
-                  styles.textButton,
-                  {
-                    color: theme.colors.onPrimaryContainer,
-                  },
-                ]}
-                variant="titleMedium">
-                Tra cứu đơn thuốc
-              </Text>
-              <Icon
-                source={'information'}
                 size={64}
                 color={theme.colors.onPrimaryContainer}
               />

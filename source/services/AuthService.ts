@@ -97,12 +97,13 @@ class AuthService {
     }
   }
 
-  static async logout(payloadToken: PayloadToken) {
+  static async logout(payloadToken: PayloadToken, accessToken: string) {
     try {
       const response = await axios.get('http://10.0.2.2:8080/auth/logout', {
         params: payloadToken,
         headers: {
           'content-type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
         },
       });
       console.log(response);

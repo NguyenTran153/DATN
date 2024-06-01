@@ -12,6 +12,7 @@ const ProfileScreen = ({navigation}: {navigation: any}) => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const userData = useSelector((state: any) => state.user);
+  const token = useSelector((state: any) => state.token);
 
   // useEffect(() => {
   //   fetchData();
@@ -29,7 +30,10 @@ const ProfileScreen = ({navigation}: {navigation: any}) => {
         role: userData.role,
       };
 
-      const response = await AuthService.logout(payloadToken);
+      const response = await AuthService.logout(
+        payloadToken,
+        token.accessToken,
+      );
       if (response.success) {
         // dispatch(clearToken());
         // dispatch(clearUser());

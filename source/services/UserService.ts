@@ -1,4 +1,5 @@
 import axios from 'axios';
+
 class UserService {
   static async getUserInfo(accessToken: string) {
     try {
@@ -17,7 +18,7 @@ class UserService {
       console.log('Error logging in:', error);
     }
   }
-  static async getUserInfoByID(userID: string, accessToken:string) {
+  static async getUserInfoByID(userID: string, accessToken: string) {
     try {
       const response = await axios.get<UserData>(
         `http://10.0.2.2:8080/users/${userID}`,
