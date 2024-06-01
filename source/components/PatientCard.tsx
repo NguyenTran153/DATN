@@ -65,7 +65,7 @@ const PatientCard: React.FC<PatientCardProps> = ({patientId, navigation}) => {
       text: 'Danh sách đơn thuốc',
       onPress: () =>
         navigation.navigate('HomeNavigator', {
-          screen: 'PatientDiaryScreen',
+          screen: 'PrescriptionListScreen',
         }),
     },
     {
