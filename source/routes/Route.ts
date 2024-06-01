@@ -3,8 +3,11 @@ import {NavigatorScreenParams} from '@react-navigation/native';
 export type RootRoutes = {
   LoginScreen: {navigation: any};
   RegisterScreen: {token: string};
+  ResetPasswordScreen: {token: string};
   PhoneNumberScreen: undefined;
+  ForgotPasswordScreen:undefined;
   OtpScreen: {pinId: string};
+  OTPResetPassword: {pinId: string};
   BottomTabNavigator: NavigatorScreenParams<BottomRoutes>;
   HomeNavigator: NavigatorScreenParams<HomeRoutes>;
   StoreNavigator: NavigatorScreenParams<StoreRoutes>;

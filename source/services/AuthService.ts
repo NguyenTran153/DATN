@@ -73,6 +73,48 @@ class AuthService {
       console.log('Error logging in:', error);
     }
   }
+  static async ForgotPassword(phoneNumber: string) {
+    try {
+      const params = JSON.stringify({
+        phoneNumber: phoneNumber,
+      });
+      const response = await axios.post(
+        'http://10.0.2.2:8080/auth/forgot-password',
+        params,
+        {
+          headers: {
+            'content-type': 'application/json',
+          },
+        },
+      );
+      const data = response.data;
+      console.log('Reponse:', data.pinId);
+      return data.pinId;
+    } catch (error) {
+      console.log('Error logging in:', error);
+    }
+  }
+  static async ResetPassword(
+    token: string,
+    password: string,
+  ) {
+    try {
+      const params = JSON.stringify({
+        token: token,
+        password: password,
+      });
+      const response = await axios.post('http://10.0.2.2:8080/auth/reset-password', params, {
+        headers: {
+          'content-type': 'application/json',
+        },
+      });
+      const data = response.data;
+      console.log('Reponse:', data);
+      // return response.data;
+    } catch (error) {
+      console.log('Error logging in:', error);
+    }
+  }
   static async OTPVerification(pinId: string, code: string) {
     try {
       const params = JSON.stringify({
