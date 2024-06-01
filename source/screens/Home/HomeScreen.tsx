@@ -175,7 +175,7 @@ const HomeScreen = ({navigation}: any) => {
                 Tra cứu lịch hẹn
               </Text>
               <Icon
-                source={'chat-question'}
+                source={'book-search-outline'}
                 size={64}
                 color={theme.colors.onPrimaryContainer}
               />

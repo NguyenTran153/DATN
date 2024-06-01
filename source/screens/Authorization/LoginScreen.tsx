@@ -1,16 +1,13 @@
 import {
   StyleSheet,
-  Text,
   View,
   TextInput,
-  SafeAreaView,
   Image,
   TouchableOpacity,
-  Alert,
   ScrollView,
 } from 'react-native';
 import React, {useState} from 'react';
-import {useTheme} from 'react-native-paper';
+import {useTheme, ActivityIndicator, Text} from 'react-native-paper';
 import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
 
 import AuthService from '../../services/AuthService';
@@ -23,21 +20,25 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
   const dispatch = useDispatch();
   const theme = useTheme();
   const [form, setForm] = useState({
-    email: '',
+    phone: '',
     password: '',
   });
   const [data, setData] = useState<UserData>();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleLogin = async () => {
+    setIsLoading(true);
     try {
-      if (form.email.length !== 0) {
-        const token = await AuthService.login(form.email, form.password);
-        if (token?.accessToken !== '' && token?.refreshToken !== '') {
+      if (form.phone.length !== 0) {
+        const token = await AuthService.login(form.phone, form.password);
+        if (token && token?.accessToken !== '' && token?.refreshToken !== '') {
           dispatch(setToken(token!));
-          if (token) {
-            setData(await UserService.getUserInfo(token.accessToken));
-            dispatch(setUser(data!));
-          }
+
+          const userData = await UserService.getUserInfo(token.accessToken);
+
+          console.log(userData);
+          setData(userData);
+          dispatch(setUser(userData!));
           navigation.navigate('BottomTabNavigator');
         } else {
           Dialog.show({
@@ -51,24 +52,44 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
         Dialog.show({
           type: ALERT_TYPE.DANGER,
           title: 'Đăng nhập thất bại',
-          textBody: 'Số điện thoại không hợp lệ',
+          textBody: 'Đã có lỗi xảy ra',
           button: 'Đóng',
         });
       }
-      // navigation.navigate('BottomTabNavigator');
     } catch (error) {
-      console.log(error);
+      console.log('Login Error' + error);
+      setIsLoading(false);
       Dialog.show({
         type: ALERT_TYPE.DANGER,
         title: 'Đăng nhập thất bại',
         textBody: 'Số điện thoại không hợp lệ',
         button: 'Đóng',
       });
+    } finally {
+      navigation.navigate('BottomTabNavigator');
+
+      setIsLoading(false);
     }
   };
 
   return (
     <ScrollView style={{flex: 1, backgroundColor: theme.colors.background}}>
+      {isLoading && (
+        <View
+          style={{
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 9,
+            elevation: 9,
+          }}>
+          <ActivityIndicator size={64} />
+        </View>
+      )}
       <View style={styles.container}>
         <View style={styles.header}>
           <Image
@@ -89,7 +110,7 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
               Số điện thoại
             </Text>
             <TextInput
-              id="email"
+              id="phone"
               style={[
                 styles.inputControl,
                 {
@@ -101,10 +122,10 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
               autoCapitalize="none"
               autoCorrect={false}
               keyboardType="email-address"
-              value={form.email}
+              value={form.phone}
               placeholder="Điền số điện thoại"
               placeholderTextColor={theme.colors.secondary}
-              onChangeText={email => setForm({...form, email})}
+              onChangeText={phone => setForm({...form, phone})}
             />
           </View>
           <View style={styles.input}>
@@ -136,7 +157,7 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
             </TouchableOpacity>
           </View>
           <View style={styles.formAction}>
-            <TouchableOpacity onPress={handleLogin}>
+            <TouchableOpacity onPress={async () => await handleLogin()}>
               <View
                 style={[styles.btn, {backgroundColor: theme.colors.primary}]}>
                 <Text

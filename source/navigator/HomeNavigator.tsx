@@ -3,6 +3,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {HomeRoutes} from '../Routes/Route';
 import BookingScreen from '../screens/Home/BookingScreen';
 import PrescriptionScreen from '../screens/Home/PrescriptionScreen';
+import PrescriptionListScreen from '../screens/Home/PrescriptionListScreen';
 import NotificationScreen from '../screens/Home/NotificationScreen';
 import CallingScreen from '../screens/Chat/CallingScreen';
 import HomeScreen from '../screens/Home/HomeScreen';
@@ -27,6 +28,11 @@ const HomeNavigator = () => {
       <Tabs.Screen
         name="PrescriptionScreen"
         component={PrescriptionScreen}
+        options={{headerShown: false}}
+      />
+      <Tabs.Screen
+        name="PrescriptionListScreen"
+        component={PrescriptionListScreen}
         options={{headerShown: false}}
       />
       <Tabs.Screen

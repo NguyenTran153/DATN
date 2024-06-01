@@ -10,8 +10,8 @@ import {
 } from 'react-native-paper';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
-import { UserInfo } from 'react-native-agora';
-import { useSelector } from 'react-redux';
+import {UserInfo} from 'react-native-agora';
+import {useSelector} from 'react-redux';
 
 const avatar = require('../asset/7677205.jpg');
 
@@ -57,13 +57,16 @@ const PatientCard: React.FC<PatientCardProps> = ({patientId, navigation}) => {
       onPress: () =>
         navigation.navigate('ProfileNavigator', {
           screen: 'PatientDiaryScreen',
-          params: {id: userData.id}
+          params: {id: userData.id},
         }),
     },
     {
       icon: 'stethoscope',
       text: 'Danh sách đơn thuốc',
-      onPress: () => console.log('Danh sách đơn thuốc pressed'),
+      onPress: () =>
+        navigation.navigate('HomeNavigator', {
+          screen: 'PatientDiaryScreen',
+        }),
     },
     {
       icon: 'clipboard-list-outline',
@@ -71,7 +74,7 @@ const PatientCard: React.FC<PatientCardProps> = ({patientId, navigation}) => {
       onPress: () =>
         navigation.navigate('HomeNavigator', {
           screen: 'PrescriptionScreen',
-          params: {patientId: patientId}
+          params: {patientId: patientId},
         }),
     },
     {

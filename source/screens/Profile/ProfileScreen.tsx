@@ -5,20 +5,51 @@ import {useEffect, useState} from 'react';
 import UserService from '../../services/UserService';
 import {useSelector, useDispatch} from 'react-redux';
 import {setUser} from '../../redux/slices/userSlice';
+import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
+import AuthService from '../../services/AuthService';
 
 const ProfileScreen = ({navigation}: {navigation: any}) => {
   const theme = useTheme();
-  const token = useSelector((state: any) => state.token);
   const dispatch = useDispatch();
-  const [data, setData] = useState<UserData>();
+  const userData = useSelector((state: any) => state.user);
 
-  useEffect(() => {
-    fetchData();
-  }, []);
+  // useEffect(() => {
+  //   fetchData();
+  // }, []);
 
-  const fetchData = async () => {
-    setData(await UserService.getUserInfo(token.accessToken));
-    dispatch(setUser(data!));
+  // const fetchData = async () => {
+  //   setData(await UserService.getUserInfo(token.accessToken));
+  //   dispatch(setUser(data!));
+  // };
+
+  const handleLogout = async () => {
+    try {
+      const payloadToken: PayloadToken = {
+        id: userData.id,
+        role: userData.role,
+      };
+
+      const response = await AuthService.logout(payloadToken);
+      if (response.success) {
+        // dispatch(clearToken());
+        // dispatch(clearUser());
+        navigation.navigate('LoginScreen');
+      } else {
+        Dialog.show({
+          type: ALERT_TYPE.DANGER,
+          title: 'Đăng xuất thất bại',
+          textBody: 'Không thể đăng xuất. Vui lòng thử lại.',
+          button: 'Đóng',
+        });
+      }
+    } catch (error) {
+      Dialog.show({
+        type: ALERT_TYPE.DANGER,
+        title: 'Đăng xuất thất bại',
+        textBody: 'Lỗi hệ thống đã xảy ra',
+        button: 'Đóng',
+      });
+    }
   };
 
   return (
@@ -29,7 +60,7 @@ const ProfileScreen = ({navigation}: {navigation: any}) => {
         <View style={styles.patientInfo}>
           <View style={styles.editContainer}>
             <Text style={styles.patientName}>
-              {data?.lastName + ' ' + data?.firstName}
+              {userData?.lastName + ' ' + userData?.firstName}
             </Text>
             <Button
               icon="pencil"
@@ -40,8 +71,8 @@ const ProfileScreen = ({navigation}: {navigation: any}) => {
             </Button>
           </View>
           <Text>Ngày sinh: 1991/02/01</Text>
-          <Text>Giới tính: Female</Text>
-          <Text>Địa chỉ: 68894 Caleigh Trafficway Suite 387</Text>
+          <Text>Giới tính: Nữ</Text>
+          <Text>Email: {userData?.email}</Text>
         </View>
       </View>
       <ScrollView>
@@ -105,34 +136,16 @@ const ProfileScreen = ({navigation}: {navigation: any}) => {
               });
             }}
           />
-          <List.Item
-            title="Thêm nhật ký bệnh nhân"
-            description="Thêm nhật ký mỗi ngày để bác sĩ theo dõi"
-            left={() => (
-              <List.Icon style={styles.settingCenter} icon="nature-people" />
-            )}
-            right={() => <List.Icon icon="chevron-right" />}
-            onPress={() => {
-              navigation.navigate('ProfileNavigator', {
-                screen: 'PatientDiaryScreen',
-              });
-            }}
-          />
-          <List.Item
-            title="Nhật ký bệnh nhân"
-            description="Nhật ký được ghi lại của bệnh nhân"
-            left={() => (
-              <List.Icon style={styles.settingCenter} icon="nature-people" />
-            )}
-            right={() => <List.Icon icon="chevron-right" />}
-            onPress={() => {
-              navigation.navigate('ProfileNavigator', {
-                screen: 'DiaryRecordScreen',
-              });
-            }}
-          />
         </List.Section>
       </ScrollView>
+      <Button
+        onPress={async () => await handleLogout()}
+        style={{width: '80%', alignSelf: 'center', marginBottom: 20}}
+        icon="logout"
+        mode="contained"
+        buttonColor={theme.colors.error}>
+        Đăng xuất
+      </Button>
     </SafeAreaView>
   );
 };
@@ -149,6 +162,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingHorizontal: 24,
     textAlign: 'center',
+    justifyContent: 'space-between',
   },
   settingCenter: {
     paddingLeft: 20,

@@ -52,6 +52,7 @@ export type HomeRoutes = {
   HomeScreen: any;
   BookingScreen: {route: any};
   PrescriptionScreen: any;
+  PrescriptionListScreen: any;
   NotificationScreen: any;
   CallingScreen: any;
   ScheduleScreen: any;

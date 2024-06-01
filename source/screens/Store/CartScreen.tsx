@@ -29,7 +29,7 @@ const CartScreen = ({navigation, route}: any) => {
               <View style={{flex: 1, justifyContent: 'center'}}>
                 <LottieView
                   style={{height: 300}}
-                  source={require('../../lottie/cart.json')}
+                  source={require('../../asset/lottie/cart.json')}
                   autoPlay
                   loop
                 />
