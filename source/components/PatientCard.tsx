@@ -10,6 +10,8 @@ import {
 } from 'react-native-paper';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
+import { UserInfo } from 'react-native-agora';
+import { useSelector } from 'react-redux';
 
 const avatar = require('../asset/7677205.jpg');
 
@@ -26,7 +28,7 @@ interface PatientCardProps {
 
 const PatientCard: React.FC<PatientCardProps> = ({patientId, navigation}) => {
   const theme = useTheme();
-
+  const userData = useSelector((state: any) => state.user);
   const [expanded, setExpanded] = useState(false);
   const [bookingModalVisible, setBookingModalVisible] = useState(false);
 
@@ -55,6 +57,7 @@ const PatientCard: React.FC<PatientCardProps> = ({patientId, navigation}) => {
       onPress: () =>
         navigation.navigate('ProfileNavigator', {
           screen: 'PatientDiaryScreen',
+          params: {id: userData.id}
         }),
     },
     {
@@ -68,6 +71,7 @@ const PatientCard: React.FC<PatientCardProps> = ({patientId, navigation}) => {
       onPress: () =>
         navigation.navigate('HomeNavigator', {
           screen: 'PrescriptionScreen',
+          params: {patientId: patientId}
         }),
     },
     {

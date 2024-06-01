@@ -1,5 +1,5 @@
 import {View, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import React from 'react';
 import DropDown from '../../components/DropDown';
 import {NativeStackScreenProps} from '@react-navigation/native-stack';
@@ -16,6 +16,8 @@ import {ChatRoutes} from '../../Routes/Route';
 import moment from 'moment';
 import AutocompleteTextInput from '../../components/AutoComplete';
 import CustomAppbar from '../../components/CustomAppbar';
+import UserService from '../../services/UserService';
+import { useSelector } from 'react-redux';
 
 const MyDropdownComponent = () => {
   const theme = useTheme();
@@ -128,7 +130,18 @@ const MyDropdownComponent = () => {
 
 const PrescriptionScreen = ({route, navigation}: any) => {
   var date = new Date();
-  const userInfo = route.params.userInfo;
+  const [userInfo, setUserInfo] = useState<UserData>();
+  const token = useSelector((state: any) => state.token);
+  const patientId = route.params.patientId;
+  useEffect(() => {
+    fetchData();
+  }, []);
+
+  const fetchData = async () => {
+    setUserInfo(await UserService.getUserInfoByID(patientId,token.accessToken));
+    console.log(userInfo )
+  };
+  
   const [components, setComponents] = useState<
     {id: number; component: React.ReactNode}[]
   >([]);
@@ -143,7 +156,7 @@ const PrescriptionScreen = ({route, navigation}: any) => {
       ...prevComponents,
       {id: newId, component: <MyDropdownComponent key={newId} />},
     ]);
-    console.log(userInfo);
+    console.log(patientId);
   };
 
   const removeComponent = (idToRemove: number) => {
@@ -197,31 +210,31 @@ const PrescriptionScreen = ({route, navigation}: any) => {
           <View style={styles.row}>
             <View style={styles.infoContainer}>
               <Text style={styles.label}>Họ tên: </Text>
-              <Text style={styles.value}>{userInfo.userName}</Text>
+              <Text style={styles.value}>{userInfo?.firstName} {userInfo?.lastName}</Text>
             </View>
             <View style={styles.infoContainer}>
               <Text style={styles.label}>Giới tính: </Text>
-              <Text style={styles.value}>{userInfo.Gender}</Text>
+              <Text style={styles.value}>{/*userInfo.Gender*/}Nam</Text>
             </View>
             <View style={styles.infoContainer}>
               <Text style={styles.label}>Tuổi: </Text>
-              <Text style={styles.value}>{userInfo.Age}</Text>
+              <Text style={styles.value}>{/*userInfo.Age*/} 48</Text>
             </View>
           </View>
           <View style={styles.row}>
             <View style={styles.infoContainer}>
               <Text style={styles.label}>Địa chỉ: </Text>
-              <Text style={styles.value}>{userInfo.Address}</Text>
+              <Text style={styles.value}>{/*userInfo.Address*/} 123, Nguyễn Văn Đậu, P.15, Quận Bình Thạnh</Text>
             </View>
           </View>
           <View style={styles.row}>
             <View style={styles.infoContainer}>
               <Text style={styles.label}>Chiều cao (cm): </Text>
-              <Text style={styles.value}>{userInfo.Height}</Text>
+              <Text style={styles.value}>{/*userInfo.Height*/} 175</Text>
             </View>
             <View style={styles.infoContainer}>
               <Text style={styles.label}>Cân nặng (kg): </Text>
-              <Text style={styles.value}>{userInfo.Weight}</Text>
+              <Text style={styles.value}>{/*userInfo.Weight*/} 60</Text>
             </View>
           </View>
         </View>

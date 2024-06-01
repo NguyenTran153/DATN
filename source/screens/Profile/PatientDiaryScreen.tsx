@@ -7,13 +7,16 @@ import DiaryService from '../../services/DiaryService';
 import {useSelector} from 'react-redux';
 
 const PatientDiaryScreen = ({route}: any) => {
-  if(route.params.id){
-    // Kiểm tra có nhận id bên params không, nếu có thì đây là tài khoản bác sĩ, id được truyền là của bệnh nhân, nếu không thì đây là tài khoản bênh nhân, lấy id từ redux
-    let id = route.params.id; 
-
-  }  
+  // const belongTo = '1';
+  // if(route.params.id){
+  //   // Kiểm tra có nhận id bên params không, nếu có thì đây là tài khoản bác sĩ, id được truyền là của bệnh nhân, nếu không thì đây là tài khoản bênh nhân, lấy id từ redux
+  //   let id = route.params.id; 
+  //   let belongTo =
+  // }  
+  const userData = useSelector((state: any) => state.user);
+  const belongTo = route.params.id ? route.params.id : userData.id;
   const token = useSelector((state: any) => state.token);
-  const belongTo = '1';
+  
   const [entries, setEntries] = useState<Entry[]>([]);
   const [form, setForm] = useState<Entry>({
     time: new Date().toLocaleString(),
