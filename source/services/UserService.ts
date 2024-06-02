@@ -35,6 +35,15 @@ class UserService {
       console.log('Error logging in getUserInfoByID:', error);
     }
   }
+
+  async sendFriendRequest(receiverId: string, accessToken: string) {
+    try {
+      
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
 }
 
 export default UserService;

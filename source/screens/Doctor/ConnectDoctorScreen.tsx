@@ -11,29 +11,33 @@ import {IconButton, List, Text, TextInput, useTheme} from 'react-native-paper';
 import QRLoginID from '../QRLoginID';
 import DropDown from '../../components/DropDown';
 import CustomAppbar from '../../components/CustomAppbar';
+import {useSelector} from 'react-redux';
+import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
 
 const ConnectDoctorScreen = ({navigation}: any) => {
   const theme = useTheme();
-  const [showDropDown, setShowDropDown] = useState(false);
-  const [domain, setDomain] = useState('');
-  const domainList = [
-    {
-      label: '+84',
-      value: '+84',
-    },
-    {
-      label: '+123',
-      value: '+123',
-    },
-    {
-      label: '+456',
-      value: '+456',
-    },
-  ];
+  const user = useSelector((state: any) => state.user);
+
+  const [phone, setPhone] = useState('');
+  const [accountModal, setAccountModal] = useState(false);
+  console.log(user.role);
+  const sendFriendRequest = async () => {
+    Dialog.show({
+      type: ALERT_TYPE.DANGER,
+      title: 'Thất bại',
+      textBody: 'Số điện thoại chưa đăng ký hoặc không cho phép tìm kiếm',
+      button: 'Đóng',
+    });
+  };
+
   return (
     <>
       <CustomAppbar
-        title={'Liên hệ với bác sĩ'}
+        title={
+          user.role === 'patient'
+            ? 'Liên hệ với bác sĩ'
+            : 'Liên hệ với bệnh nhân'
+        }
         goBack={() => navigation.goBack()}
       />
 
@@ -49,10 +53,10 @@ const ConnectDoctorScreen = ({navigation}: any) => {
                 style={{
                   fontSize: 20,
                   color: theme.colors.background,
-                  fontWeight: 'bold',
+                  fontWeight: '500',
                   marginBottom: 10,
                 }}>
-                Leo Võ
+                {user.lastName} {user.firstName}
               </Text>
               <View style={{marginBottom: 10}}>
                 <QRLoginID />
@@ -68,38 +72,19 @@ const ConnectDoctorScreen = ({navigation}: any) => {
               alignItems: 'center',
               justifyContent: 'center',
             }}>
-            <DropDown
-              label={'Domain'}
-              mode={'outlined'}
-              visible={showDropDown}
-              showDropDown={() => setShowDropDown(true)}
-              onDismiss={() => setShowDropDown(false)}
-              value={domain}
-              setValue={setDomain}
-              list={domainList}
-              inputProps={{
-                style: {
-                  height: 50,
-                  alignSelf: 'center',
-                  width: 90,
-                },
-              }}
-            />
             <TextInput
-              style={[
-                styles.input,
-                {
-                  backgroundColor: theme.colors.background,
-                  marginTop: 5,
-                  marginLeft: 5,
-                },
-              ]}
+              style={[styles.input]}
               placeholder="Nhập số điện thoại"
+              mode="outlined"
               inputMode="numeric"
-              onChangeText={text => console.log(text)}
-              underlineColor="transparent"
+              onChangeText={phone => setPhone(phone)}
+              right={
+                <TextInput.Icon
+                  icon="arrow-right-bold"
+                  onPress={sendFriendRequest}
+                />
+              }
             />
-            <IconButton icon="arrow-right" onPress={() => {}} />
           </View>
           <View style={{width: '100%', justifyContent: 'flex-start'}}>
             <List.Section>
@@ -117,13 +102,19 @@ const ConnectDoctorScreen = ({navigation}: any) => {
                 )}
                 onPress={() => {}}
               />
-              <List.Item
-                title="Bạn bè có thể quen"
-                left={() => (
-                  <List.Icon style={styles.settingCenter} icon="account" />
-                )}
-                onPress={() => {}}
-              />
+              {user.role === 'doctor' && (
+                <List.Item
+                  title="Tạo tài khoản cho bệnh nhân"
+                  left={() => (
+                    <List.Icon style={styles.settingCenter} icon="account" />
+                  )}
+                  onPress={() => {
+                    navigation.navigate('DoctorNavigator', {
+                      screen: 'CreateAccountScreen',
+                    });
+                  }}
+                />
+              )}
             </List.Section>
           </View>
         </View>
@@ -159,9 +150,9 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   input: {
-    width: 220,
+    width: '80%',
     borderWidth: 1,
-    borderRadius: 5,
     height: 50,
+    borderRadius: 10,
   },
 });

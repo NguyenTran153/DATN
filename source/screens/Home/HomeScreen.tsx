@@ -15,20 +15,6 @@ import {
   TouchableRipple,
 } from 'react-native-paper';
 
-const userInfo = {
-  id: '1',
-  userName: 'Jenny Doe',
-  userImg: require('../../asset/7677205.jpg'),
-  messageTime: '4 mins ago',
-  messageText:
-    'Hey there, this is my test for a post of my social app in React Native.',
-  Gender: 'Nam',
-  Age: '35',
-  Address: '123 Main Street, City, Country',
-  Height: 180,
-  Weight: 75,
-};
-
 const HomeScreen = ({navigation}: any) => {
   const theme = useTheme();
 

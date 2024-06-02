@@ -102,8 +102,6 @@ const PatientListScreen = ({navigation}: any) => {
     );
   };
 
-
-
   return (
     <SafeAreaView
       style={[styles.container, {backgroundColor: theme.colors.background}]}>
@@ -115,10 +113,12 @@ const PatientListScreen = ({navigation}: any) => {
           value={searchPatient}
         />
         <IconButton
-          icon="qrcode"
+          icon="account-plus"
           size={24}
           onPress={() =>
-            navigation.navigate('StoreNavigator', {screen: 'CartScreen'})
+            navigation.navigate('DoctorNavigator', {
+              screen: 'ConnectDoctorScreen',
+            })
           }
         />
       </View>

@@ -125,7 +125,7 @@ const RegisterScreen = ({ route,navigation }: any) => {
               autoCorrect={false}
               keyboardType="email-address"
               value={form.email}
-              placeholder="Điền email"
+              placeholder="Điền số điện thoại"
               placeholderTextColor={theme.colors.secondary}
               onChangeText={email => setForm({ ...form, email })}
             />

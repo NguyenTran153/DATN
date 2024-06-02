@@ -5,7 +5,7 @@ export type RootRoutes = {
   RegisterScreen: {token: string};
   ResetPasswordScreen: {token: string};
   PhoneNumberScreen: undefined;
-  ForgotPasswordScreen:undefined;
+  ForgotPasswordScreen: undefined;
   OtpScreen: {pinId: string};
   OTPResetPassword: {pinId: string};
   BottomTabNavigator: NavigatorScreenParams<BottomRoutes>;
@@ -49,6 +49,7 @@ export type ProfileRoutes = {
 export type DoctorRoutes = {
   DoctorListScreen: any;
   ConnectDoctorScreen: any;
+  CreateAccountScreen: any;
 };
 
 export type HomeRoutes = {
