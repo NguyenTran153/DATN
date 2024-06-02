@@ -12,6 +12,7 @@ import {
 import React, { useState } from 'react';
 import { useTheme } from 'react-native-paper';
 import AuthService from '../../services/AuthService';
+import { ALERT_TYPE, Dialog } from 'react-native-alert-notification';
 const RegisterScreen = ({ route,navigation }: any) => {
   const theme = useTheme();
   const token = route.params.token
@@ -116,7 +117,7 @@ const RegisterScreen = ({ route,navigation }: any) => {
           <Text style={styles.title}>Sign up to MediConnect</Text>
         </View>
         <View style={styles.form}>
-          <View style={styles.input}>
+          {/* <View style={styles.input}>
             <Text style={styles.inputLabel}>Email</Text>
             <TextInput
               id="email"
@@ -129,7 +130,7 @@ const RegisterScreen = ({ route,navigation }: any) => {
               placeholderTextColor={theme.colors.secondary}
               onChangeText={email => setForm({ ...form, email })}
             />
-          </View>
+          </View> */}
           <View style={styles.input}>
             <Text style={styles.inputLabel}>Họ</Text>
             <TextInput
@@ -185,24 +186,34 @@ const RegisterScreen = ({ route,navigation }: any) => {
           <View style={styles.formAction}>
             <TouchableOpacity
               onPress={async () => {
-                let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
-                if (reg.test(form.email) === true) {
-                  if (form.password === form.confirmpassword) {
+                // let reg = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
+                // if (reg.test(form.email) === true) {
+                //   if (form.password === form.confirmpassword) {
+                //     await AuthService.signUp(token,form.email, form.password, form.firstName, form.lastName)
+                //     Alert.alert('Sign up successfuly');
+                //   } else {
+                //     Alert.alert('Wrong email or password');
+                //   }
+                // } else {
+                //   if (form.email.length === 0) {
                     await AuthService.signUp(token,form.email, form.password, form.firstName, form.lastName)
-                    Alert.alert('Sign up successfuly');
-                  } else {
-                    Alert.alert('Wrong email or password');
-                  }
-                } else {
-                  if (form.email.length === 0) {
-                    await AuthService.signUp(token,form.email, form.password, form.firstName, form.lastName)
-                    Alert.alert('Sign up successfuly');
-                  }
-                  else{
-                    Alert.alert('Invalid email');
-                  }
+                    Dialog.show({
+                      type: ALERT_TYPE.SUCCESS,
+                      title: 'Đăng ký',
+                      textBody: 'Đăng ký thành công',
+                      button: 'Đóng',
+                    });
+                //   }
+                //   else{
+                //     Dialog.show({
+                //       type: ALERT_TYPE.SUCCESS,
+                //       title: 'Đăng ký',
+                //       textBody: 'Đăng ký không thành công',
+                //       button: 'Đóng',
+                //     });
+                //   }
                  
-                }
+                // }
               }}>
               <View style={styles.btn}>
                 <Text style={styles.btnText}>Đăng ký</Text>

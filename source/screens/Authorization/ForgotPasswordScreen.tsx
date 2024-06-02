@@ -10,6 +10,7 @@ import {
     ScrollView,
   } from 'react-native';
   import React, { useState } from 'react';
+  import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
   import { useTheme } from 'react-native-paper';
   import AuthService from '../../services/AuthService';
 import UserService from '../../services/UserService';
@@ -144,7 +145,12 @@ import OTPScreen from './OtpScreen';
                       {pinId: pinId},
                     )
                   } else {
-                    Alert.alert('Invalid Number');
+                    Dialog.show({
+                      type: ALERT_TYPE.DANGER,
+                      title: 'Số điện thoại',
+                      textBody: 'Số điện thoại không hợp lệ',
+                      button: 'Đóng',
+                    });
                   }
                 }}>
                 <View style={styles.btn}>

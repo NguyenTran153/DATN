@@ -14,6 +14,7 @@ import {
   import AuthService from '../../services/AuthService';
 import UserService from '../../services/UserService';
 import OTPScreen from './OtpScreen';
+import { ALERT_TYPE, Dialog } from 'react-native-alert-notification';
   const PhoneNumber = ({ navigation }: any) => {
     const theme = useTheme();
     const prefix = '+84';
@@ -144,7 +145,12 @@ import OTPScreen from './OtpScreen';
                       {pinId: pinId},
                     )
                   } else {
-                    Alert.alert('Invalid Number');
+                    Dialog.show({
+                      type: ALERT_TYPE.DANGER,
+                      title: 'Số điện thoại',
+                      textBody: 'Số điện thoại không hợp lệ',
+                      button: 'Đóng',
+                    });
                   }
                 }}>
                 <View style={styles.btn}>

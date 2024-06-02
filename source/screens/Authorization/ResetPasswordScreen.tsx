@@ -12,6 +12,7 @@ import {
   import React, { useState } from 'react';
   import { useTheme } from 'react-native-paper';
   import AuthService from '../../services/AuthService';
+import { ALERT_TYPE, Dialog } from 'react-native-alert-notification';
   const ResetPasswordScreen = ({ route,navigation }: any) => {
     const theme = useTheme();
     const token = route.params.token
@@ -147,9 +148,19 @@ import {
                 onPress={async () => {
                     if (form.password === form.confirmpassword) {
                     await AuthService.ResetPassword(token, form.password)
-                      Alert.alert('Reset Successfully');
+                    Dialog.show({
+                      type: ALERT_TYPE.SUCCESS,
+                      title: 'Mật khẩu',
+                      textBody: 'Thay đổi mật khẩu thành công',
+                      button: 'Đóng',
+                    });
                     } else {
-                      Alert.alert('Reset failed');
+                      Dialog.show({
+                        type: ALERT_TYPE.DANGER,
+                        title: 'Mật khẩu',
+                        textBody: 'Thay đổi mật khẩu không thành công',
+                        button: 'Đóng',
+                      });
                     }      
                 }}>
                 <View style={styles.btn}>

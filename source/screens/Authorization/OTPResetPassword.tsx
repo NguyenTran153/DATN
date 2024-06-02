@@ -12,6 +12,7 @@ import {
 import React, { useState } from 'react';
 import { useTheme } from 'react-native-paper';
 import AuthService from '../../services/AuthService';
+import { ALERT_TYPE, Dialog } from 'react-native-alert-notification';
 const OTPResetPassword = ({ route, navigation }: any) => {
     const pinId = route.params.pinId
     const theme = useTheme();
@@ -138,11 +139,21 @@ const OTPResetPassword = ({ route, navigation }: any) => {
                                         navigation.navigate('ResetPasswordScreen',{token:result})
                                     }
                                     else{
-                                        Alert.alert('Invalid OTP');
+                                        Dialog.show({
+                                            type: ALERT_TYPE.DANGER,
+                                            title: 'Mã OTP',
+                                            textBody: 'Mã OTP không hợp lệ',
+                                            button: 'Đóng',
+                                          });
                                     }
                                     console.log(value);
                                 } else {
-                                    Alert.alert('Invalid OTP');
+                                    Dialog.show({
+                                        type: ALERT_TYPE.DANGER,
+                                        title: 'Mã OTP',
+                                        textBody: 'Mã OTP không hợp lệ',
+                                        button: 'Đóng',
+                                      });
                                 }
                             }}>
                             <View style={styles.btn}>
