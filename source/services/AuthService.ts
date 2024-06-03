@@ -101,7 +101,7 @@ class AuthService {
     try {
       const params = JSON.stringify({
         token: token,
-        password: password,
+        newPassword: password,
       });
       const response = await axios.post('http://10.0.2.2:8080/auth/reset-password', params, {
         headers: {
