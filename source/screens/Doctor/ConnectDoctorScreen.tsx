@@ -7,9 +7,8 @@ import {
   View,
 } from 'react-native';
 import React, {useState} from 'react';
-import {IconButton, List, Text, TextInput, useTheme} from 'react-native-paper';
+import {List, Text, TextInput, useTheme} from 'react-native-paper';
 import QRLoginID from '../QRLoginID';
-import DropDown from '../../components/DropDown';
 import CustomAppbar from '../../components/CustomAppbar';
 import {useSelector} from 'react-redux';
 import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
