@@ -1,58 +1,62 @@
 import {StyleSheet, View, FlatList, Image} from 'react-native';
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import {Text, useTheme} from 'react-native-paper';
 import CustomAppbar from '../../components/CustomAppbar';
+import {useSelector} from 'react-redux';
+import NotificationService from '../../services/NotificationService';
 
-const data = [
+const fakeData = [
   {
     id: 1,
-    post_title: 'best things',
-    postimage: '../../asset/7677205.jpg',
-    post_city: 'HCM',
-    username: 'Doraemon',
-    notification: 'link your post',
-    time: '10:50',
+    isRead: false,
+    message: 'Your appointment is confirmed',
+    referenceId: 123,
+    type: 'APPOINTMENT',
+    createdBy: {
+      id: 1,
+      firstName: 'John',
+      lastName: 'Doe',
+      avatar: '../../asset/7677205.jpg',
+    },
+    belongTo: {
+      id: 2,
+      firstName: 'Jane',
+      lastName: 'Doe',
+    },
+    createdAt: '2024-06-04T10:50:00Z',
   },
-  {
-    id: 2,
-    post_title: 'another post',
-    postimage: '../../asset/7677205.jpg',
-    post_city: 'Hanoi',
-    username: 'Nobita',
-    notification: 'comment on your post',
-    time: '15:20',
-  },
-  {
-    id: 3,
-    post_title: 'yet another post',
-    postimage: '../../asset/7677205.jpg',
-    post_city: 'Da Nang',
-    username: 'Suneo',
-    notification: 'liked your post',
-    time: '08:30',
-  },
-  {
-    id: 4,
-    post_title: 'random stuff',
-    postimage: '../../asset/7677205.jpg',
-    post_city: 'Ho Chi Minh City',
-    username: 'Gian',
-    notification: 'shared your post',
-    time: '19:45',
-  },
-  {
-    id: 5,
-    post_title: 'interesting topic',
-    postimage: '../../asset/7677205.jpg',
-    post_city: 'Hue',
-    username: 'Shizuka',
-    notification: 'tagged you in a post',
-    time: '12:15',
-  },
+  // Thêm các đối tượng giả khác tương tự ở đây
 ];
 
 const NotificationScreen = ({navigation}: any) => {
   const theme = useTheme();
+  const token = useSelector((state: any) => state.token.accessToken);
+
+  const [data, setData] = useState(fakeData);
+
+  const getNotifications = async () => {
+    try {
+      const data = await NotificationService.getNotifications(token);
+      return data;
+    } catch (error) {
+      console.log(error);
+      return;
+    }
+  };
+
+  useEffect(() => {
+    const fetchNotifications = async () => {
+      const notifications = await getNotifications();
+      if (notifications.length > 0) {
+        setData(notifications);
+      } else {
+        setData(fakeData);
+      }
+    };
+
+    fetchNotifications();
+  }, [token]);
+
   return (
     <View
       style={[
@@ -80,12 +84,12 @@ const NotificationScreen = ({navigation}: any) => {
                   <Text
                     variant="labelLarge"
                     style={{color: theme.colors.primary}}>
-                    {item.username}
+                    {item.createdBy.firstName} {item.createdBy.lastName}
                   </Text>
-                  <Text>{item.time}</Text>
+                  <Text>{new Date(item.createdAt).toLocaleTimeString()}</Text>
                 </View>
                 <View>
-                  <Text> {item.notification}</Text>
+                  <Text> {item.message}</Text>
                 </View>
               </View>
             </View>

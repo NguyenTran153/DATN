@@ -112,15 +112,26 @@ const PatientListScreen = ({navigation}: any) => {
           onChangeText={setSearchPatient}
           value={searchPatient}
         />
-        <IconButton
-          icon="account-plus"
-          size={24}
-          onPress={() =>
-            navigation.navigate('DoctorNavigator', {
-              screen: 'ConnectDoctorScreen',
-            })
-          }
-        />
+        <View style={{flexDirection: 'row', marginRight: 15}}>
+          <IconButton
+            icon="account-plus"
+            size={24}
+            onPress={() =>
+              navigation.navigate('DoctorNavigator', {
+                screen: 'ConnectDoctorScreen',
+              })
+            }
+          />
+          <IconButton
+            icon="bell"
+            size={24}
+            onPress={() =>
+              navigation.navigate('HomeNavigator', {
+                screen: 'NotificationScreen',
+              })
+            }
+          />
+        </View>
       </View>
       <View style={{flex: 1, padding: 10, width: '100%'}}>
         <FlatList
@@ -168,7 +179,7 @@ const styles = StyleSheet.create({
     width: '100%',
   },
   searchBar: {
-    width: '80%',
+    width: '70%',
     marginLeft: 15,
   },
   title: {
