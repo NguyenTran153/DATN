@@ -5,6 +5,7 @@ import QRScreen from '../screens/QRScreen';
 import BecomeDoctorScreen from '../screens/Profile/BecomeDoctorScreen';
 import PatientDiaryScreen from '../screens/Profile/PatientDiaryScreen';
 import DiaryRecordScreen from '../screens/Profile/DiaryRecordScreen';
+
 const Stacks = createNativeStackNavigator<ProfileRoutes>();
 
 const ProfileNavigator = () => {
@@ -17,14 +18,8 @@ const ProfileNavigator = () => {
         component={BecomeDoctorScreen}
         options={{headerShown: false}}
       />
-      <Stacks.Screen
-        name="PatientDiaryScreen"
-        component={PatientDiaryScreen}
-      />
-      <Stacks.Screen
-        name="DiaryRecordScreen"
-        component={DiaryRecordScreen}
-      />
+      <Stacks.Screen name="PatientDiaryScreen" component={PatientDiaryScreen} />
+      <Stacks.Screen name="DiaryRecordScreen" component={DiaryRecordScreen} />
     </Stacks.Navigator>
   );
 };

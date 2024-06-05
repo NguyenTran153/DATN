@@ -50,6 +50,7 @@ export type DoctorRoutes = {
   DoctorListScreen: any;
   ConnectDoctorScreen: any;
   CreateAccountScreen: any;
+  PatientDetailScreen: any;
 };
 
 export type HomeRoutes = {

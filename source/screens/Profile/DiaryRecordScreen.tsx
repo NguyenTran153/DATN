@@ -5,7 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import EntryItem from '../../components/EntryItem';
 import DiaryService from '../../services/DiaryService';
 import {useSelector} from 'react-redux';
-const PatientDiaryScreen = ({route}: any) => {
+const DiaryRecordScreen = ({route}: any) => {
   const userData = useSelector((state: any) => state.user);
   //Kiểm tra id của bệnh nhân
   const patientId = route?.params?.patientId
@@ -72,4 +72,4 @@ const PatientDiaryScreen = ({route}: any) => {
   );
 };
 
-export default PatientDiaryScreen;
+export default DiaryRecordScreen;

@@ -6,42 +6,82 @@ import {
   Platform,
   TouchableOpacity,
 } from 'react-native';
-import React, {useState} from 'react';
-import {
-  TextInput,
-  Button,
-  HelperText,
-  useTheme,
-  Text,
-  Chip,
-  Icon,
-} from 'react-native-paper';
+import React, {useEffect, useState} from 'react';
+import {TextInput, Button, useTheme, Text, Icon} from 'react-native-paper';
 
 import CustomAppbar from '../../components/CustomAppbar';
 import {specialties} from '../../utils/constant';
+import DropDown from '../../components/DropDown';
+
+interface FormData {
+  image1: File | null;
+  image2: File | null;
+  files: File[];
+  textarea: string;
+  specialitites: any[];
+}
 
 const BecomeDoctorScreen = ({navigation}: any) => {
   const theme = useTheme();
-  const [fullName, setFullName] = useState('');
-  const [specialization, setSpecialization] = useState('');
-  const [phoneNumber, setPhoneNumber] = useState('');
-  const [email, setEmail] = useState('');
-  const [address, setAddress] = useState('');
+  const [showDropDown, setShowDropDown] = useState(false);
 
-  // Xử lý lỗi các trường nhập liệu
-  const [errorFullName, setErrorFullName] = useState(false);
-  const [errorSpecialization, setErrorSpecialization] = useState(false);
-  const [errorPhoneNumber, setErrorPhoneNumber] = useState(false);
-  const [errorEmail, setErrorEmail] = useState(false);
-  const [errorAddress, setErrorAddress] = useState(false);
-
-  // Hàm xử lý khi submit form
-  const handleSubmit = () => {
-    // Kiểm tra tính hợp lệ của các trường
-    // ... (Thêm logic kiểm tra ở đây)
-    // Nếu hợp lệ, gửi dữ liệu lên server
-    // ...
+  const initialFormState: FormData = {
+    image1: null,
+    image2: null,
+    files: [],
+    textarea: '',
+    specialitites: [],
   };
+  const [form, setForm] = useState<FormData | null>(initialFormState);
+
+  const handleImage1Change = (image: File) => {
+    setForm(prevForm => ({
+      ...(prevForm ?? initialFormState),
+      image1: image,
+    }));
+  };
+
+  const handleImageChange = (event: any, imageKey: 'image1' | 'image2') => {
+    if (event.target.files && event.target.files[0]) {
+      setForm(prevForm => {
+        const updatedForm = prevForm ? {...prevForm} : initialFormState;
+        return {
+          ...updatedForm,
+          [imageKey]: event.target.files[0],
+        };
+      });
+    }
+  };
+
+  const handleFilesChange = (event: any) => {
+    if (event.target.files) {
+      setForm(prevForm => {
+        const updatedForm = prevForm ? {...prevForm} : initialFormState;
+        return {
+          ...updatedForm,
+          files: Array.from(event.target.files),
+        };
+      });
+    }
+  };
+
+  const handleTextareaChange = (text: string) => {
+    setForm(prevForm => ({
+      ...(prevForm ?? initialFormState),
+      textarea: text,
+    }));
+  };
+
+  const handleSpecialitiesChange = (specialities: any[]) => {
+    setForm(prevForm => ({
+      ...(prevForm ?? initialFormState),
+      specialitites: specialities,
+    }));
+  };
+
+  useEffect(() => {
+    console.log(JSON.stringify(form));
+  }, [form]);
 
   return (
     <KeyboardAvoidingView
@@ -53,103 +93,68 @@ const BecomeDoctorScreen = ({navigation}: any) => {
       />
 
       <ScrollView contentContainerStyle={styles.container}>
-        <View style={{flexDirection: 'column', gap: 10}}>
-          <Text variant="titleMedium">Chụp ảnh CMND hoặc CCCD mặt trước</Text>
-          <TouchableOpacity
-            style={[
-              styles.photoContainer,
-              {backgroundColor: theme.colors.primaryContainer},
-            ]}>
-            <Icon source="camera" size={24} />
-          </TouchableOpacity>
-        </View>
-        <View style={{flexDirection: 'column', gap: 10}}>
-          <Text variant="titleMedium">Chụp ảnh CMND hoặc CCCD mặt sau</Text>
-          <TouchableOpacity
-            style={[
-              styles.photoContainer,
-              {backgroundColor: theme.colors.primaryContainer},
-            ]}>
-            <Icon source="camera" size={24} />
-          </TouchableOpacity>
-        </View>
+        <View style={{gap: 10}}>
+          <Text variant="titleMedium">
+            Hình ảnh CMND/CCCD mặt trước và mặt sau
+          </Text>
 
-        <Text variant="titleMedium">Nhập các thông tin cá nhân sau</Text>
-        <TextInput
-          mode="outlined"
-          label="Họ và tên"
-          value={fullName}
-          onChangeText={setFullName}
-          error={errorFullName}
-          style={styles.input}
-        />
-        {errorFullName && (
-          <HelperText type="error">Vui lòng nhập họ tên.</HelperText>
-        )}
-
-        <TextInput
-          mode="outlined"
-          label="Số điện thoại"
-          value={phoneNumber}
-          onChangeText={setPhoneNumber}
-          keyboardType="phone-pad"
-          error={errorPhoneNumber}
-          style={styles.input}
-        />
-        {errorPhoneNumber && (
-          <HelperText type="error">
-            Vui lòng nhập số điện thoại hợp lệ.
-          </HelperText>
-        )}
-
-        <TextInput
-          mode="outlined"
-          label="Email"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          error={errorEmail}
-          style={styles.input}
-        />
-        {errorEmail && (
-          <HelperText type="error">
-            Vui lòng nhập địa chỉ email hợp lệ.
-          </HelperText>
-        )}
-        <TextInput
-          mode="outlined"
-          label="Địa chỉ"
-          value={address}
-          onChangeText={setAddress}
-          error={errorAddress}
-          style={styles.input}
-        />
-        {errorAddress && (
-          <HelperText type="error">Vui lòng nhập địa chỉ cá nhân hợp lệ.</HelperText>
-        )}
-
-        
-
-        <View style={{flexDirection: 'column', gap: 10}}>
-          <Text variant="titleMedium">Chọn chuyên ngành</Text>
-          <View style={{flexWrap: 'wrap', flexDirection: 'row'}}>
-            {specialties.map(specialty => (
-              <Chip
-                key={specialty.index}
-                mode="flat"
-                showSelectedCheck={true}
-                onPress={() => console.log(specialty.name)}
-                style={{margin: 4}}>
-                {specialty.name}
-              </Chip>
-            ))}
+          <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
+            <TouchableOpacity
+              style={[
+                styles.photoContainer,
+                {backgroundColor: theme.colors.primaryContainer},
+              ]}>
+              <Icon source="camera" size={36} />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[
+                styles.photoContainer,
+                {backgroundColor: theme.colors.primaryContainer},
+              ]}>
+              <Icon source="camera" size={36} />
+            </TouchableOpacity>
           </View>
         </View>
 
-        <Button mode="contained" onPress={handleSubmit} style={styles.button}>
-          Đăng ký
-        </Button>
+        <View style={{gap: 10}}>
+          <Text variant="titleMedium">Các giấy chứng nhận liên quan</Text>
+          <TouchableOpacity style={styles.fileContainer}>
+            <Icon source="plus" size={36} />
+          </TouchableOpacity>
+        </View>
+
+        <View style={{gap: 10}}>
+          <Text variant="titleMedium">Mô tả về bản thân</Text>
+          <TextInput
+            style={styles.textArea}
+            multiline
+            mode="outlined"
+            value={form?.textarea}
+            onChangeText={handleTextareaChange}
+          />
+        </View>
+
+        <View style={{gap: 10}}>
+          <Text variant="titleMedium">Chọn chuyên ngành</Text>
+          <DropDown
+            mode={'outlined'}
+            visible={showDropDown}
+            showDropDown={() => setShowDropDown(true)}
+            onDismiss={() => setShowDropDown(false)}
+            value={form?.specialitites}
+            setValue={handleSpecialitiesChange}
+            list={specialties}
+          />
+        </View>
       </ScrollView>
+      <Button
+        mode="contained"
+        onPress={() => navigation.goBack()}
+        style={styles.button}>
+        <Text variant="titleMedium" style={{color: theme.colors.background}}>
+          Xác nhận
+        </Text>
+      </Button>
     </KeyboardAvoidingView>
   );
 };
@@ -165,18 +170,35 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   button: {
-    width: '50%',
+    width: '80%',
+    height: 50,
     alignSelf: 'center',
+    justifyContent: 'center',
+    textAlign: 'center',
+    marginBottom: 50,
   },
   photoContainer: {
-    borderRadius: 8,
-    height: 200,
-    width: 300,
+    borderRadius: 10,
+    height: 115,
+    width: 170,
     overflow: 'hidden',
     borderStyle: 'dashed',
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
     borderWidth: 1,
+  },
+  fileContainer: {
+    height: 72,
+    width: 72,
+    borderRadius: 10,
+    borderWidth: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    overflow: 'hidden',
+  },
+  textArea: {
+    height: 100,
+    borderRadius: 10,
   },
 });
