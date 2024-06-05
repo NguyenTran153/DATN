@@ -4,6 +4,7 @@ import {Text, useTheme} from 'react-native-paper';
 import CustomAppbar from '../../components/CustomAppbar';
 import {useSelector} from 'react-redux';
 import NotificationService from '../../services/NotificationService';
+import LottieView from 'lottie-react-native';
 
 const fakeData = [
   {
@@ -32,7 +33,7 @@ const NotificationScreen = ({navigation}: any) => {
   const theme = useTheme();
   const token = useSelector((state: any) => state.token.accessToken);
 
-  const [data, setData] = useState(fakeData);
+  const [data, setData] = useState<any[]>([]);
 
   const getNotifications = async () => {
     try {
@@ -49,8 +50,6 @@ const NotificationScreen = ({navigation}: any) => {
       const notifications = await getNotifications();
       if (notifications.length > 0) {
         setData(notifications);
-      } else {
-        setData(fakeData);
       }
     };
 
@@ -64,38 +63,50 @@ const NotificationScreen = ({navigation}: any) => {
         styles.notificationContainer,
       ]}>
       <CustomAppbar title="Thông báo" goBack={() => navigation.goBack()} />
-      <FlatList
-        data={data}
-        keyExtractor={(item, index) => {
-          return index.toString();
-        }}
-        renderItem={({item}) => {
-          return (
-            <View style={styles.container}>
-              <View style={styles.headerLeftImageView}>
-                <Image
-                  style={styles.headerLeftImage}
-                  source={require('../../asset/7677205.jpg')}
-                />
-              </View>
+      {data.length === 0 ? (
+        <View style={styles.lottie}>
+          <LottieView
+            source={require('../../asset/lottie/nonotification.json')}
+            autoPlay
+            loop
+            style={{width: 200, height: 200}}
+          />
+          <Text variant="titleLarge">Chưa có thông báo</Text>
+        </View>
+      ) : (
+        <FlatList
+          data={data}
+          keyExtractor={(item, index) => {
+            return index.toString();
+          }}
+          renderItem={({item}) => {
+            return (
+              <View style={styles.container}>
+                <View style={styles.headerLeftImageView}>
+                  <Image
+                    style={styles.headerLeftImage}
+                    source={require('../../asset/7677205.jpg')}
+                  />
+                </View>
 
-              <View style={{flexDirection: 'row', marginLeft: 10}}>
-                <View>
-                  <Text
-                    variant="labelLarge"
-                    style={{color: theme.colors.primary}}>
-                    {item.createdBy.firstName} {item.createdBy.lastName}
-                  </Text>
-                  <Text>{new Date(item.createdAt).toLocaleTimeString()}</Text>
-                </View>
-                <View>
-                  <Text> {item.message}</Text>
+                <View style={{flexDirection: 'row', marginLeft: 10}}>
+                  <View>
+                    <Text
+                      variant="labelLarge"
+                      style={{color: theme.colors.primary}}>
+                      {item.createdBy.firstName} {item.createdBy.lastName}
+                    </Text>
+                    <Text>{new Date(item.createdAt).toLocaleTimeString()}</Text>
+                  </View>
+                  <View>
+                    <Text> {item.message}</Text>
+                  </View>
                 </View>
               </View>
-            </View>
-          );
-        }}
-      />
+            );
+          }}
+        />
+      )}
     </View>
   );
 };
@@ -126,5 +137,10 @@ const styles = StyleSheet.create({
     height: 40,
     borderRadius: 20,
     marginLeft: 15,
+  },
+  lottie: {
+    justifyContent: 'center',
+    flex: 0.5,
+    alignItems: 'center',
   },
 });

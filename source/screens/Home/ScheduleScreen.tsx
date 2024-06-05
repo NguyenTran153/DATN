@@ -104,6 +104,8 @@ const ScheduleScreen = ({navigation}: any) => {
       />
       <FlatList
         data={data}
+        showsHorizontalScrollIndicator={false}
+        showsVerticalScrollIndicator={false}
         keyExtractor={(item: any) => item.id.toString()}
         renderItem={({item}) => (
           <ScheduleCard
