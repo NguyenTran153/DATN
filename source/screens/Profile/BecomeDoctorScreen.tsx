@@ -7,11 +7,21 @@ import {
   TouchableOpacity,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {TextInput, Button, useTheme, Text, Icon} from 'react-native-paper';
+import {
+  ActivityIndicator,
+  TextInput,
+  Button,
+  useTheme,
+  Text,
+  Icon,
+} from 'react-native-paper';
 
 import CustomAppbar from '../../components/CustomAppbar';
 import {specialties} from '../../utils/constant';
 import DropDown from '../../components/DropDown';
+import {useSelector} from 'react-redux';
+import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
+import UserService from '../../services/UserService';
 
 interface FormData {
   image1: File | null;
@@ -24,6 +34,10 @@ interface FormData {
 const BecomeDoctorScreen = ({navigation}: any) => {
   const theme = useTheme();
   const [showDropDown, setShowDropDown] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+
+  const token = useSelector((state: any) => state.token.accessToken);
+  const role = useSelector((state: any) => state.user.role);
 
   const initialFormState: FormData = {
     image1: null,
@@ -83,6 +97,40 @@ const BecomeDoctorScreen = ({navigation}: any) => {
     console.log(JSON.stringify(form));
   }, [form]);
 
+  const handleRegisterDoctor = async () => {
+    // if (!form || !form.image1 || !form.image2 || !form.specialitites.length) {
+    //   Dialog.show({
+    //     type: ALERT_TYPE.WARNING,
+    //     title: 'Thiếu thông tin',
+    //     textBody: 'Vui lòng điền đầy đủ thông tin.',
+    //     button: 'Đóng',
+    //   });
+    //   return;
+    // }
+    try {
+      setIsLoading(true);
+      const response = await UserService.registerDoctor(token, form);
+      navigation.goBack();
+      Dialog.show({
+        type: ALERT_TYPE.SUCCESS,
+        title: 'Đăng ký thành bác sĩ thành công',
+        textBody:
+          'Bạn đã gửi thành công, xin hãy chờ xác nhận từ phía hệ thống',
+        button: 'Đóng',
+      });
+      return response;
+    } catch (error) {
+      console.log(error);
+      Dialog.show({
+        type: ALERT_TYPE.DANGER,
+        title: 'Đăng ký thành bác sĩ thất bại',
+        button: 'Đóng',
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -91,7 +139,22 @@ const BecomeDoctorScreen = ({navigation}: any) => {
         title="Đăng ký tài khoản Bác sĩ"
         goBack={() => navigation.goBack()}
       />
-
+      {isLoading && (
+        <View
+          style={{
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 9,
+            elevation: 9,
+          }}>
+          <ActivityIndicator size={64} />
+        </View>
+      )}
       <ScrollView contentContainerStyle={styles.container}>
         <View style={{gap: 10}}>
           <Text variant="titleMedium">
@@ -149,8 +212,9 @@ const BecomeDoctorScreen = ({navigation}: any) => {
       </ScrollView>
       <Button
         mode="contained"
-        onPress={() => navigation.goBack()}
-        style={styles.button}>
+        onPress={async () => await handleRegisterDoctor()}
+        style={styles.button}
+        disabled={isLoading}>
         <Text variant="titleMedium" style={{color: theme.colors.background}}>
           Xác nhận
         </Text>
