@@ -127,19 +127,21 @@ const ProfileScreen = ({navigation}: {navigation: any}) => {
             right={() => <List.Icon icon="chevron-right" />}
             onPress={() => {}}
           />
-          <List.Item
-            title="Đăng Ký Bác Sĩ"
-            description="Đăng ký tài khoản bác sĩ"
-            left={() => (
-              <List.Icon style={styles.settingCenter} icon="doctor" />
-            )}
-            right={() => <List.Icon icon="chevron-right" />}
-            onPress={() => {
-              navigation.navigate('ProfileNavigator', {
-                screen: 'BecomeDoctorScreen',
-              });
-            }}
-          />
+          {userData.role !== 'doctor' && (
+            <List.Item
+              title="Đăng Ký Bác Sĩ"
+              description="Đăng ký tài khoản bác sĩ"
+              left={() => (
+                <List.Icon style={styles.settingCenter} icon="doctor" />
+              )}
+              right={() => <List.Icon icon="chevron-right" />}
+              onPress={() => {
+                navigation.navigate('ProfileNavigator', {
+                  screen: 'BecomeDoctorScreen',
+                });
+              }}
+            />
+          )}
         </List.Section>
       </ScrollView>
       <Button
