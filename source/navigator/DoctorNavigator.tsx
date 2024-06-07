@@ -5,6 +5,8 @@ import DoctorListScreen from '../screens/Doctor/DoctorListScreen';
 import ConnectDoctorScreen from '../screens/Doctor/ConnectDoctorScreen';
 import CreateAccountScreen from '../screens/Doctor/CreateAccountScreen';
 import PatientDetailScreen from '../screens/PatientList/PatientDetailScreen';
+import PrescriptionScreen from '../screens/Home/PrescriptionScreen';
+import ExamineScreen from '../screens/Home/ExamineScreen';
 
 const Stacks = createNativeStackNavigator<DoctorRoutes>();
 
@@ -29,6 +31,16 @@ const DoctorNavigator = () => {
       <Stacks.Screen
         name={'PatientDetailScreen'}
         component={PatientDetailScreen}
+        options={{headerShown: false}}
+      />
+      <Stacks.Screen
+        name={'PrescriptionScreen'}
+        component={PrescriptionScreen}
+        options={{headerShown: false}}
+      />
+      <Stacks.Screen
+        name="ExamineScreen"
+        component={ExamineScreen}
         options={{headerShown: false}}
       />
     </Stacks.Navigator>
