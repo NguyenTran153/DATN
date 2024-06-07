@@ -1,8 +1,8 @@
-import {View, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
-import {useEffect, useState} from 'react';
+import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { useEffect, useState } from 'react';
 import React from 'react';
 import DropDown from '../../components/DropDown';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import { NativeStackScreenProps } from '@react-navigation/native-stack';
 import {
   List,
   TextInput,
@@ -11,11 +11,11 @@ import {
   Icon,
   Text,
 } from 'react-native-paper';
-import {SafeAreaView} from 'react-native-safe-area-context';
-import {ChatRoutes} from '../../Routes/Route';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { ChatRoutes } from '../../Routes/Route';
 import moment from 'moment';
 import AutocompleteTextInput from '../../components/AutoComplete';
-import CustomAppbar from '../../components/CustomAppbar';
+// import CustomAppbar from '../../components/CustomAppbar';
 import UserService from '../../services/UserService';
 import { useSelector } from 'react-redux';
 
@@ -24,7 +24,7 @@ const MyDropdownComponent = () => {
   const [showDropDown, setShowDropDown] = useState(false);
   const [medicine, setMedicine] = useState('');
   const [Dosage, setDosage] = useState('');
-  const [morning, setMorning] = useState('');
+  const [quantity, setQuantity] = useState('');
   const [afternoon, setAfternoon] = useState('');
   const [evening, setEvening] = useState('');
   const [night, setNight] = useState('');
@@ -53,7 +53,7 @@ const MyDropdownComponent = () => {
       height: 40,
       fontSize: 14,
       backgroundColor: theme.colors.background,
-      width: 90,
+      width: '100%',
       borderRadius: 5,
     },
     text: {
@@ -64,63 +64,35 @@ const MyDropdownComponent = () => {
   });
 
   return (
-    <View style={{margin: 5}}>
+    <View>
       <View
         style={{
           flexDirection: 'row',
-          marginHorizontal: 5,
-          alignItems: 'flex-end',
+          justifyContent: 'center'
         }}>
-        <View style={{width: 290}}>
+        <View style={{ width: "60%" }}>
           <Text style={styles.text}>Tên thuốc</Text>
           <AutocompleteTextInput suggestions={medicineList} />
         </View>
-        <View style={{marginLeft: 10}}>
+        <View style={{ marginLeft: "10%", width: "30%" }}>
           <Text style={styles.text}>Số lượng</Text>
           <TextInput
             style={styles.cell}
             placeholder="Số lượng"
-            onChangeText={text => setDosage(text)}
-            value={Dosage}
+            onChangeText={text => setQuantity(text)}
+            value={quantity}
           />
         </View>
       </View>
 
-      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-        <View style={{margin: 5}}>
-          <Text style={styles.text}>Sáng</Text>
+      <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 10 }}>
+        <View style={{ width: "100%" }}>
+          <Text style={styles.text}>Liều lượng</Text>
           <TextInput
-            placeholder="Số lượng"
+            placeholder="Nhập liều lượng"
             style={styles.cell}
-            onChangeText={text => setMorning(text)}
-            value={morning}
-          />
-        </View>
-        <View style={{margin: 5}}>
-          <Text style={styles.text}>Trưa</Text>
-          <TextInput
-            placeholder="Số lượng"
-            style={styles.cell}
-            onChangeText={text => setAfternoon(text)}
-            value={afternoon}
-          />
-        </View>
-        <View style={{margin: 5}}>
-          <Text style={styles.text}>Chiều</Text>
-          <TextInput
-            placeholder="Số lượng"
-            style={styles.cell}
-            onChangeText={text => setEvening(text)}
-            value={evening}
-          />
-        </View>
-        <View style={{margin: 5}}>
-          <Text style={styles.text}>Tối</Text>
-          <TextInput
-            placeholder="Số lượng"
-            style={styles.cell}
-            onChangeText={text => setNight(text)}
-            value={night}
+            onChangeText={text => setDosage(text)}
+            value={Dosage}
           />
         </View>
       </View>
@@ -128,25 +100,26 @@ const MyDropdownComponent = () => {
   );
 };
 
-const PrescriptionScreen = ({route, navigation}: any) => {
+const PrescriptionScreen = ({ route, navigation }: any) => {
   var date = new Date();
   const [userInfo, setUserInfo] = useState<UserData>();
   const token = useSelector((state: any) => state.token);
-  const patientId = route.params.patientId;
+  const patientId = route?.params?.patientId;
+  const pres = route?.params?.prescription ? route?.params?.prescription : 'Chưa có chẩn đoán';
   useEffect(() => {
     fetchData();
   }, []);
 
   const fetchData = async () => {
-    setUserInfo(await UserService.getUserInfoByID(patientId,token.accessToken));
-    console.log(userInfo )
+    // setUserInfo(await UserService.getUserInfoByID(patientId,token.accessToken));
+    // console.log(userInfo )
   };
-  
+
   const [components, setComponents] = useState<
-    {id: number; component: React.ReactNode}[]
+    { id: number; component: React.ReactNode }[]
   >([]);
   const [idCounter, setIdCounter] = useState(0);
-  const [prescription, setPrescription] = useState('');
+  
   const [note, setNote] = useState('');
   const theme = useTheme();
   const addComponent = () => {
@@ -154,7 +127,7 @@ const PrescriptionScreen = ({route, navigation}: any) => {
     setIdCounter(newId);
     setComponents(prevComponents => [
       ...prevComponents,
-      {id: newId, component: <MyDropdownComponent key={newId} />},
+      { id: newId, component: <MyDropdownComponent key={newId} /> },
     ]);
     console.log(patientId);
   };
@@ -168,12 +141,16 @@ const PrescriptionScreen = ({route, navigation}: any) => {
     container: {
       flex: 1,
       backgroundColor: theme.colors.background,
+      padding: 5,
+
     },
 
     prescriptionInput: {
       height: 100,
-      margin: 10,
+      width: '100%',
+      alignSelf: 'center',
       borderRadius: 5,
+      marginBottom: 10
     },
     row: {
       flexDirection: 'row',
@@ -196,7 +173,7 @@ const PrescriptionScreen = ({route, navigation}: any) => {
 
   return (
     <>
-      <CustomAppbar title={'Kê đơn thuốc'} goBack={() => navigation.goBack()} />
+      {/* <CustomAppbar title={'Kê đơn thuốc'} goBack={() => navigation.goBack()} /> */}
       <ScrollView style={styles.container}>
         <View
           style={{
@@ -204,7 +181,7 @@ const PrescriptionScreen = ({route, navigation}: any) => {
             justifyContent: 'center',
             marginBottom: 10,
           }}>
-          <Text style={{fontSize: 26, fontWeight: 'bold'}}>Đơn thuốc</Text>
+          <Text style={{ fontSize: 26, fontWeight: 'bold' }}>Đơn thuốc</Text>
         </View>
         <View>
           <View style={styles.row}>
@@ -237,52 +214,54 @@ const PrescriptionScreen = ({route, navigation}: any) => {
               <Text style={styles.value}>{/*userInfo.Weight*/} 60</Text>
             </View>
           </View>
+          <View style={styles.row}>
+            <View style={styles.infoContainer}>
+              <Text style={styles.label}>Chẩn đoán: </Text>
+              <Text style={styles.value}>{pres}</Text>
+            </View>
+          </View>
         </View>
-        <TextInput
-          label="Chẩn đoán"
-          style={styles.prescriptionInput}
-          onChangeText={text => setPrescription(text)}
-          value={prescription}
-        />
-        <View
-          style={{
-            marginHorizontal: 10,
-            marginBottom: 10,
-            flexDirection: 'row',
-            alignItems: 'flex-start',
-          }}>
-          <TouchableOpacity
-            style={{marginRight: 10}}
-            onPress={() =>
-              removeComponent(components[components.length - 1]?.id)
-            }>
-            <Icon source="minus" size={24} color="black" />
-          </TouchableOpacity>
-          <TouchableOpacity onPress={addComponent}>
-            <Icon source="plus" size={24} color="black" />
-          </TouchableOpacity>
-        </View>
-        <SafeAreaView>
-          {components.map(({id, component}) => (
-            <View key={id} style={{flexDirection: 'row'}}>
+        <SafeAreaView style={{ alignSelf: 'center' }}>
+          {components.map(({ id, component }) => (
+            <View key={id} style={{ flexDirection: 'row' }}>
               {component}
             </View>
           ))}
         </SafeAreaView>
+        <View
+          style={{
+            marginBottom: 10,
+            flexDirection: 'row',
+            alignItems: 'center',
+            width: '100%',
+            justifyContent: 'space-between'
+          }}>
+          <Button
+            mode='contained'
+            style={{ marginRight: 10, width: '25%' }}
+            onPress={() =>
+              removeComponent(components[components.length - 1]?.id)
+            }>
+            Xoá
+          </Button>
+          <Button style={{ width: '25%' }} mode='contained' onPress={addComponent}>
+            Thêm
+          </Button>
+        </View>
         <TextInput
           label="Ghi chú"
           onChangeText={text => setNote(text)}
           value={note}
-          style={{margin: 10}}
+          style={{ alignSelf: 'center', width: "100%" }}
         />
-        <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
-          <View style={{margin: 20}}>
+        <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
+          <View style={{ margin: 20 }}>
             <Text>{moment(date).format('DD/MM/YYYY')}</Text>
             <Text
-              style={{alignSelf: 'center', fontSize: 15, fontWeight: 'bold'}}>
+              style={{ alignSelf: 'center', fontSize: 15, fontWeight: 'bold' }}>
               Chữ ký
             </Text>
-            <View style={{height: 50, width: 50}}></View>
+            <View style={{ height: 50, width: 50 }}></View>
           </View>
         </View>
       </ScrollView>

@@ -16,6 +16,10 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import DiaryRecordScreen from '../Profile/DiaryRecordScreen';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import BookingHistoryScreen from './pages/BookingHistoryScreen';
+import PrescriptionScreen from '../Home/PrescriptionScreen';
+import ExamineScreen from '../Home/ExamineScreen';
+import ChatScreen from '../Chat/ChatScreen';
+import CartScreen from '../Store/CartScreen';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -45,13 +49,13 @@ const PatientDetailScreen = ({navigation, route}: any) => {
 
   const FoodDiaryScreen = () => (
     <View style={styles.screen}>
-      <DiaryRecordScreen />
+      <DiaryRecordScreen/>
     </View>
   );
 
   const UnknownScreen = () => (
     <View style={styles.screen}>
-      <Text>Chưa biết</Text>
+      <ExamineScreen/>
     </View>
   );
 

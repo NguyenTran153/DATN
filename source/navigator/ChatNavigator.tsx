@@ -7,6 +7,7 @@ import {ChatRoutes} from '../Routes/Route';
 import PrescriptionScreen from '../screens/Home/PrescriptionScreen';
 import NotificationScreen from '../screens/Home/NotificationScreen';
 import CallingScreen from '../screens/Chat/CallingScreen';
+import ExamineScreen from '../screens/Home/ExamineScreen';
 
 const Tabs = createNativeStackNavigator<ChatRoutes>();
 
@@ -41,6 +42,11 @@ const ChatNavigator = () => {
       <Tabs.Screen
         name="CallingScreen"
         component={CallingScreen}
+        options={{headerShown: false}}
+      />
+      <Tabs.Screen
+        name="ExamineScreen"
+        component={ExamineScreen}
         options={{headerShown: false}}
       />
     </Tabs.Navigator>
