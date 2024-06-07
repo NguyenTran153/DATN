@@ -14,6 +14,7 @@ import OTPScreen from '../screens/Authorization/OtpScreen';
 import ResetPasswordScreen from '../screens/Authorization/ResetPasswordScreen';
 import OTPResetPassword from '../screens/Authorization/OTPResetPassword';
 import ForgotPasswordScreen from '../screens/Authorization/ForgotPasswordScreen';
+import CameraScreen from '../screens/Profile/CameraScreen';
 
 const Tabs = createNativeStackNavigator<RootRoutes>();
 
@@ -34,6 +35,7 @@ const RootNavigator = () => {
       <Tabs.Screen name="ResetPasswordScreen" component={ResetPasswordScreen} />
       <Tabs.Screen name="OTPResetPassword" component={OTPResetPassword}/>
       <Tabs.Screen name="ForgotPasswordScreen" component={ForgotPasswordScreen}/>
+      <Tabs.Screen name="CameraScreen" component={CameraScreen}/>
     </Tabs.Navigator>
   );
 };

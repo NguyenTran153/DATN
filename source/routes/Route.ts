@@ -8,6 +8,7 @@ export type RootRoutes = {
   ForgotPasswordScreen: undefined;
   OtpScreen: {pinId: string};
   OTPResetPassword: {pinId: string};
+  CameraScreen: any;
   BottomTabNavigator: NavigatorScreenParams<BottomRoutes>;
   HomeNavigator: NavigatorScreenParams<HomeRoutes>;
   StoreNavigator: NavigatorScreenParams<StoreRoutes>;

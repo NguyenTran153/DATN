@@ -31,7 +31,7 @@ interface FormData {
   specialitites: any[];
 }
 
-const BecomeDoctorScreen = ({navigation}: any) => {
+const BecomeDoctorScreen = ({navigation, route}: any) => {
   const theme = useTheme();
   const [showDropDown, setShowDropDown] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -94,8 +94,12 @@ const BecomeDoctorScreen = ({navigation}: any) => {
   };
 
   useEffect(() => {
-    console.log(JSON.stringify(form));
-  }, [form]);
+    if (route.params?.base64) {
+      console.log('Received base64 data: ', route.params.base64);
+    } else {
+      console.log('No base64 data received');
+    }
+  }, [route]);
 
   const handleRegisterDoctor = async () => {
     // if (!form || !form.image1 || !form.image2 || !form.specialitites.length) {
@@ -163,6 +167,7 @@ const BecomeDoctorScreen = ({navigation}: any) => {
 
           <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
             <TouchableOpacity
+              onPress={() => navigation.navigate('CameraScreen')}
               style={[
                 styles.photoContainer,
                 {backgroundColor: theme.colors.primaryContainer},
