@@ -15,7 +15,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { ChatRoutes } from '../../Routes/Route';
 import moment from 'moment';
 import AutocompleteTextInput from '../../components/AutoComplete';
-// import CustomAppbar from '../../components/CustomAppbar';
+import CustomAppbar from '../../components/CustomAppbar';
 import UserService from '../../services/UserService';
 import { useSelector } from 'react-redux';
 
@@ -173,7 +173,7 @@ const PrescriptionScreen = ({ route, navigation }: any) => {
 
   return (
     <>
-      {/* <CustomAppbar title={'Kê đơn thuốc'} goBack={() => navigation.goBack()} /> */}
+      <CustomAppbar title={'Kê đơn thuốc'} goBack={() => navigation.goBack()} /> 
       <ScrollView style={styles.container}>
         <View
           style={{

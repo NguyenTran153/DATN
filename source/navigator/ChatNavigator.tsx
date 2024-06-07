@@ -29,11 +29,7 @@ const ChatNavigator = () => {
         component={BookingScreen}
         options={{headerShown: false}}
       />
-      <Tabs.Screen
-        name="PrescriptionScreen"
-        component={PrescriptionScreen}
-        options={{headerShown: false}}
-      />
+     
       <Tabs.Screen
         name="NotificationScreen"
         component={NotificationScreen}
@@ -44,11 +40,7 @@ const ChatNavigator = () => {
         component={CallingScreen}
         options={{headerShown: false}}
       />
-      <Tabs.Screen
-        name="ExamineScreen"
-        component={ExamineScreen}
-        options={{headerShown: false}}
-      />
+      
     </Tabs.Navigator>
   );
 };

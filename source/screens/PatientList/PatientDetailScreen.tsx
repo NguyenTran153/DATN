@@ -55,7 +55,7 @@ const PatientDetailScreen = ({navigation, route}: any) => {
 
   const UnknownScreen = () => (
     <View style={styles.screen}>
-      <ExamineScreen/>
+      <ExamineScreen navigation={navigation}/>
     </View>
   );
 

@@ -7,7 +7,7 @@ import {
 import React, { useEffect, useState } from 'react';
 import { Button, Text, TextInput, useTheme } from 'react-native-paper';
 
-const ExamineScreen = ({ navigation }: any) => {
+const ExamineScreen = ({ navigation }: {navigation: any}) => {
     const theme = useTheme();
     const [prescription, setPrescription] = useState('');
     const [examination, setExamination] = useState('');
@@ -78,9 +78,10 @@ const ExamineScreen = ({ navigation }: any) => {
                     }}>
                    
                     <Button style={{ width: '95%' }} mode='contained' onPress={()=>{
-                        //  navigation.navigate('PrescriptionScreen', {
-                        //     prescription: prescription,
-                        //   })
+                         navigation.navigate('DoctorNavigator', {
+                            screen: 'PrescriptionScreen',
+                            params: { prescription:prescription},
+                          })
                         }}>
                         Xác nhận
                     </Button>
