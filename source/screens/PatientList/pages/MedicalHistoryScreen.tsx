@@ -6,6 +6,7 @@ import {
   IconButton,
   DataTable,
   Searchbar,
+  Button,
 } from 'react-native-paper';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 
@@ -57,8 +58,8 @@ const MedicalHistoryScreen = ({navigation}: any) => {
     setDatePickerVisibility(false);
   };
 
-  const handleItemRemove = (item: string) => {
-    console.log('Item removed:', item);
+  const handleViewDetails = (item: any) => {
+    navigation.navigate('MedicalDetailScreen', {item});
   };
 
   const itemHeight = height / 10;
@@ -107,13 +108,12 @@ const MedicalHistoryScreen = ({navigation}: any) => {
                 />
               )}
               right={props => (
-                <IconButton
-                  {...props}
-                  icon="close-circle-outline"
-                  iconColor={theme.colors.error}
-                  size={36}
-                  onPress={() => handleItemRemove(item.date)}
-                />
+                <Button
+                  mode="outlined"
+                  onPress={() => handleViewDetails(item)}
+                  style={styles.viewDetailsButton}>
+                  Xem chi tiết
+                </Button>
               )}
               style={[
                 {
@@ -159,5 +159,9 @@ const styles = StyleSheet.create({
   pagination: {
     alignSelf: 'center',
     marginVertical: 10,
+  },
+  viewDetailsButton: {
+    marginRight: 8,
+    alignSelf: 'center',
   },
 });

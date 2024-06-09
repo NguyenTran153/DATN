@@ -15,7 +15,9 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import DiaryRecordScreen from '../Profile/DiaryRecordScreen';
 import BookingHistoryScreen from './pages/BookingHistoryScreen';
 import MedicalHistoryScreen from './pages/MedicalHistoryScreen';
-import ExamineScreen from '../Home/ExamineScreen';
+import CurrentInfoScreen from './pages/CurrentInfoScreen';
+import PersonalInfoScreen from './pages/PersonalInfoScreen';
+import {useSelector} from 'react-redux';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -23,72 +25,12 @@ const {height} = Dimensions.get('window');
 
 const PatientDetailScreen = ({navigation, route}: any) => {
   const theme = useTheme();
-
-  const CurrentInfoScreen = () => (
-    <View style={styles.screen}>
-      <View></View>
-    </View>
-  );
+  const user = useSelector((state: any) => state.user);
+  const token = useSelector((state: any) => state.token.accessToken);
 
   const FoodDiaryScreen = () => (
     <View style={styles.screen}>
       <DiaryRecordScreen />
-    </View>
-  );
-
-  const PersonalInfoScreen = () => (
-    <View style={styles.screen}>
-      <List.Section>
-        <List.Item
-          title="Họ"
-          description="Nguyễn"
-          left={() => <List.Icon icon="account-outline" />}
-          titleStyle={styles.listItemTitle}
-          descriptionStyle={styles.listItemDescription}
-        />
-        <List.Item
-          title="Tên"
-          description="Văn A"
-          left={() => <List.Icon icon="account-outline" />}
-          titleStyle={styles.listItemTitle}
-          descriptionStyle={styles.listItemDescription}
-        />
-        <List.Item
-          title="Giới tính"
-          description="Nam"
-          left={() => <List.Icon icon="gender-male" />}
-          titleStyle={styles.listItemTitle}
-          descriptionStyle={styles.listItemDescription}
-        />
-        <List.Item
-          title="Ngày sinh"
-          description="01/01/1990"
-          left={() => <List.Icon icon="calendar" />}
-          titleStyle={styles.listItemTitle}
-          descriptionStyle={styles.listItemDescription}
-        />
-        <List.Item
-          title="Cân nặng"
-          description="70 kg"
-          left={() => <List.Icon icon="weight" />}
-          titleStyle={styles.listItemTitle}
-          descriptionStyle={styles.listItemDescription}
-        />
-        <List.Item
-          title="Chiều cao"
-          description="175 cm"
-          left={() => <List.Icon icon="ruler" />}
-          titleStyle={styles.listItemTitle}
-          descriptionStyle={styles.listItemDescription}
-        />
-        <List.Item
-          title="Địa chỉ"
-          description="123 Đường ABC, Quận 1, TP.HCM"
-          left={() => <List.Icon icon="home-outline" />}
-          titleStyle={styles.listItemTitle}
-          descriptionStyle={styles.listItemDescription}
-        />
-      </List.Section>
     </View>
   );
 
@@ -104,7 +46,7 @@ const PatientDetailScreen = ({navigation, route}: any) => {
             tabBarIcon: ({color}) => {
               let iconName;
               switch (route.name) {
-                case 'CurrentInfo':
+                case 'CurrentInfoScreen':
                   iconName = 'information-outline';
                   break;
                 case 'FoodDiary':
@@ -116,7 +58,7 @@ const PatientDetailScreen = ({navigation, route}: any) => {
                 case 'MedicalHistoryScreen':
                   iconName = 'history';
                   break;
-                case 'PersonalInfo':
+                case 'PersonalInfoScreen':
                   iconName = 'account-outline';
                   break;
                 default:
@@ -133,7 +75,7 @@ const PatientDetailScreen = ({navigation, route}: any) => {
               );
             },
           })}>
-          <Tab.Screen name="CurrentInfo" component={CurrentInfoScreen} />
+          <Tab.Screen name="CurrentInfoScreen" component={CurrentInfoScreen} />
           <Tab.Screen name="FoodDiary" component={FoodDiaryScreen} />
           <Tab.Screen
             name="BookingHistoryScreen"
@@ -143,7 +85,10 @@ const PatientDetailScreen = ({navigation, route}: any) => {
             name="MedicalHistoryScreen"
             component={MedicalHistoryScreen}
           />
-          <Tab.Screen name="PersonalInfo" component={PersonalInfoScreen} />
+          <Tab.Screen
+            name="PersonalInfoScreen"
+            component={PersonalInfoScreen}
+          />
         </Tab.Navigator>
       </View>
     </View>
