@@ -1,7 +1,6 @@
 import {
   ActivityIndicator,
   Dimensions,
-  FlatList,
   Image,
   StyleSheet,
   Text,
@@ -14,12 +13,9 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import CustomAppbar from '../../components/CustomAppbar';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import DiaryRecordScreen from '../Profile/DiaryRecordScreen';
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import BookingHistoryScreen from './pages/BookingHistoryScreen';
-import PrescriptionScreen from '../Home/PrescriptionScreen';
+import MedicalHistoryScreen from './pages/MedicalHistoryScreen';
 import ExamineScreen from '../Home/ExamineScreen';
-import ChatScreen from '../Chat/ChatScreen';
-import CartScreen from '../Store/CartScreen';
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -27,19 +23,6 @@ const {height} = Dimensions.get('window');
 
 const PatientDetailScreen = ({navigation, route}: any) => {
   const theme = useTheme();
-
-  const BasicInfo = () => (
-    <View style={styles.infoContainer}>
-      <Image
-        source={require('../../asset/7677205.jpg')}
-        style={styles.avatar}
-      />
-      <View style={{flexDirection: 'column'}}>
-        <Text style={styles.name}>Tên bệnh nhân</Text>
-        <Text style={styles.name}>Giới tính: nữ</Text>
-      </View>
-    </View>
-  );
 
   const CurrentInfoScreen = () => (
     <View style={styles.screen}>
@@ -49,13 +32,7 @@ const PatientDetailScreen = ({navigation, route}: any) => {
 
   const FoodDiaryScreen = () => (
     <View style={styles.screen}>
-      <DiaryRecordScreen/>
-    </View>
-  );
-
-  const UnknownScreen = () => (
-    <View style={styles.screen}>
-      <ExamineScreen navigation={navigation}/>
+      <DiaryRecordScreen />
     </View>
   );
 
@@ -118,9 +95,6 @@ const PatientDetailScreen = ({navigation, route}: any) => {
   return (
     <View style={styles.container}>
       <CustomAppbar title="Bệnh nhân" goBack={() => navigation.goBack()} />
-      <View style={{flex: 1}}>
-        <BasicInfo />
-      </View>
       <View style={{flex: 8}}>
         <Tab.Navigator
           screenOptions={({route}) => ({
@@ -139,7 +113,7 @@ const PatientDetailScreen = ({navigation, route}: any) => {
                 case 'BookingHistoryScreen':
                   iconName = 'file-document-outline';
                   break;
-                case 'Unknown':
+                case 'MedicalHistoryScreen':
                   iconName = 'history';
                   break;
                 case 'PersonalInfo':
@@ -165,7 +139,10 @@ const PatientDetailScreen = ({navigation, route}: any) => {
             name="BookingHistoryScreen"
             component={BookingHistoryScreen}
           />
-          <Tab.Screen name="Unknown" component={UnknownScreen} />
+          <Tab.Screen
+            name="MedicalHistoryScreen"
+            component={MedicalHistoryScreen}
+          />
           <Tab.Screen name="PersonalInfo" component={PersonalInfoScreen} />
         </Tab.Navigator>
       </View>

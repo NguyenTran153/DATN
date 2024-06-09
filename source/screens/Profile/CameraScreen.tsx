@@ -1,5 +1,6 @@
 import {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, Pressable, Platform} from 'react-native';
+import {Button} from 'react-native-paper';
 import Svg, {Rect} from 'react-native-svg';
 import {
   Camera,
@@ -10,14 +11,10 @@ import {
 import {useSharedValue} from 'react-native-worklets-core';
 import {CropRegion, crop} from 'vision-camera-cropper';
 
-export interface CameraScreenProps {
-  route: any;
-  navigation: any;
-}
-
-export default function CameraScreen(props: CameraScreenProps) {
+export default function CameraScreen({navigation, route}: any) {
   const [hasPermission, setHasPermission] = useState(false);
   const [isActive, setIsActive] = useState(true);
+
   const device = useCameraDevice('back');
   const format = useCameraFormat(device, [
     {videoResolution: {width: 1920, height: 1080}},
@@ -64,14 +61,10 @@ export default function CameraScreen(props: CameraScreenProps) {
 
   const onCaptured = (base64: string) => {
     setIsActive(false);
-    if (props) {
-      if (props.navigation) {
-        props.navigation.navigate('ProfileNavigator', {
-          name: 'BecomeDoctorScreen',
-          params: {base64: base64},
-        });
-      }
-    }
+
+    navigation.navigate('BecomeDoctorScreen', {
+      base64: base64,
+    });
   };
 
   const onCapturedJS = Worklets.createRunInJsFn(onCaptured);

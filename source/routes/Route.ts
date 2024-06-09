@@ -28,10 +28,8 @@ export type ChatRoutes = {
   MessagesScreen: undefined;
   ChatScreen: {userId: string; userInfo: any};
   BookingScreen: {route: any};
- 
   NotificationScreen: any;
   CallingScreen: any;
-  
 };
 
 export type StoreRoutes = {
@@ -43,7 +41,7 @@ export type StoreRoutes = {
 export type ProfileRoutes = {
   ProfileScreen: any;
   QRScreen: any;
-  BecomeDoctorScreen: any;
+  BecomeDoctorScreen: {route: any};
   PatientDiaryScreen: any;
   DiaryRecordScreen: any;
 };
@@ -53,8 +51,9 @@ export type DoctorRoutes = {
   ConnectDoctorScreen: any;
   CreateAccountScreen: any;
   PatientDetailScreen: any;
-  PrescriptionScreen: {userInfo: any, prescription: any};
+  PrescriptionScreen: {userInfo: any; prescription: any};
   ExamineScreen: any;
+  MedicalDetailScreen: any;
 };
 
 export type HomeRoutes = {

@@ -5,6 +5,7 @@ import {
   KeyboardAvoidingView,
   Platform,
   TouchableOpacity,
+  Image,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {
@@ -24,8 +25,8 @@ import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
 import UserService from '../../services/UserService';
 
 interface FormData {
-  image1: File | null;
-  image2: File | null;
+  image1: string | null;
+  image2: string | null;
   files: File[];
   textarea: string;
   specialitites: any[];
@@ -35,6 +36,7 @@ const BecomeDoctorScreen = ({navigation, route}: any) => {
   const theme = useTheme();
   const [showDropDown, setShowDropDown] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isFront, setIsFront] = useState(false);
 
   const token = useSelector((state: any) => state.token.accessToken);
   const role = useSelector((state: any) => state.user.role);
@@ -47,13 +49,6 @@ const BecomeDoctorScreen = ({navigation, route}: any) => {
     specialitites: [],
   };
   const [form, setForm] = useState<FormData | null>(initialFormState);
-
-  const handleImage1Change = (image: File) => {
-    setForm(prevForm => ({
-      ...(prevForm ?? initialFormState),
-      image1: image,
-    }));
-  };
 
   const handleImageChange = (event: any, imageKey: 'image1' | 'image2') => {
     if (event.target.files && event.target.files[0]) {
@@ -93,14 +88,6 @@ const BecomeDoctorScreen = ({navigation, route}: any) => {
     }));
   };
 
-  useEffect(() => {
-    if (route.params?.base64) {
-      console.log('Received base64 data: ', route.params.base64);
-    } else {
-      console.log('No base64 data received');
-    }
-  }, [route]);
-
   const handleRegisterDoctor = async () => {
     // if (!form || !form.image1 || !form.image2 || !form.specialitites.length) {
     //   Dialog.show({
@@ -135,6 +122,26 @@ const BecomeDoctorScreen = ({navigation, route}: any) => {
     }
   };
 
+  useEffect(() => {
+    if (isFront) {
+      console.log('Capture Front');
+      setForm(prevForm => ({
+        ...(prevForm ?? initialFormState),
+        image1: route?.params?.base64,
+      }));
+      setIsFront(false);
+    } else {
+      setForm(prevForm => ({
+        ...(prevForm ?? initialFormState),
+        image2: route?.params?.base64,
+      }));
+    }
+  }, [route]);
+
+  useEffect(() => {
+    console.log(`data:image/jpeg;base64,${form?.image1}`);
+  }, [form]);
+
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
@@ -167,12 +174,22 @@ const BecomeDoctorScreen = ({navigation, route}: any) => {
 
           <View style={{flexDirection: 'row', justifyContent: 'space-around'}}>
             <TouchableOpacity
-              onPress={() => navigation.navigate('CameraScreen')}
+              onPress={() => {
+                setIsFront(true);
+                navigation.navigate('CameraScreen');
+              }}
               style={[
                 styles.photoContainer,
                 {backgroundColor: theme.colors.primaryContainer},
               ]}>
-              <Icon source="camera" size={36} />
+              {form?.image1 ? (
+                <Image
+                  source={{uri: `data:image/jpeg;base64,${form.image1}`}}
+                  resizeMode="contain"
+                />
+              ) : (
+                <Icon source="camera" size={36} />
+              )}
             </TouchableOpacity>
             <TouchableOpacity
               style={[
