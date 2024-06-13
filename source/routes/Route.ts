@@ -9,14 +9,14 @@ export type RootRoutes = {
   OtpScreen: {pinId: string};
   OTPResetPassword: {pinId: string};
   CameraScreen: any;
-  BottomTabNavigator: NavigatorScreenParams<BottomRoutes>;
+  MainNavigator: NavigatorScreenParams<MainRoutes>;
   HomeNavigator: NavigatorScreenParams<HomeRoutes>;
   StoreNavigator: NavigatorScreenParams<StoreRoutes>;
   ProfileNavigator: NavigatorScreenParams<ProfileRoutes>;
   DoctorNavigator: NavigatorScreenParams<DoctorRoutes>;
 };
 
-export type BottomRoutes = {
+export type MainRoutes = {
   StoreScreen: undefined;
   HomeScreen: any;
   ProfileScreen: undefined;

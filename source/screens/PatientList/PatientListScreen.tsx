@@ -1,19 +1,7 @@
-import {
-  ActivityIndicator,
-  FlatList,
-  StyleSheet,
-  Text,
-  View,
-} from 'react-native';
+import {ActivityIndicator, FlatList, StyleSheet, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {
-  IconButton,
-  DataTable,
-  Searchbar,
-  useTheme,
-  Modal,
-} from 'react-native-paper';
+import {IconButton, DataTable, Searchbar, useTheme} from 'react-native-paper';
 
 import PatientCard from '../../components/PatientCard';
 

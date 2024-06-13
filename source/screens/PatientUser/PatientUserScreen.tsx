@@ -1,6 +1,6 @@
 import {Dimensions, StyleSheet, View} from 'react-native';
 import React from 'react';
-import {useTheme} from 'react-native-paper';
+import {Appbar, useTheme} from 'react-native-paper';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
 import CustomAppbar from '../../components/CustomAppbar';
@@ -14,7 +14,7 @@ import {useSelector} from 'react-redux';
 
 const Tab = createMaterialTopTabNavigator();
 
-const PatientDetailScreen = ({navigation, route}: any) => {
+const PatientUserScreen = ({navigation}: any) => {
   const theme = useTheme();
   const user = useSelector((state: any) => state.user);
   const token = useSelector((state: any) => state.token.accessToken);
@@ -27,7 +27,20 @@ const PatientDetailScreen = ({navigation, route}: any) => {
 
   return (
     <View style={styles.container}>
-      <CustomAppbar title="Bệnh nhân" goBack={() => navigation.goBack()} />
+      <Appbar.Header>
+        <Appbar.Content
+          title={`${user.firstName} ${user.lastName}` || 'Bệnh nhân'}
+        />
+        <Appbar.Action icon="calendar" onPress={() => {}} />
+        <Appbar.Action
+          icon="bell"
+          onPress={() =>
+            navigation.navigate('HomeNavigator', {
+              screen: 'NotificationScreen',
+            })
+          }
+        />
+      </Appbar.Header>
       <View style={{flex: 8}}>
         <Tab.Navigator
           screenOptions={({route}) => ({
@@ -86,7 +99,7 @@ const PatientDetailScreen = ({navigation, route}: any) => {
   );
 };
 
-export default PatientDetailScreen;
+export default PatientUserScreen;
 
 const styles = StyleSheet.create({
   container: {

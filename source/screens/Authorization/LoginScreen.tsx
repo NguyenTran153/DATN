@@ -39,7 +39,7 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
           console.log(userData);
           setData(userData);
           dispatch(setUser(userData!));
-          navigation.navigate('BottomTabNavigator');
+          navigation.navigate('MainNavigator');
         } else {
           Dialog.show({
             type: ALERT_TYPE.DANGER,
@@ -66,7 +66,7 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
         button: 'Đóng',
       });
     } finally {
-      navigation.navigate('BottomTabNavigator');
+      navigation.navigate('MainNavigator');
 
       setIsLoading(false);
     }

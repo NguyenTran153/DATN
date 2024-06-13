@@ -5,7 +5,6 @@ import BookingScreen from '../screens/Home/BookingScreen';
 import PrescriptionScreen from '../screens/Home/PrescriptionScreen';
 import PrescriptionListScreen from '../screens/Home/PrescriptionListScreen';
 import NotificationScreen from '../screens/Home/NotificationScreen';
-import CallingScreen from '../screens/Chat/CallingScreen';
 import HomeScreen from '../screens/Home/HomeScreen';
 import ScheduleScreen from '../screens/Home/ScheduleScreen';
 import PatientRecordScreen from '../screens/Home/PatientRecordScreen';
@@ -38,11 +37,6 @@ const HomeNavigator = () => {
       <Tabs.Screen
         name="NotificationScreen"
         component={NotificationScreen}
-        options={{headerShown: false}}
-      />
-      <Tabs.Screen
-        name="CallingScreen"
-        component={CallingScreen}
         options={{headerShown: false}}
       />
       <Tabs.Screen
