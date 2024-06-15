@@ -3,6 +3,7 @@ import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import type {RootRoutes} from '../Routes/Route';
 import HomeNavigator from './HomeNavigator';
 import LoginScreen from '../screens/Authorization/LoginScreen';
+import DrawerNavigator from './DrawerNavigator';
 import RegisterScreen from '../screens/Authorization/RegisterScreen';
 import MainNavigator from './MainNavigator';
 import StoreNavigator from './StoreNavigator';
@@ -15,7 +16,7 @@ import OTPResetPassword from '../screens/Authorization/OTPResetPassword';
 import ForgotPasswordScreen from '../screens/Authorization/ForgotPasswordScreen';
 import CameraScreen from '../screens/Profile/CameraScreen';
 
-const Tabs = createNativeStackNavigator<RootRoutes>();
+const Tabs = createNativeStackNavigator();
 
 const RootNavigator = () => {
   return (
@@ -33,6 +34,7 @@ const RootNavigator = () => {
       <Tabs.Screen name="OtpScreen" component={OTPScreen} />
       <Tabs.Screen name="ResetPasswordScreen" component={ResetPasswordScreen} />
       <Tabs.Screen name="OTPResetPassword" component={OTPResetPassword} />
+      <Tabs.Screen name="DrawerNavigator" component={DrawerNavigator} />
       <Tabs.Screen
         name="ForgotPasswordScreen"
         component={ForgotPasswordScreen}

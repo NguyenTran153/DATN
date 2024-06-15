@@ -6,7 +6,7 @@ import BecomeDoctorScreen from '../screens/Profile/BecomeDoctorScreen';
 import PatientDiaryScreen from '../screens/Profile/PatientDiaryScreen';
 import DiaryRecordScreen from '../screens/Profile/DiaryRecordScreen';
 
-const Stacks = createNativeStackNavigator<ProfileRoutes>();
+const Stacks = createNativeStackNavigator();
 
 const ProfileNavigator = () => {
   return (

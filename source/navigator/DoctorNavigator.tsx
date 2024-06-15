@@ -9,7 +9,7 @@ import PrescriptionScreen from '../screens/Home/PrescriptionScreen';
 import ExamineScreen from '../screens/Home/ExamineScreen';
 import MedicalDetailScreen from '../screens/PatientList/pages/MedicalDetailScreen';
 
-const Stacks = createNativeStackNavigator<DoctorRoutes>();
+const Stacks = createNativeStackNavigator();
 
 const DoctorNavigator = () => {
   return (

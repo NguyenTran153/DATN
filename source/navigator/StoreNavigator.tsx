@@ -4,7 +4,7 @@ import ProductScreen from '../screens/Store/ProductScreen';
 import CartScreen from '../screens/Store/CartScreen';
 import {StoreRoutes} from '../Routes/Route';
 
-const Stacks = createNativeStackNavigator<StoreRoutes>();
+const Stacks = createNativeStackNavigator();
 
 const StoreNavigator = () => {
   return (
