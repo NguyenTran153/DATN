@@ -66,7 +66,7 @@ const BottomTabNavigator = () => {
 const MainNavigator = ({navigation}: any) => {
   const role = useSelector((state: any) => state.user.role);
 
-  if (role === 'patient') {
+  if (role === 'doctor') {
     return <BottomTabNavigator />;
   } else {
     return <PatientUserScreen navigation={navigation} />;
