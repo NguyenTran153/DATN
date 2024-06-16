@@ -1,6 +1,14 @@
 import React from 'react';
-import {ScrollView, StyleSheet, View, TouchableOpacity} from 'react-native';
-import {Avatar, List, Text, useTheme, IconButton} from 'react-native-paper';
+import {ScrollView, StyleSheet, View} from 'react-native';
+import {
+  Avatar,
+  List,
+  Text,
+  useTheme,
+  IconButton,
+  Button,
+  Appbar,
+} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 
 const PersonalInfoScreen = ({navigation}: any) => {
@@ -31,22 +39,22 @@ const PersonalInfoScreen = ({navigation}: any) => {
 
   return (
     <View style={[styles.screen, {backgroundColor: theme.colors.background}]}>
-      <View style={styles.header}>
-        <Avatar.Image
-          size={100}
-          source={
-            personalInfo.avatar
-              ? {uri: personalInfo.avatar}
-              : require('../../../asset/7677205.jpg')
-          }
-          style={styles.avatar}
-        />
-        <TouchableOpacity style={styles.editButton} onPress={handleUpdatePress}>
-          <IconButton icon="pencil" size={24} />
-        </TouchableOpacity>
-        <Text style={styles.headerText}>Thông tin cá nhân</Text>
-      </View>
+      <Appbar.Header>
+        <Appbar.Content title="Thông tin cá nhân" />
+        <Appbar.Action icon="pencil" onPress={handleUpdatePress} />
+      </Appbar.Header>
       <ScrollView>
+        <View style={styles.avatarContainer}>
+          <Avatar.Image
+            size={100}
+            source={
+              personalInfo.avatar
+                ? {uri: personalInfo.avatar}
+                : require('../../../asset/7677205.jpg')
+            }
+            style={styles.avatar}
+          />
+        </View>
         <List.Section>
           <List.Item
             title="Họ"
@@ -118,31 +126,21 @@ export default PersonalInfoScreen;
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
-    padding: 16,
   },
-  header: {
+  avatarContainer: {
     alignItems: 'center',
+    marginTop: 20,
     marginBottom: 20,
-    position: 'relative',
   },
   avatar: {
-    marginBottom: 10,
-  },
-  headerText: {
-    fontSize: 24,
-    fontWeight: 'bold',
-  },
-  editButton: {
-    position: 'absolute',
-    top: 0,
-    right: 0,
+    width: 100,
+    height: 100,
+    borderRadius: 50,
   },
   listItemTitle: {
-    fontSize: 18,
     fontWeight: 'bold',
   },
   listItemDescription: {
-    fontSize: 16,
     color: 'gray',
   },
 });
