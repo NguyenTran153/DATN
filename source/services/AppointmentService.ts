@@ -26,7 +26,7 @@ class AppointmentService {
 
       return response.data;
     } catch (error: any) {
-      console.log(error);
+      console.log('sendAppointment' + error);
       throw new Error(error);
     }
   }

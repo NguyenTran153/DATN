@@ -18,7 +18,7 @@ class DiaryService {
             console.log(response.data);
             return response.data;
         } catch (error) {
-            console.log('Error logging in:', error);
+            console.log('Error post diary:', error);
         }
     }
     static async getDiary(accessToken: string) {
@@ -35,7 +35,7 @@ class DiaryService {
           console.log(response.data);
           return response.data;
         } catch (error) {
-          console.log('Error logging in:', error);
+          console.log('Error get diary:', error);
         }
       }
       static async getDiaryByID(accessToken: string, ID:string) {
@@ -52,7 +52,7 @@ class DiaryService {
           console.log(response.data);
           return response.data;
         } catch (error) {
-          console.log('Error logging in:', error);
+          console.log('Get diary by id:', error);
         }
       }
 }

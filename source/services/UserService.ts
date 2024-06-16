@@ -15,7 +15,7 @@ class UserService {
       console.log(response.data);
       return response.data;
     } catch (error) {
-      console.log('Error logging in:', error);
+      console.log('getUserInfo:', error);
     }
   }
   static async getUserInfoByID(userID: string, accessToken: string) {
@@ -61,6 +61,25 @@ class UserService {
     } catch (error) {
       console.log('Error register doctor' + error);
       throw error;
+    }
+  }
+  static async getFriendList (token: string) {
+    console.log(token)
+    try {
+      const response = await axios.get<Patient[]>(
+        `http://10.0.2.2:8080/users/friends/my`,
+        {
+          headers: {
+            'content-type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      console.log(response);
+      return response;
+    } catch (error) {
+      console.log('Get friend: ' + error);
+      return;
     }
   }
 }

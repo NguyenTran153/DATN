@@ -4,11 +4,9 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {IconButton, DataTable, Searchbar, useTheme} from 'react-native-paper';
 
 import PatientCard from '../../components/PatientCard';
+import { useSelector } from 'react-redux';
+import UserService from '../../services/UserService';
 
-interface Patient {
-  id: number;
-  name: string;
-}
 
 const PatientListScreen = ({navigation}: any) => {
   const theme = useTheme();
@@ -19,50 +17,46 @@ const PatientListScreen = ({navigation}: any) => {
   const [refreshing, setRefreshing] = useState(false);
   const [totalPatients, setTotalPatients] = useState(0);
   const itemsPerPage = 10;
-
+  const token = useSelector((state: any) => state.token);
   useEffect(() => {
-    fetchPatients(page);
-  }, [page]);
+    fetchPatients(token.accessToken);
+  }, []);
 
   // Tạo dữ liệu giả
   const generateFakePatients = (page: number): Patient[] => {
     const patients: Patient[] = [];
-    for (let i = 1; i <= itemsPerPage; i++) {
-      patients.push({
-        id: (page - 1) * itemsPerPage + i * 2,
-        name: `Bệnh nhân ${(page - 1) * itemsPerPage + i}`,
-      });
-    }
-    return patients;
+    // for (let i = 1; i <= itemsPerPage; i++) {
+    //   patients.push({
+    //     id: (page - 1) * itemsPerPage + i * 2,
+    //     name: `Bệnh nhân ${(page - 1) * itemsPerPage + i}`,
+    //   });
+    // }
+     return patients;
   };
 
-  const fetchPatientsAPI = async (pageNumber: number) => {
-    return generateFakePatients(pageNumber);
-  };
-
-  const fetchPatients = async (pageNumber: number) => {
+  
+  const fetchPatients = async (token: string) => {
     if (loading) return;
     setLoading(true);
-    try {
-      const response: Patient[] = await fetchPatientsAPI(pageNumber);
-      setPatients(response);
-      // Giả lập tổng số bệnh nhân (bạn có thể cập nhật từ API thật)
-      setTotalPatients(50); // Giả lập tổng số bệnh nhân là 50
-    } catch (error) {
-      console.error(error);
-    }
+    const response = await UserService.getFriendList(token);
+      if (response && response.data) {
+        setPatients(response.data);
+        setTotalPatients(response.data.length)
+      }
+      console.log(patients)
     setLoading(false);
+    return patients;
   };
 
   const handleRefresh = async () => {
     setRefreshing(true);
     try {
       // Fetch dữ liệu mới
-      const newPatients = await fetchPatientsAPI(1);
+      const newPatients = await fetchPatients(token.accessToken);
 
       if (page === 1) {
         // Xóa các phần tử trùng lặp trong dữ liệu mới
-        const filteredNewPatients = newPatients.filter(
+        const filteredNewPatients = newPatients!.filter(
           newPatient =>
             !patients.some(oldPatient => oldPatient.id === newPatient.id),
         );
@@ -71,7 +65,7 @@ const PatientListScreen = ({navigation}: any) => {
         setPatients(prevPatients => [...filteredNewPatients, ...prevPatients]);
       } else {
         // Cập nhật danh sách bệnh nhân với dữ liệu mới mà không thêm vào đầu danh sách
-        setPatients(newPatients);
+        setPatients(newPatients!);
       }
 
       setPage(1);
@@ -125,7 +119,7 @@ const PatientListScreen = ({navigation}: any) => {
         <FlatList
           data={patients}
           renderItem={({item}) => (
-            <PatientCard patientId={item.id} navigation={navigation} />
+            <PatientCard patient={item} navigation={navigation} />
           )}
           showsVerticalScrollIndicator={false}
           keyExtractor={item => item.id.toString()}

@@ -16,7 +16,7 @@ class PrescriptionService {
 
       return response.data;
     } catch (error) {
-      console.log(error);
+      console.log('Prescription: ' + error);
     }
   }
 }

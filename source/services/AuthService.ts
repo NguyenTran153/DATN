@@ -23,7 +23,7 @@ class AuthService {
       console.log('refreshToken:', refreshToken);
       return response.data;
     } catch (error) {
-      console.log('Error logging in:', error);
+      console.log('Error log in:', error);
     }
   }
   static async signUp(
@@ -112,7 +112,7 @@ class AuthService {
       console.log('Reponse:', data);
       // return response.data;
     } catch (error) {
-      console.log('Error logging in:', error);
+      console.log('Error reset password:', error);
     }
   }
   static async OTPVerification(pinId: string, code: string) {
@@ -134,7 +134,7 @@ class AuthService {
       console.log('Reponse:', data.token);
       return data.token;
     } catch (error) {
-      console.log('Error logging in:', error);
+      console.log('OTPVerification: '+ error);
       return 'error';
     }
   }
@@ -151,7 +151,7 @@ class AuthService {
       console.log(response);
       return response.data;
     } catch (error) {
-      console.log(error);
+      console.log('logout' + error);
       return error;
     }
   }

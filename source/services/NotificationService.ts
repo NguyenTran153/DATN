@@ -15,7 +15,7 @@ class NotificationService {
       console.log(response.data);
       return response.data;
     } catch (error) {
-      console.log(error);
+      console.log('Notification' + error);
       throw error;
     }
   }

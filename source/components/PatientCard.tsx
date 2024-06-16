@@ -24,11 +24,11 @@ interface ListItemProps {
 }
 
 interface PatientCardProps {
-  patientId: number;
+  patient: Patient;
   navigation: any;
 }
 
-const PatientCard: React.FC<PatientCardProps> = ({patientId, navigation}) => {
+const PatientCard: React.FC<PatientCardProps> = ({patient, navigation}) => {
   const theme = useTheme();
   const userData = useSelector((state: any) => state.user);
   const [expanded, setExpanded] = useState(false);
@@ -39,13 +39,14 @@ const PatientCard: React.FC<PatientCardProps> = ({patientId, navigation}) => {
         navigation.navigate('DoctorNavigator', {
           screen: 'PatientDetailScreen',
         })
+        // ()=>{console.log(patient)}
       }
       style={[styles.card, {borderBlockColor: theme.colors.primaryContainer}]}>
       <View style={styles.cardContainer}>
         <Avatar.Image source={avatar} />
         <View style={styles.textContainer}>
-          <Text variant="titleMedium">Bệnh nhân Hoàng Nguyễn Phúc</Text>
-          <Text variant="titleSmall">Giới tính: Nam</Text>
+          <Text variant="titleMedium">Bệnh nhân {patient.firstName + ' ' + patient.lastName}</Text>
+          <Text variant="titleSmall">Giới tính: {patient.gender ? patient.gender:'Chưa cập nhật'}</Text>
         </View>
         <View style={styles.textContainer}>
           <Icon source={'arrow-right-bold'} size={24} />
