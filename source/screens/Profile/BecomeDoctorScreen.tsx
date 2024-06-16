@@ -39,11 +39,6 @@ const BecomeDoctorScreen = ({navigation, route}: any) => {
   const [isFront, setIsFront] = useState(false);
 
   const token = useSelector((state: any) => state.token.accessToken);
-  const role = useSelector((state: any) => state.user.role);
-
-  useEffect(() => {
-    console.log(JSON.stringify(route));
-  }, [route]);
 
   const initialFormState: FormData = {
     image1: null,
@@ -53,18 +48,6 @@ const BecomeDoctorScreen = ({navigation, route}: any) => {
     specialitites: [],
   };
   const [form, setForm] = useState<FormData | null>(initialFormState);
-
-  const handleImageChange = (event: any, imageKey: 'image1' | 'image2') => {
-    if (event.target.files && event.target.files[0]) {
-      setForm(prevForm => {
-        const updatedForm = prevForm ? {...prevForm} : initialFormState;
-        return {
-          ...updatedForm,
-          [imageKey]: event.target.files[0],
-        };
-      });
-    }
-  };
 
   const handleFilesChange = (event: any) => {
     if (event.target.files) {
@@ -127,24 +110,20 @@ const BecomeDoctorScreen = ({navigation, route}: any) => {
   };
 
   useEffect(() => {
-    if (isFront) {
+    if (isFront === true) {
       console.log('Capture Front');
       setForm(prevForm => ({
         ...(prevForm ?? initialFormState),
         image1: route?.params?.base64,
       }));
       setIsFront(false);
-    } else {
+    } else if (isFront === false) {
       setForm(prevForm => ({
         ...(prevForm ?? initialFormState),
         image2: route?.params?.base64,
       }));
     }
   }, [route]);
-
-  useEffect(() => {
-    console.log(`data:image/jpeg;base64,${form?.image1}`);
-  }, [form]);
 
   return (
     <KeyboardAvoidingView
@@ -194,6 +173,8 @@ const BecomeDoctorScreen = ({navigation, route}: any) => {
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
+                setIsFront(false);
+                console.log(isFront);
                 navigation.navigate('CameraScreen');
               }}
               style={[
@@ -280,7 +261,6 @@ const styles = StyleSheet.create({
     height: 115,
     width: 170,
     overflow: 'hidden',
-    borderStyle: 'dashed',
     justifyContent: 'center',
     alignItems: 'center',
     alignSelf: 'center',
