@@ -64,7 +64,7 @@ export default function CameraScreen({navigation, route}: any) {
 
     navigation.navigate('PatientUserScreen', {
       screen: 'BecomeDoctorScreen',
-      base64: base64,
+      params: {base64},
     });
   };
 
@@ -114,8 +114,8 @@ export default function CameraScreen({navigation, route}: any) {
               y={(cropRegion.top / 100) * getFrameSize().height}
               width={(cropRegion.width / 100) * getFrameSize().width}
               height={(cropRegion.height / 100) * getFrameSize().height}
-              strokeWidth="2"
-              stroke="red"
+              strokeWidth="8"
+              stroke="white"
               fillOpacity={0.0}
             />
           </Svg>

@@ -36,7 +36,7 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
 
           const userData = await UserService.getUserInfo(token.accessToken);
 
-          console.log(userData);
+          console.log('USERDATA' + userData);
           setData(userData);
           dispatch(setUser(userData!));
           navigation.navigate('MainNavigator');
@@ -66,8 +66,6 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
         button: 'Đóng',
       });
     } finally {
-      navigation.navigate('MainNavigator');
-
       setIsLoading(false);
     }
   };
@@ -146,10 +144,11 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
               placeholderTextColor={theme.colors.secondary}
               onChangeText={password => setForm({...form, password})}
             />
-            <TouchableOpacity style={{marginTop: 'auto'}} onPress={() => {
-
-              navigation.navigate('ForgotPasswordScreen')
-            }}>
+            <TouchableOpacity
+              style={{marginTop: 'auto'}}
+              onPress={() => {
+                navigation.navigate('ForgotPasswordScreen');
+              }}>
               <Text
                 style={{
                   textDecorationLine: 'underline',

@@ -94,20 +94,21 @@ class AuthService {
       console.log('Error logging in:', error);
     }
   }
-  static async ResetPassword(
-    token: string,
-    password: string,
-  ) {
+  static async ResetPassword(token: string, password: string) {
     try {
       const params = JSON.stringify({
         token: token,
         newPassword: password,
       });
-      const response = await axios.post('http://10.0.2.2:8080/auth/reset-password', params, {
-        headers: {
-          'content-type': 'application/json',
+      const response = await axios.post(
+        'http://10.0.2.2:8080/auth/reset-password',
+        params,
+        {
+          headers: {
+            'content-type': 'application/json',
+          },
         },
-      });
+      );
       const data = response.data;
       console.log('Reponse:', data);
       // return response.data;
@@ -134,7 +135,7 @@ class AuthService {
       console.log('Reponse:', data.token);
       return data.token;
     } catch (error) {
-      console.log('OTPVerification: '+ error);
+      console.log('OTPVerification: ' + error);
       return 'error';
     }
   }
@@ -142,7 +143,7 @@ class AuthService {
   static async logout(payloadToken: PayloadToken, accessToken: string) {
     try {
       const response = await axios.get('http://10.0.2.2:8080/auth/logout', {
-        params: payloadToken,
+        params: JSON.stringify(payloadToken),
         headers: {
           'content-type': 'application/json',
           Authorization: `Bearer ${accessToken}`,

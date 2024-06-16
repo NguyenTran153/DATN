@@ -16,8 +16,8 @@ import {
   Text,
   Icon,
 } from 'react-native-paper';
+import RNFS from 'react-native-fs';
 
-import CustomAppbar from '../../components/CustomAppbar';
 import {specialties} from '../../utils/constant';
 import DropDown from '../../components/DropDown';
 import {useSelector} from 'react-redux';
@@ -40,6 +40,10 @@ const BecomeDoctorScreen = ({navigation, route}: any) => {
 
   const token = useSelector((state: any) => state.token.accessToken);
   const role = useSelector((state: any) => state.user.role);
+
+  useEffect(() => {
+    console.log(JSON.stringify(route));
+  }, [route]);
 
   const initialFormState: FormData = {
     image1: null,
@@ -146,10 +150,6 @@ const BecomeDoctorScreen = ({navigation, route}: any) => {
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       style={{backgroundColor: theme.colors.background, flex: 1}}>
-      <CustomAppbar
-        title="Đăng ký tài khoản Bác sĩ"
-        goBack={() => navigation.goBack()}
-      />
       {isLoading && (
         <View
           style={{
@@ -185,18 +185,30 @@ const BecomeDoctorScreen = ({navigation, route}: any) => {
               {form?.image1 ? (
                 <Image
                   source={{uri: `data:image/jpeg;base64,${form.image1}`}}
-                  resizeMode="contain"
+                  resizeMode="cover"
+                  style={styles.photoContainer}
                 />
               ) : (
                 <Icon source="camera" size={36} />
               )}
             </TouchableOpacity>
             <TouchableOpacity
+              onPress={() => {
+                navigation.navigate('CameraScreen');
+              }}
               style={[
                 styles.photoContainer,
                 {backgroundColor: theme.colors.primaryContainer},
               ]}>
-              <Icon source="camera" size={36} />
+              {form?.image2 ? (
+                <Image
+                  source={{uri: `data:image/jpeg;base64,${form.image2}`}}
+                  resizeMode="cover"
+                  style={styles.photoContainer}
+                />
+              ) : (
+                <Icon source="camera" size={36} />
+              )}
             </TouchableOpacity>
           </View>
         </View>

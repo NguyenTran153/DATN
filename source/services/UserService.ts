@@ -36,6 +36,29 @@ class UserService {
     }
   }
 
+  static async updateUserInfo(userData: UserData, accessToken: string) {
+    try {
+      const params = JSON.stringify(userData);
+      const response = await axios.patch('http://10.0.2.2:8080/users', params, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+
+      if (!response.data) {
+        throw new Error('Failed to update user information');
+      }
+
+      const updatedUser = response.data;
+      console.log(updatedUser);
+      return updatedUser;
+    } catch (error) {
+      console.log('Update user error:', error);
+      throw error;
+    }
+  }
+
   static async sendFriendRequest(receiverId: string, accessToken: string) {
     try {
     } catch (error) {
@@ -63,8 +86,8 @@ class UserService {
       throw error;
     }
   }
-  static async getFriendList (token: string) {
-    console.log(token)
+  static async getFriendList(token: string) {
+    console.log(token);
     try {
       const response = await axios.get<Patient[]>(
         `http://10.0.2.2:8080/users/friends/my`,
