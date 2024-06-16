@@ -43,7 +43,7 @@ const PatientListScreen = ({navigation}: any) => {
         setPatients(response.data);
         setTotalPatients(response.data.length)
       }
-      console.log(patients)
+      // console.log(patients)
     setLoading(false);
     return patients;
   };

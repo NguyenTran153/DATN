@@ -45,8 +45,8 @@ const DiaryRecordScreen = ({route}: any) => {
   const loadEntries = async () => {
     try {
       // const savedData = await AsyncStorage.getItem('patientActivities');
-      const savedData = await DiaryService.getDiary(token.accessToken);
-      // const savedData = await DiaryService.getDiaryByID(token.accessToken, patientId)
+      // const savedData = await DiaryService.getDiary(token.accessToken);
+      const savedData = await DiaryService.getDiaryByID(token.accessToken, patientId)
       if (savedData) {
         setEntries(savedData);
       }

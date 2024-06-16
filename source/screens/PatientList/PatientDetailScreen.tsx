@@ -1,5 +1,5 @@
 import {Dimensions, StyleSheet, View} from 'react-native';
-import React from 'react';
+import React, { useEffect } from 'react';
 import {useTheme} from 'react-native-paper';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
@@ -18,13 +18,22 @@ const PatientDetailScreen = ({navigation, route}: any) => {
   const theme = useTheme();
   const user = useSelector((state: any) => state.user);
   const token = useSelector((state: any) => state.token.accessToken);
-
+  const patient = route.params
+  useEffect(()=>{
+    // console.log(route.params)
+  }
+    
+)
   const FoodDiaryScreen = () => (
     <View style={styles.screen}>
-      <DiaryRecordScreen />
+      <DiaryRecordScreen route={route}/>
     </View>
   );
-
+  const PersonalInfo = () => (
+    <View style={styles.screen}>
+      <PersonalInfoScreen  route={route}/>
+    </View>
+  );
   return (
     <View style={styles.container}>
       <CustomAppbar title="Bệnh nhân" goBack={() => navigation.goBack()} />
@@ -78,7 +87,7 @@ const PatientDetailScreen = ({navigation, route}: any) => {
           />
           <Tab.Screen
             name="PersonalInfoScreen"
-            component={PersonalInfoScreen}
+            component={PersonalInfo}
           />
         </Tab.Navigator>
       </View>

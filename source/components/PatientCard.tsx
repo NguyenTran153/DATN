@@ -38,6 +38,7 @@ const PatientCard: React.FC<PatientCardProps> = ({patient, navigation}) => {
       onPress={() =>
         navigation.navigate('DoctorNavigator', {
           screen: 'PatientDetailScreen',
+          params: { patient },
         })
         // ()=>{console.log(patient)}
       }
