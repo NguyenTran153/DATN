@@ -27,7 +27,7 @@ const fakeMedicalHistoryData = [
 
 const ITEMS_PER_PAGE = 7;
 
-const BookingHistoryScreen = () => {
+const BookingHistoryScreen = ({navigation}: any) => {
   const theme = useTheme();
   const [currentPage, setCurrentPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
@@ -117,7 +117,11 @@ const BookingHistoryScreen = () => {
           icon="plus"
           iconColor={theme.colors.primary}
           size={36}
-          onPress={() => setDatePickerVisibility(true)}
+          onPress={() =>
+            navigation.navigate('HomeNavigator', {
+              screen: 'BookingScreen',
+            })
+          }
           style={{marginLeft: 8}}
         />
       </View>
@@ -170,20 +174,6 @@ const BookingHistoryScreen = () => {
         mode="date"
         onConfirm={handleSearchDateConfirm}
         onCancel={() => setSearchDatePickerVisibility(false)}
-      />
-      <DateTimePickerModal
-        isVisible={isDatePickerVisible}
-        style={{zIndex: 9, elevation: 9}}
-        mode="date"
-        onConfirm={handleNewBookingDateConfirm}
-        onCancel={() => setDatePickerVisibility(false)}
-      />
-      <DateTimePickerModal
-        isVisible={isTimePickerVisible}
-        style={{zIndex: 9, elevation: 9}}
-        mode="time"
-        onConfirm={handleNewBookingTimeConfirm}
-        onCancel={() => setTimePickerVisibility(false)}
       />
     </View>
   );
