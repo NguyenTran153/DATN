@@ -29,10 +29,10 @@ interface Entry {
   };
 }
 
-const DiaryRecordScreen = ({navigation}: any) => {
+const DiaryRecordScreen = ({route}: any) => {
   const theme = useTheme();
   const token = useSelector((state: any) => state.token);
-  const user = useSelector((state: any) => state.user);
+  const patientId = route.params.patient.id;
 
   const [searchDate, setSearchDate] = useState<string>('');
   const [entries, setEntries] = useState<Entry[]>([]);
@@ -48,7 +48,7 @@ const DiaryRecordScreen = ({navigation}: any) => {
           token.accessToken,
           1, // default page
           entriesPerPage,
-          user.id,
+          patientId,
         );
         setEntries(fetchedEntries);
       } catch (error) {
@@ -57,7 +57,7 @@ const DiaryRecordScreen = ({navigation}: any) => {
     };
 
     fetchEntries();
-  }, [token.accessToken, user.id]);
+  }, [token.accessToken, patientId]);
 
   useEffect(() => {
     const filtered = searchDate
@@ -87,17 +87,6 @@ const DiaryRecordScreen = ({navigation}: any) => {
           placeholder="Tìm kiếm"
           onChangeText={setSearchDate}
           value={searchDate}
-        />
-        <IconButton
-          icon="plus"
-          iconColor={theme.colors.primary}
-          size={36}
-          onPress={() =>
-            navigation.navigate('ProfileNavigator', {
-              screen: 'PatientDiaryScreen',
-            })
-          }
-          style={{marginLeft: 8}}
         />
       </View>
       <ScrollView
@@ -147,7 +136,7 @@ const styles = StyleSheet.create({
   },
   searchBar: {
     flex: 1,
-    marginRight: 8,
+    marginHorizontal: 8,
   },
   listContainer: {
     padding: 16,

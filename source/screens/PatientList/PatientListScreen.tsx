@@ -4,9 +4,8 @@ import {SafeAreaView} from 'react-native-safe-area-context';
 import {IconButton, DataTable, Searchbar, useTheme} from 'react-native-paper';
 
 import PatientCard from '../../components/PatientCard';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 import UserService from '../../services/UserService';
-
 
 const PatientListScreen = ({navigation}: any) => {
   const theme = useTheme();
@@ -22,28 +21,15 @@ const PatientListScreen = ({navigation}: any) => {
     fetchPatients(token.accessToken);
   }, []);
 
-  // Tạo dữ liệu giả
-  const generateFakePatients = (page: number): Patient[] => {
-    const patients: Patient[] = [];
-    // for (let i = 1; i <= itemsPerPage; i++) {
-    //   patients.push({
-    //     id: (page - 1) * itemsPerPage + i * 2,
-    //     name: `Bệnh nhân ${(page - 1) * itemsPerPage + i}`,
-    //   });
-    // }
-     return patients;
-  };
-
-  
   const fetchPatients = async (token: string) => {
     if (loading) return;
     setLoading(true);
     const response = await UserService.getFriendList(token);
-      if (response && response.data) {
-        setPatients(response.data);
-        setTotalPatients(response.data.length)
-      }
-      // console.log(patients)
+    if (response && response.data) {
+      setPatients(response.data);
+      setTotalPatients(response.data.length);
+    }
+    // console.log(patients)
     setLoading(false);
     return patients;
   };
@@ -51,20 +37,16 @@ const PatientListScreen = ({navigation}: any) => {
   const handleRefresh = async () => {
     setRefreshing(true);
     try {
-      // Fetch dữ liệu mới
       const newPatients = await fetchPatients(token.accessToken);
 
       if (page === 1) {
-        // Xóa các phần tử trùng lặp trong dữ liệu mới
         const filteredNewPatients = newPatients!.filter(
           newPatient =>
             !patients.some(oldPatient => oldPatient.id === newPatient.id),
         );
 
-        // Thêm dữ liệu mới vào đầu danh sách hiện tại nếu đang ở trang đầu tiên
         setPatients(prevPatients => [...filteredNewPatients, ...prevPatients]);
       } else {
-        // Cập nhật danh sách bệnh nhân với dữ liệu mới mà không thêm vào đầu danh sách
         setPatients(newPatients!);
       }
 

@@ -30,8 +30,6 @@ interface PatientCardProps {
 
 const PatientCard: React.FC<PatientCardProps> = ({patient, navigation}) => {
   const theme = useTheme();
-  const userData = useSelector((state: any) => state.user);
-  const [expanded, setExpanded] = useState(false);
 
   return (
     <TouchableRipple

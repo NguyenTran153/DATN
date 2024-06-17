@@ -1,11 +1,11 @@
 import {Dimensions, StyleSheet, View} from 'react-native';
-import React, { useEffect } from 'react';
+import React, {useEffect} from 'react';
 import {useTheme} from 'react-native-paper';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 
 import CustomAppbar from '../../components/CustomAppbar';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import DiaryRecordScreen from '../Profile/DiaryRecordScreen';
+import DiaryRecordScreen from './pages/DiaryRecordScreen';
 import BookingHistoryScreen from './pages/BookingHistoryScreen';
 import MedicalHistoryScreen from './pages/MedicalHistoryScreen';
 import CurrentInfoScreen from './pages/CurrentInfoScreen';
@@ -18,20 +18,12 @@ const PatientDetailScreen = ({navigation, route}: any) => {
   const theme = useTheme();
   const user = useSelector((state: any) => state.user);
   const token = useSelector((state: any) => state.token.accessToken);
-  const patient = route.params
-  useEffect(()=>{
-    // console.log(route.params)
-  }
-    
-)
-  const FoodDiaryScreen = () => (
-    <View style={styles.screen}>
-      <DiaryRecordScreen route={route}/>
-    </View>
-  );
+  const patientId = route.params.patient.id;
+
+  const FoodDiaryScreen = () => <DiaryRecordScreen route={route} />;
   const PersonalInfo = () => (
     <View style={styles.screen}>
-      <PersonalInfoScreen  route={route}/>
+      <PersonalInfoScreen route={route} />
     </View>
   );
   return (
@@ -85,10 +77,7 @@ const PatientDetailScreen = ({navigation, route}: any) => {
             name="MedicalHistoryScreen"
             component={MedicalHistoryScreen}
           />
-          <Tab.Screen
-            name="PersonalInfoScreen"
-            component={PersonalInfo}
-          />
+          <Tab.Screen name="PersonalInfoScreen" component={PersonalInfo} />
         </Tab.Navigator>
       </View>
     </View>

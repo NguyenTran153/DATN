@@ -1,14 +1,29 @@
-import moment from 'moment';
+import React from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import {DataTable, Divider, Text, useTheme} from 'react-native-paper';
+import moment from 'moment';
 
-const EntryItem = ({entry}: {entry: any}) => {
+interface EntryItemProps {
+  entry: {
+    id: string;
+    createdAt: string;
+    data: {
+      time: string;
+      food: string;
+      bloodPressure: string;
+      bloodSugar: string;
+      exercise: string;
+      note: string;
+    };
+  };
+}
+
+const EntryItem: React.FC<EntryItemProps> = ({entry}) => {
   const theme = useTheme();
   const styles = StyleSheet.create({
     container: {
       flex: 1,
       marginBottom: 16,
-      padding: 16,
       backgroundColor: theme.colors.background,
       width: '100%',
     },
@@ -39,9 +54,14 @@ const EntryItem = ({entry}: {entry: any}) => {
       justifyContent: 'center',
     },
   });
+
+  const {createdAt, data} = entry;
+
   return (
     <ScrollView style={styles.container}>
-      <Text style={styles.entryTitle}>{entry.data.time}</Text>
+      <Text style={styles.entryTitle}>
+        {moment(createdAt).format('DD/MM/YYYY, h:mm:ss')}
+      </Text>
       <DataTable>
         <DataTable.Header>
           <DataTable.Title style={styles.tableCell}>Hoạt động</DataTable.Title>
@@ -49,37 +69,34 @@ const EntryItem = ({entry}: {entry: any}) => {
         </DataTable.Header>
         <DataTable.Row>
           <DataTable.Cell style={styles.tableCell}>Thức ăn</DataTable.Cell>
-          <DataTable.Cell style={styles.tableCell}>
-            {entry.data.food}
-          </DataTable.Cell>
+          <DataTable.Cell style={styles.tableCell}>{data.food}</DataTable.Cell>
         </DataTable.Row>
         <DataTable.Row>
           <DataTable.Cell style={styles.tableCell}>Huyết áp</DataTable.Cell>
           <DataTable.Cell style={styles.tableCell}>
-            {entry.data.bloodPressure}
+            {data.bloodPressure}
           </DataTable.Cell>
         </DataTable.Row>
         <DataTable.Row>
           <DataTable.Cell style={styles.tableCell}>Đường huyết</DataTable.Cell>
           <DataTable.Cell style={styles.tableCell}>
-            {entry.data.bloodSugar}
+            {data.bloodSugar}
           </DataTable.Cell>
         </DataTable.Row>
         <DataTable.Row>
           <DataTable.Cell style={styles.tableCell}>Tập thể dục</DataTable.Cell>
           <DataTable.Cell style={styles.tableCell}>
-            {entry.data.exercise}
+            {data.exercise}
           </DataTable.Cell>
         </DataTable.Row>
         <DataTable.Row>
           <DataTable.Cell style={styles.tableCell}>Ghi chú</DataTable.Cell>
-          <DataTable.Cell style={styles.tableCell}>
-            {entry.data.note}
-          </DataTable.Cell>
+          <DataTable.Cell style={styles.tableCell}>{data.note}</DataTable.Cell>
         </DataTable.Row>
       </DataTable>
       <Divider />
     </ScrollView>
   );
 };
+
 export default EntryItem;
