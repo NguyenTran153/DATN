@@ -126,6 +126,7 @@ export default PersonalInfoScreen;
 const styles = StyleSheet.create({
   screen: {
     flex: 1,
+    padding: 16,
   },
   avatarContainer: {
     alignItems: 'center',

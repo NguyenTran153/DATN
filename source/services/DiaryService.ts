@@ -1,60 +1,75 @@
 import axios from 'axios';
 class DiaryService {
-    static async postDiary(accessToken: string, belongTo: string, data: any) {
-        try {
-            const params = JSON.stringify({
-                data: data,
-                belongTo: belongTo,
-            });
-            const response = await axios.post(
-                'http://10.0.2.2:8080/diaries', params,
-                {
-                    headers: {
-                        'content-type': 'application/json',
-                        Authorization: `Bearer ${accessToken}`,
-                    },
-                },
-            );
-            console.log(response.data);
-            return response.data;
-        } catch (error) {
-            console.log('Error post diary:', error);
-        }
+  static async postDiary(accessToken: string, data: any, files: File[]) {
+    try {
+      const formData = new FormData();
+
+      // Convert JSON data to string and append to FormData
+      formData.append('data', JSON.stringify(data));
+
+      // Append files to FormData
+      files.forEach(file => {
+        formData.append('files', file);
+      });
+
+      const response = await axios.post(
+        'http://10.0.2.2:8080/diaries',
+        formData,
+        {
+          headers: {
+            'Content-Type': 'multipart/form-data',
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
+
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.log('Error post diary:', error);
     }
-    static async getDiary(accessToken: string) {
-        try {
-          const response = await axios.get(
-            'http://10.0.2.2:8080/diaries/my-diaries',
-            {
-              headers: {
-                'content-type': 'application/json',
-                Authorization: `Bearer ${accessToken}`,
-              },
-            },
-          );
-          console.log(response.data);
-          return response.data;
-        } catch (error) {
-          console.log('Error get diary:', error);
-        }
-      }
-      static async getDiaryByID(accessToken: string, ID:string) {
-        try {
-          const response = await axios.get(
-            `http://10.0.2.2:8080/diaries/user-diaries/${ID}`,
-            {
-              headers: {
-                'content-type': 'application/json',
-                Authorization: `Bearer ${accessToken}`,
-              },
-            },
-          );
-          console.log(response.data);
-          return response.data;
-        } catch (error) {
-          console.log('Get diary by id:', error);
-        }
-      }
+  }
+
+  static async getDiary(accessToken: string) {
+    try {
+      const response = await axios.get('http://10.0.2.2:8080/diaries', {
+        headers: {
+          'content-type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.log('Error get diary:', error);
+    }
+  }
+
+  static async getDiaries(
+    accessToken: string,
+    page: number,
+    pageSize: number,
+    userId: number,
+  ) {
+    try {
+      const response = await axios.get('http://10.0.2.2:8080/diaries', {
+        params: {
+          page: page,
+          pageSize: pageSize,
+          userId: userId,
+        },
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.error('Get diaries:', error);
+      throw error; // Optionally handle error or rethrow
+    }
+  }
 }
 
-export default DiaryService
+export default DiaryService;

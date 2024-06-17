@@ -6,29 +6,6 @@ import {useSelector} from 'react-redux';
 import NotificationService from '../../services/NotificationService';
 import LottieView from 'lottie-react-native';
 
-// const fakeData = [
-//   {
-//     id: 1,
-//     isRead: false,
-//     message: 'Your appointment is confirmed',
-//     referenceId: 123,
-//     type: 'APPOINTMENT',
-//     createdBy: {
-//       id: 1,
-//       firstName: 'John',
-//       lastName: 'Doe',
-//       avatar: '../../asset/7677205.jpg',
-//     },
-//     belongTo: {
-//       id: 2,
-//       firstName: 'Jane',
-//       lastName: 'Doe',
-//     },
-//     createdAt: '2024-06-04T10:50:00Z',
-//   },
-//   // Thêm các đối tượng giả khác tương tự ở đây
-// ];
-
 const NotificationScreen = ({navigation}: any) => {
   const theme = useTheme();
   const token = useSelector((state: any) => state.token.accessToken);

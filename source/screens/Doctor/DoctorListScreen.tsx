@@ -17,6 +17,7 @@ const DoctorListScreen = ({navigation}: any) => {
   const [searchDoctor, setSearchDoctor] = useState<string>('');
   const [value, setValue] = useState<string>('all');
   const [doctors, setDoctors] = useState<any[]>([]);
+  const [filteredDoctors, setFilteredDoctors] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const token = useSelector((state: any) => state.token.accessToken);
 
@@ -26,6 +27,7 @@ const DoctorListScreen = ({navigation}: any) => {
         const response = await UserService.getFriendList(token);
         if (response && response.data) {
           setDoctors(response.data);
+          setFilteredDoctors(response.data); // Initialize with all doctors
         }
       } catch (error) {
         console.log('Error fetching friend list:', error);
@@ -36,6 +38,19 @@ const DoctorListScreen = ({navigation}: any) => {
 
     fetchFriendList();
   }, [token]);
+
+  useEffect(() => {
+    const filterDoctors = () => {
+      const filtered = doctors.filter(doctor =>
+        `${doctor.firstName} ${doctor.lastName}`
+          .toLowerCase()
+          .includes(searchDoctor.toLowerCase()),
+      );
+      setFilteredDoctors(filtered);
+    };
+
+    filterDoctors();
+  }, [searchDoctor, doctors]);
 
   return (
     <View
@@ -58,7 +73,7 @@ const DoctorListScreen = ({navigation}: any) => {
           }
         />
       </View>
-      <View style={{gap: 10, padding: 10}}>
+      <View style={{gap: 10, padding: 10, width: '90%'}}>
         <Text variant="titleLarge">Danh sách bác sĩ đã liên hệ</Text>
 
         <SegmentedButtons
@@ -74,7 +89,7 @@ const DoctorListScreen = ({navigation}: any) => {
             {loading ? (
               <Text>Loading...</Text>
             ) : (
-              doctors.map(doctor => (
+              filteredDoctors.map(doctor => (
                 <List.Item
                   key={doctor.id}
                   style={[

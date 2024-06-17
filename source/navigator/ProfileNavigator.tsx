@@ -18,7 +18,11 @@ const ProfileNavigator = () => {
         component={BecomeDoctorScreen}
         options={{headerShown: false}}
       />
-      <Stacks.Screen name="PatientDiaryScreen" component={PatientDiaryScreen} />
+      <Stacks.Screen
+        name="PatientDiaryScreen"
+        component={PatientDiaryScreen}
+        options={{headerShown: false}}
+      />
       <Stacks.Screen name="DiaryRecordScreen" component={DiaryRecordScreen} />
     </Stacks.Navigator>
   );

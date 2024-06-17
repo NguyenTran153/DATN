@@ -4,7 +4,7 @@ import {View, StyleSheet} from 'react-native';
 import {Appbar, useTheme} from 'react-native-paper';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import DiaryRecordScreen from '../Profile/DiaryRecordScreen';
+import DiaryRecordScreen from './pages/DiaryRecordScreen';
 import BookingHistoryScreen from './pages/BookingHistoryScreen';
 import MedicalHistoryScreen from './pages/MedicalHistoryScreen';
 import CurrentInfoScreen from './pages/CurrentInfoScreen';
@@ -12,18 +12,11 @@ import PersonalInfoScreen from './pages/PersonalInfoScreen';
 import StoreScreen from '../Store/StoreScreen';
 import DoctorListScreen from '../Doctor/DoctorListScreen';
 import ProfileScreen from '../Profile/ProfileScreen';
-import BecomeDoctorScreen from '../Profile/BecomeDoctorScreen';
 import {useSelector} from 'react-redux';
 import {createDrawerNavigator} from '@react-navigation/drawer';
 
 const Tab = createMaterialTopTabNavigator();
 const Drawer = createDrawerNavigator();
-
-const FoodDiaryScreen = () => (
-  <View style={styles.screen}>
-    <DiaryRecordScreen />
-  </View>
-);
 
 const TabNavigator = () => {
   const theme = useTheme();
@@ -39,7 +32,7 @@ const TabNavigator = () => {
             case 'CurrentInfoScreen':
               iconName = 'information-outline';
               break;
-            case 'FoodDiary':
+            case 'DiaryRecordScreen':
               iconName = 'food-apple-outline';
               break;
             case 'BookingHistoryScreen':
@@ -61,7 +54,7 @@ const TabNavigator = () => {
         },
       })}>
       <Tab.Screen name="CurrentInfoScreen" component={CurrentInfoScreen} />
-      <Tab.Screen name="FoodDiary" component={FoodDiaryScreen} />
+      <Tab.Screen name="DiaryRecordScreen" component={DiaryRecordScreen} />
       <Tab.Screen
         name="BookingHistoryScreen"
         component={BookingHistoryScreen}
