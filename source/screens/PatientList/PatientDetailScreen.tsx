@@ -26,6 +26,7 @@ const PatientDetailScreen = ({navigation, route}: any) => {
       <PersonalInfoScreen route={route} />
     </View>
   );
+  const BookingHistory = () => <BookingHistoryScreen route={route} />;
   return (
     <View style={styles.container}>
       <CustomAppbar title="Bệnh nhân" goBack={() => navigation.goBack()} />
@@ -71,7 +72,7 @@ const PatientDetailScreen = ({navigation, route}: any) => {
           <Tab.Screen name="FoodDiary" component={FoodDiaryScreen} />
           <Tab.Screen
             name="BookingHistoryScreen"
-            component={BookingHistoryScreen}
+            component={BookingHistory}
           />
           <Tab.Screen
             name="MedicalHistoryScreen"

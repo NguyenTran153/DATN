@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {View, ScrollView, StyleSheet, Dimensions} from 'react-native';
+import {View, ScrollView, StyleSheet, Dimensions, Alert} from 'react-native';
 import {
   useTheme,
   List,
@@ -9,6 +9,9 @@ import {
   Avatar,
 } from 'react-native-paper';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import AppointmentService from '../../../services/AppointmentService';
+import { useSelector } from 'react-redux';
+import moment from 'moment';
 
 const {height} = Dimensions.get('window');
 
@@ -27,7 +30,7 @@ const fakeMedicalHistoryData = [
 
 const ITEMS_PER_PAGE = 7;
 
-const BookingHistoryScreen = () => {
+const BookingHistoryScreen = ({route}:any) => {
   const theme = useTheme();
   const [currentPage, setCurrentPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
@@ -37,9 +40,9 @@ const BookingHistoryScreen = () => {
     useState(false);
   const [newBookingDate, setNewBookingDate] = useState<Date | null>(null);
   const [newBookingTime, setNewBookingTime] = useState<Date | null>(null);
-
+  const patient = route.params.patient;
   const totalPages = Math.ceil(fakeMedicalHistoryData.length / ITEMS_PER_PAGE);
-
+  const token = useSelector((state: any) => state.token);
   const getCurrentPageData = () => {
     const filteredData = searchQuery
       ? fakeMedicalHistoryData.filter(
@@ -81,7 +84,7 @@ const BookingHistoryScreen = () => {
     setTimePickerVisibility(true);
   };
 
-  const handleNewBookingTimeConfirm = (time: Date) => {
+  const handleNewBookingTimeConfirm = async (time: Date) => {
     if (newBookingDate) {
       const bookingTimestamp = new Date(
         newBookingDate.getFullYear(),
@@ -90,6 +93,17 @@ const BookingHistoryScreen = () => {
         time.getHours(),
         time.getMinutes(),
       );
+      const beginTimestamp = moment(bookingTimestamp, 'YYYY-MM-DD HH:mm').valueOf() / 1000;
+      if (beginTimestamp) {
+        console.log('API call with beginTimestamp:', beginTimestamp);
+        await AppointmentService.sendAppointment(token.accessToken, patient.id, {
+           beginTimestamp:beginTimestamp,
+        });
+        Alert.alert('Đã đặt lịch hẹn');
+      
+      } else {
+        Alert.alert('Hãy chọn thời gian');
+      }
       console.log('New Booking Timestamp:', bookingTimestamp.toISOString());
     }
     setTimePickerVisibility(false);
