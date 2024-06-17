@@ -9,15 +9,10 @@ import {
   Button,
   Appbar,
 } from 'react-native-paper';
-import {useSelector} from 'react-redux';
 
-const PersonalInfoScreen = ({navigation}: any) => {
+const PersonalInfoScreen = ({route}: any) => {
   const theme = useTheme();
-  const user = useSelector((state: any) => state.user);
-
-  const handleUpdatePress = () => {
-    navigation.navigate('UpdatePersonalInfoScreen');
-  };
+  const user = route.params.patient;
 
   const personalInfo = {
     firstName: user.firstName || 'Chưa cập nhật',
@@ -41,7 +36,6 @@ const PersonalInfoScreen = ({navigation}: any) => {
     <View style={[styles.screen, {backgroundColor: theme.colors.background}]}>
       <Appbar.Header>
         <Appbar.Content title="Thông tin cá nhân" />
-        <Appbar.Action icon="pencil" onPress={handleUpdatePress} />
       </Appbar.Header>
       <ScrollView>
         <View style={styles.avatarContainer}>
