@@ -1,17 +1,11 @@
-import {
-  Button,
-  Pressable,
-  ScrollView,
-  StyleSheet,
-  TouchableHighlight,
-  View,
-} from 'react-native';
+import {ScrollView, StyleSheet, View} from 'react-native';
 import React, {useState} from 'react';
 import {List, Text, TextInput, useTheme} from 'react-native-paper';
 import QRLoginID from '../QRLoginID';
 import CustomAppbar from '../../components/CustomAppbar';
 import {useSelector} from 'react-redux';
 import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
+import UserService from '../../services/UserService'; // import UserService
 
 const ConnectDoctorScreen = ({navigation}: any) => {
   const theme = useTheme();
@@ -19,14 +13,36 @@ const ConnectDoctorScreen = ({navigation}: any) => {
 
   const [phone, setPhone] = useState('');
   const [accountModal, setAccountModal] = useState(false);
-  console.log(user.role);
+  const token = useSelector((state: any) => state.token.accessToken); // lấy token từ redux
+
   const sendFriendRequest = async () => {
-    Dialog.show({
-      type: ALERT_TYPE.DANGER,
-      title: 'Thất bại',
-      textBody: 'Số điện thoại chưa đăng ký hoặc không cho phép tìm kiếm',
-      button: 'Đóng',
-    });
+    try {
+      const response = await UserService.findUserByPhone(phone, token);
+      if (response) {
+        const userId = response[0].id;
+        await UserService.sendFriendRequest(userId, token);
+        Dialog.show({
+          type: ALERT_TYPE.SUCCESS,
+          title: 'Thành công',
+          textBody: 'Yêu cầu kết bạn đã được gửi',
+          button: 'Đóng',
+        });
+      } else {
+        Dialog.show({
+          type: ALERT_TYPE.DANGER,
+          title: 'Thất bại',
+          textBody: 'Số điện thoại chưa đăng ký hoặc không cho phép tìm kiếm',
+          button: 'Đóng',
+        });
+      }
+    } catch (error) {
+      Dialog.show({
+        type: ALERT_TYPE.DANGER,
+        title: 'Thất bại',
+        textBody: 'Đã xảy ra lỗi, vui lòng thử lại',
+        button: 'Đóng',
+      });
+    }
   };
 
   return (
@@ -130,6 +146,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     gap: 10,
+    padding: 20,
   },
   settingCenter: {
     paddingLeft: 20,
@@ -150,7 +167,6 @@ const styles = StyleSheet.create({
   },
   input: {
     width: '80%',
-    borderWidth: 1,
     height: 50,
     borderRadius: 10,
   },

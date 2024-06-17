@@ -59,8 +59,38 @@ class UserService {
     }
   }
 
+  static async findUserByPhone(phone: string, accessToken: string) {
+    try {
+      const response = await axios.get(`http://10.0.2.2:8080/users/search`, {
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
+        },
+        params: {
+          text: phone,
+        },
+      });
+      console.log(response.data);
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
   static async sendFriendRequest(receiverId: string, accessToken: string) {
     try {
+      const response = await axios.post(
+        `http://10.0.2.2:8080/users/friend-request/send/${receiverId}`,
+        {},
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
+      console.log(response.data);
+      return response.data;
     } catch (error) {
       console.log(error);
       throw error;
@@ -70,8 +100,8 @@ class UserService {
   static async registerDoctor(accessToken: string, form: any) {
     try {
       const response = await axios.post(
-        'http://10.0.2.2:8080/doctor-register',
-        form,
+        'http://10.0.2.2:8080/users/doctor-register',
+        JSON.stringify(form),
         {
           headers: {
             'Content-Type': 'application/json',
@@ -98,7 +128,6 @@ class UserService {
           },
         },
       );
-      console.log(response);
       return response;
     } catch (error) {
       console.log('Get friend: ' + error);

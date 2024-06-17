@@ -16,7 +16,7 @@ import {
   Text,
   Icon,
 } from 'react-native-paper';
-import RNFS from 'react-native-fs';
+import DocumentPicker from 'react-native-document-picker';
 
 import {specialties} from '../../utils/constant';
 import DropDown from '../../components/DropDown';
@@ -27,7 +27,7 @@ import UserService from '../../services/UserService';
 interface FormData {
   image1: string | null;
   image2: string | null;
-  files: File[];
+  files: any[];
   textarea: string;
   specialitites: any[];
 }
@@ -49,15 +49,21 @@ const BecomeDoctorScreen = ({navigation, route}: any) => {
   };
   const [form, setForm] = useState<FormData | null>(initialFormState);
 
-  const handleFilesChange = (event: any) => {
-    if (event.target.files) {
-      setForm(prevForm => {
-        const updatedForm = prevForm ? {...prevForm} : initialFormState;
-        return {
-          ...updatedForm,
-          files: Array.from(event.target.files),
-        };
+  const handleFilesChange = async () => {
+    try {
+      const results = await DocumentPicker.pick({
+        type: [DocumentPicker.types.allFiles],
       });
+      setForm(prevForm => ({
+        ...(prevForm ?? initialFormState),
+        files: [...(prevForm?.files ?? []), ...results],
+      }));
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        console.log('User cancelled the picker');
+      } else {
+        console.log('Unknown error: ', err);
+      }
     }
   };
 
@@ -87,7 +93,10 @@ const BecomeDoctorScreen = ({navigation, route}: any) => {
     // }
     try {
       setIsLoading(true);
-      const response = await UserService.registerDoctor(token, form);
+      const fakeForm = {
+        status: form,
+      };
+      const response = await UserService.registerDoctor(token, fakeForm);
       navigation.goBack();
       Dialog.show({
         type: ALERT_TYPE.SUCCESS,
@@ -196,9 +205,18 @@ const BecomeDoctorScreen = ({navigation, route}: any) => {
 
         <View style={{gap: 10}}>
           <Text variant="titleMedium">Các giấy chứng nhận liên quan</Text>
-          <TouchableOpacity style={styles.fileContainer}>
-            <Icon source="plus" size={36} />
-          </TouchableOpacity>
+          <View style={{flexDirection: 'row', flexWrap: 'wrap', gap: 10}}>
+            {form?.files.map((file, index) => (
+              <View key={index} style={styles.fileContainer}>
+                <Text>{file.name}</Text>
+              </View>
+            ))}
+            <TouchableOpacity
+              style={styles.fileContainer}
+              onPress={handleFilesChange}>
+              <Icon source="plus" size={36} />
+            </TouchableOpacity>
+          </View>
         </View>
 
         <View style={{gap: 10}}>

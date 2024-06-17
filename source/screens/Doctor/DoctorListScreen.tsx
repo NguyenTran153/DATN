@@ -1,5 +1,5 @@
+import React, {useEffect, useState} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
-import {useState} from 'react';
 import {
   useTheme,
   Avatar,
@@ -9,34 +9,33 @@ import {
   List,
   SegmentedButtons,
 } from 'react-native-paper';
+import UserService from '../../services/UserService';
+import {useSelector} from 'react-redux';
 
-import {specialties} from '../../utils/constant';
-
-const doctors = [
-  {id: 1, name: 'Bác sĩ Nguyễn Văn A', specialtyIndex: 0},
-  {id: 2, name: 'Bác sĩ Trần Thị B', specialtyIndex: 1},
-  {id: 3, name: 'Bác sĩ Lê Hoàng C', specialtyIndex: 2},
-  // ... Thêm dữ liệu bác sĩ
-];
-
-const fakeData = {
-  id: '2',
-  userName: 'John Doe',
-  userImg: require('../../asset/7677205.jpg'),
-  messageTime: '2 hours ago',
-  messageText:
-    'Hey there, this is my test for a post of my social app in React Native.',
-  Gender: 'Nam',
-  Age: '34',
-  Address: '234 Main Street, City, Country',
-  Height: 179,
-  Weight: 76,
-};
-
-const DoctorListScreen = ({navigation}: {navigation: any}) => {
+const DoctorListScreen = ({navigation}: any) => {
   const theme = useTheme();
   const [searchDoctor, setSearchDoctor] = useState<string>('');
   const [value, setValue] = useState<string>('all');
+  const [doctors, setDoctors] = useState<any[]>([]);
+  const [loading, setLoading] = useState<boolean>(true);
+  const token = useSelector((state: any) => state.token.accessToken);
+
+  useEffect(() => {
+    const fetchFriendList = async () => {
+      try {
+        const response = await UserService.getFriendList(token);
+        if (response && response.data) {
+          setDoctors(response.data);
+        }
+      } catch (error) {
+        console.log('Error fetching friend list:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchFriendList();
+  }, [token]);
 
   return (
     <View
@@ -60,74 +59,72 @@ const DoctorListScreen = ({navigation}: {navigation: any}) => {
         />
       </View>
       <View style={{gap: 10, padding: 10}}>
-        <Text variant="titleLarge"> Danh sách bác sĩ đã liên hệ</Text>
+        <Text variant="titleLarge">Danh sách bác sĩ đã liên hệ</Text>
 
         <SegmentedButtons
           value={value}
           onValueChange={setValue}
           buttons={[
-            {
-              value: 'all',
-              label: 'Tất cả',
-            },
-            {
-              value: 'new',
-              label: 'Mới nhất',
-            },
+            {value: 'all', label: 'Tất cả'},
+            {value: 'new', label: 'Mới nhất'},
           ]}
         />
         <ScrollView>
           <List.Section style={{alignItems: 'flex-start'}}>
-            {doctors.map(doctor => {
-              return (
+            {loading ? (
+              <Text>Loading...</Text>
+            ) : (
+              doctors.map(doctor => (
                 <List.Item
                   key={doctor.id}
                   style={[
                     styles.listItem,
                     {borderBottomColor: theme.colors.surfaceVariant},
                   ]}
-                  title={doctor.name}
+                  title={`${doctor.firstName} ${doctor.lastName}`}
                   onPress={() => {}}
                   left={() => (
                     <Avatar.Image
                       style={{alignSelf: 'center'}}
                       size={48}
-                      source={require('../../asset/7677205.jpg')}
+                      source={
+                        doctor.avatar
+                          ? {uri: doctor.avatar}
+                          : require('../../asset/7677205.jpg')
+                      }
                     />
                   )}
                   right={() => (
-                    <>
-                      <View
-                        style={{
-                          flexDirection: 'row',
-                          justifyContent: 'flex-end',
-                        }}>
-                        <IconButton
-                          icon={'chat'}
-                          size={30}
-                          onPress={() => {
-                            navigation.navigate('ChatNavigator', {
-                              screen: 'ChatScreen',
-                              params: {userId: fakeData.id, userInfo: fakeData},
-                            });
-                          }}
-                        />
-                        <IconButton
-                          icon={'video'}
-                          size={30}
-                          onPress={() => {
-                            navigation.navigate('ChatNavigator', {
-                              screen: 'CallingScreen',
-                              params: {userInfo: fakeData},
-                            });
-                          }}
-                        />
-                      </View>
-                    </>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'flex-end',
+                      }}>
+                      <IconButton
+                        icon={'chat'}
+                        size={30}
+                        onPress={() => {
+                          navigation.navigate('ChatNavigator', {
+                            screen: 'ChatScreen',
+                            params: {userId: doctor.id, userInfo: doctor},
+                          });
+                        }}
+                      />
+                      <IconButton
+                        icon={'video'}
+                        size={30}
+                        onPress={() => {
+                          navigation.navigate('ChatNavigator', {
+                            screen: 'CallingScreen',
+                            params: {userInfo: doctor},
+                          });
+                        }}
+                      />
+                    </View>
                   )}
                 />
-              );
-            })}
+              ))
+            )}
           </List.Section>
         </ScrollView>
       </View>

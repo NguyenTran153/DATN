@@ -62,7 +62,7 @@ export default function CameraScreen({navigation, route}: any) {
   const onCaptured = (base64: string) => {
     setIsActive(false);
 
-    navigation.navigate('PatientUserScreen', {
+    navigation.navigate('ProfileNavigator', {
       screen: 'BecomeDoctorScreen',
       params: {base64},
     });

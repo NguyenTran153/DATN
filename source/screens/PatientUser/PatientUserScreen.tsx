@@ -100,11 +100,6 @@ const PatientUserScreen = ({navigation}: any) => {
         component={ProfileScreen}
         options={{drawerLabel: 'Cài đặt'}}
       />
-      <Drawer.Screen
-        name="BecomeDoctorScreen"
-        component={BecomeDoctorScreen}
-        options={{drawerLabel: 'Đăng ký làm bác sĩ'}}
-      />
     </Drawer.Navigator>
   );
 };
