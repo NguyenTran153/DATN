@@ -1,21 +1,40 @@
-import {StyleSheet, SafeAreaView, ScrollView, View} from 'react-native';
-import React from 'react';
-import {Text, useTheme, Card, IconButton} from 'react-native-paper';
+import { StyleSheet, SafeAreaView, ScrollView, View } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { Text, useTheme, Card, IconButton } from 'react-native-paper';
+import { useSelector } from 'react-redux';
+import PrescriptionService from '../../../services/PrescriptionService';
+import DiaryService from '../../../services/DiaryService';
 
-const CurrentInfoScreen = () => {
+const CurrentInfoScreen = ({ route }: any) => {
   const theme = useTheme();
-
+  const token = useSelector((state: any) => state.token);
+  const patient = route.params.patient;
+  const [pres, setPres] = useState<any[]>([]);
+  const [diary, SetDiary] = useState<any[]>([]);
+  const [med , setMed] = useState<any[]>([]);
+  useEffect(() => {
+    const fetchAPI = async () => {
+      const prescriptions = await PrescriptionService.getPrescription(patient.id, token.accessToken)
+      const diaries = await DiaryService.getDiaries(token.accessToken, 1, 100, patient.id)
+      setPres(prescriptions);
+      SetDiary(diaries)
+      const medicineStrings = prescriptions[0].data.medicines.map((medicine: { name: any; schedule: { morning: any; afternoon: any; evening: any; night: any; }; }) => (
+        `${medicine.name}: Sáng: ${medicine.schedule.morning}, Trưa: ${medicine.schedule.afternoon}, Chiều: ${medicine.schedule.evening}, Tối: ${medicine.schedule.night}`))
+      console.log(medicineStrings)
+      setMed(medicineStrings)
+      console.log(diaries)
+    };
+    fetchAPI()
+  }, [])
   // Sample data
   const nextAppointment = null;
-  const recentDietLog =
-    '14/06/2024 - Ăn sáng: Bánh mì và trứng, Ăn trưa: Cơm gà, Ăn tối: Phở';
+  const recentDietLog = diary.length !== 0 ? diary[0].data.mockKey : "Không tìm thấy nhật ký gần nhất";
   const recentDiagnosis = '13/06/2024 - Viêm họng';
-  const recentPrescription =
-    '13/06/2024 - Paracetamol 500mg, 2 viên/ngày, uống sau khi ăn';
+  const recentPrescription = med
 
   return (
     <SafeAreaView
-      style={[styles.container, {backgroundColor: theme.colors.background}]}>
+      style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <ScrollView contentContainerStyle={styles.scrollView}>
         <Card style={styles.card}>
           <Card.Title
@@ -60,9 +79,14 @@ const CurrentInfoScreen = () => {
             left={props => <IconButton {...props} icon="pill" />}
             titleStyle={styles.cardTitle}
           />
-          <Card.Content>
-            <Text style={styles.cardContent}>{recentPrescription}</Text>
+          {recentPrescription.length !== 0 ? recentPrescription.map(item => 
+            <Card.Content>
+            <Text style={styles.cardContent}>{item}</Text>
           </Card.Content>
+          ): <Card.Content>
+          <Text style={styles.cardContent}>Không tìm thấy đơn thuốc</Text>
+        </Card.Content>}
+          
         </Card>
       </ScrollView>
     </SafeAreaView>
