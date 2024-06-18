@@ -37,7 +37,7 @@ const UpdatePersonalInfoScreen = ({navigation}: any) => {
     address: '',
     height: '',
     weight: '',
-    avatar: '', // Added avatar field
+    avatar: '',
   });
 
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
@@ -53,7 +53,7 @@ const UpdatePersonalInfoScreen = ({navigation}: any) => {
         address: user.address || '',
         height: user.height ? user.height.toString() : '',
         weight: user.weight ? user.weight.toString() : '',
-        avatar: user.avatar || '', // Set initial avatar
+        avatar: user.avatar || null,
       });
     }
   }, [user]);
@@ -83,20 +83,29 @@ const UpdatePersonalInfoScreen = ({navigation}: any) => {
 
   const handleSave = async () => {
     try {
-      setIsLoading(true); // Start loading indicator
+      setIsLoading(true);
+
+      if (personalInfo.avatar) {
+        const avatarResponse = await UserService.uploadAvatar(
+          personalInfo.avatar,
+          token,
+        );
+        // Handle avatar response if needed
+      }
 
       const updatedInfo = {
-        ...user,
-        ...personalInfo,
-        height: parseFloat(personalInfo.height),
-        weight: parseFloat(personalInfo.weight),
+        firstName: personalInfo.firstName,
+        lastName: personalInfo.lastName,
         birthdate: personalInfo.birthdate.toISOString(),
+        gender: personalInfo.gender,
+        address: personalInfo.address,
+        height: personalInfo.height,
+        weight: personalInfo.weight,
       };
 
       const updatedUser = await UserService.updateUserInfo(updatedInfo, token);
       dispatch(setUser(updatedUser));
 
-      // Show success dialog
       Dialog.show({
         title: 'Thông báo',
         type: ALERT_TYPE.SUCCESS,
@@ -119,8 +128,6 @@ const UpdatePersonalInfoScreen = ({navigation}: any) => {
 
   const handlePickAvatar = () => {
     ImagePicker.openPicker({
-      width: 300,
-      height: 400,
       cropping: true,
     })
       .then(image => {
@@ -180,11 +187,11 @@ const UpdatePersonalInfoScreen = ({navigation}: any) => {
             onValueChange={value => handleInputChange('gender', value)}
             value={personalInfo.gender}>
             <View style={styles.radioContainer}>
-              <RadioButton value="Male" />
+              <RadioButton value="male" />
               <Text>Nam</Text>
             </View>
             <View style={styles.radioContainer}>
-              <RadioButton value="Female" />
+              <RadioButton value="female" />
               <Text>Nữ</Text>
             </View>
           </RadioButton.Group>
@@ -210,7 +217,7 @@ const UpdatePersonalInfoScreen = ({navigation}: any) => {
         <Divider />
         <View style={styles.formGroup}>
           <TextInput
-            label="Cân nặng"
+            label="Cân nặng (kg)"
             value={personalInfo.weight}
             onChangeText={text => handleInputChange('weight', text)}
             style={styles.input}
@@ -221,7 +228,7 @@ const UpdatePersonalInfoScreen = ({navigation}: any) => {
         <Divider />
         <View style={styles.formGroup}>
           <TextInput
-            label="Chiều cao"
+            label="Chiều cao (cm)"
             value={personalInfo.height}
             onChangeText={text => handleInputChange('height', text)}
             style={styles.input}

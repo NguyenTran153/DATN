@@ -36,9 +36,10 @@ class UserService {
     }
   }
 
-  static async updateUserInfo(userData: UserData, accessToken: string) {
+  static async updateUserInfo(userData: any, accessToken: string) {
     try {
       const params = JSON.stringify(userData);
+
       const response = await axios.patch('http://10.0.2.2:8080/users', params, {
         headers: {
           'Content-Type': 'application/json',
@@ -55,6 +56,31 @@ class UserService {
       return updatedUser;
     } catch (error) {
       console.log('Update user error:', error);
+      throw error;
+    }
+  }
+
+  static async uploadAvatar(avatar: string, token: string) {
+    try {
+      const formData = new FormData();
+      formData.append('file', {
+        uri: avatar,
+        type: 'image/jpeg',
+        name: 'avatar.jpg',
+      });
+      const response = await axios.post(
+        `http://10.0.2.2:8080/users/upload-avatar`,
+        formData,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+            'Content-Type': 'multipart/form-data',
+          },
+        },
+      );
+      return response.data;
+    } catch (error) {
+      console.log(error);
       throw error;
     }
   }

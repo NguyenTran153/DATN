@@ -14,14 +14,14 @@ const {height} = Dimensions.get('window');
 
 const fakeMedicalHistoryData = [
   {date: '29/06/2024', symptoms: 'Ho, sốt'},
-  {date: '29/06/2025', symptoms: 'Đau đầu, mệt mỏi'},
+  {date: '29/06/2023', symptoms: 'Đau đầu, mệt mỏi'},
   {date: '15/07/2023', symptoms: 'Buồn nôn, chóng mặt'},
-  {date: '10/08/2023', symptoms: 'Đau bụng, tiêu chảy'},
-  {date: '22/09/2023', symptoms: 'Khó thở, tức ngực'},
-  {date: '05/10/2023', symptoms: 'Mất ngủ, lo âu'},
-  {date: '17/11/2023', symptoms: 'Đau lưng, đau cổ'},
-  {date: '01/12/2023', symptoms: 'Viêm họng, đau nhức cơ'},
-  {date: '14/01/2024', symptoms: 'Đau mắt, mờ mắt'},
+  {date: '10/06/2023', symptoms: 'Đau bụng, tiêu chảy'},
+  {date: '22/05/2023', symptoms: 'Khó thở, tức ngực'},
+  {date: '05/05/2023', symptoms: 'Mất ngủ, lo âu'},
+  {date: '17/04/2023', symptoms: 'Đau lưng, đau cổ'},
+  {date: '01/04/2023', symptoms: 'Viêm họng, đau nhức cơ'},
+  {date: '14/03/2024', symptoms: 'Đau mắt, mờ mắt'},
   {date: '28/02/2024', symptoms: 'Sưng tấy, đỏ da'},
 ];
 

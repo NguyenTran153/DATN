@@ -14,38 +14,10 @@ const ProfileScreen = ({navigation}: {navigation: any}) => {
   const userData = useSelector((state: any) => state.user);
   const token = useSelector((state: any) => state.token);
 
-  // useEffect(() => {
-  //   fetchData();
-  // }, []);
-
-  // const fetchData = async () => {
-  //   setData(await UserService.getUserInfo(token.accessToken));
-  //   dispatch(setUser(data!));
-  // };
-
   const handleLogout = async () => {
     try {
-      const payloadToken: PayloadToken = {
-        id: userData.id,
-        role: userData.role,
-      };
-
-      const response = await AuthService.logout(
-        payloadToken,
-        token.accessToken,
-      );
-      if (response.success) {
-        // dispatch(clearToken());
-        // dispatch(clearUser());
-        navigation.navigate('LoginScreen');
-      } else {
-        Dialog.show({
-          type: ALERT_TYPE.DANGER,
-          title: 'Đăng xuất thất bại',
-          textBody: 'Không thể đăng xuất. Vui lòng thử lại.',
-          button: 'Đóng',
-        });
-      }
+      await AuthService.logout(token.accessToken);
+      navigation.navigate('LoginScreen');
     } catch (error) {
       Dialog.show({
         type: ALERT_TYPE.DANGER,
