@@ -25,7 +25,7 @@ const SignupScreen = ({navigation}: any) => {
 
   const [otpModal, setOTPModal] = useState(false);
   const [otpValue, setOtpValue] = useState('');
-
+  const [pinId, setPinId] = useState('');
   const theme = useTheme();
 
   const handleInputChange = (name: any, value: any) => {
@@ -35,22 +35,34 @@ const SignupScreen = ({navigation}: any) => {
     });
   };
 
-  const handleSignup = () => {
+  const handleSignup = async () => {
     // Xử lý logic đăng ký tại đây
     console.log('First Name:', form.firstName);
     console.log('Last Name:', form.lastName);
     console.log('Phone:', form.phone);
     console.log('Password:', form.password);
     console.log('Confirm Password:', form.confirmPassword);
-
+    const result = await AuthService.PhoneVerification(form.phone);
+    setPinId(result)
     setOTPModal(true);
+    console.log(pinId)
   };
 
   const handleOtpSubmit = async () => {
+    
     if (otpValue.length === 6) {
-      const result = await AuthService.OTPVerification('pinid', otpValue);
+      
+      const result = await AuthService.OTPVerification(pinId, otpValue);
+      console.log(result)
       if (result !== 'error') {
-        navigation.navigate('RegisterScreen', {token: result});
+        // navigation.navigate('RegisterScreen', {token: result});
+        await AuthService.signUp(result,'', form.password, form.firstName, form.lastName)
+        Dialog.show({
+          type: ALERT_TYPE.SUCCESS,
+          title: 'Đăng ký',
+          textBody: 'Đăng ký thành công',
+          button: 'Đóng',
+        });
       } else {
         Dialog.show({
           type: ALERT_TYPE.DANGER,
@@ -179,7 +191,7 @@ const SignupScreen = ({navigation}: any) => {
           label="Mã OTP"
           mode="outlined"
           value={otpValue}
-          onChangeText={() => {}}
+          onChangeText={(text) => setOtpValue(text)}
           inputMode="numeric"
         />
         <View style={styles.row}>

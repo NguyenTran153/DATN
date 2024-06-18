@@ -67,7 +67,6 @@ class AuthService {
         },
       );
       const data = response.data;
-      console.log('Reponse:', data.pinId);
       return data.pinId;
     } catch (error) {
       console.log('Error logging in:', error);
