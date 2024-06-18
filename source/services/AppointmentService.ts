@@ -30,6 +30,25 @@ class AppointmentService {
       throw new Error(error);
     }
   }
+  static async getAppointment(userId: string, accessToken: string) {
+    try {
+      const response = await axios.get(
+        `http://10.0.2.2:8080/appointments/history/${userId}`,
+        {
+          headers: {
+            'content-type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
+      console.log(response.data)
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+
 }
 
 export default AppointmentService;

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, ScrollView, StyleSheet, Dimensions, Alert} from 'react-native';
 import {
   useTheme,
@@ -54,7 +54,26 @@ const BookingHistoryScreen = ({route}:any) => {
     const startIndex = currentPage * ITEMS_PER_PAGE;
     return filteredData.slice(startIndex, startIndex + ITEMS_PER_PAGE);
   };
-
+  const [app, setApp] = useState<any[]>([]);
+  useEffect(() => {
+    const fetchAPI = async () => {
+      const appointments = await AppointmentService.getAppointment(patient.id, token.accessToken)
+      setApp(appointments)
+    };
+    fetchAPI()
+  }, [])
+  const convertedList = app.map(item => {
+    const beginTimestamp = item.beginTimestamp;
+    const date = new Date(beginTimestamp * 1000); // Convert to milliseconds
+  
+    const formattedDate = moment(date).format('DD/MM/YYYY HH:mm');
+    const name = `${item.requestUser.firstName} ${item.requestUser.lastName}`;
+  
+    return {
+      date: formattedDate,
+      name: name
+    };
+  });
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -136,7 +155,7 @@ const BookingHistoryScreen = ({route}:any) => {
         />
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {getCurrentPageData().map((item, index) => (
+        {convertedList.map((item, index) => (
           <List.Section key={index} style={{height: itemHeight}}>
             <List.Item
               title={item.name}
