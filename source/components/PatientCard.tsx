@@ -36,16 +36,19 @@ const PatientCard: React.FC<PatientCardProps> = ({patient, navigation}) => {
       onPress={() =>
         navigation.navigate('DoctorNavigator', {
           screen: 'PatientDetailScreen',
-          params: { patient },
+          params: {patient},
         })
-        // ()=>{console.log(patient)}
       }
       style={[styles.card, {borderBlockColor: theme.colors.primaryContainer}]}>
       <View style={styles.cardContainer}>
         <Avatar.Image source={avatar} />
         <View style={styles.textContainer}>
-          <Text variant="titleMedium">Bệnh nhân {patient.firstName + ' ' + patient.lastName}</Text>
-          <Text variant="titleSmall">Giới tính: {patient.gender ? patient.gender:'Chưa cập nhật'}</Text>
+          <Text variant="titleMedium">
+            Bệnh nhân {patient.firstName + ' ' + patient.lastName}
+          </Text>
+          <Text variant="titleSmall">
+            Giới tính: {patient.gender ? patient.gender : 'Chưa cập nhật'}
+          </Text>
         </View>
         <View style={styles.textContainer}>
           <Icon source={'arrow-right-bold'} size={24} />

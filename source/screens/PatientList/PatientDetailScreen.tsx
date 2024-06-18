@@ -16,9 +16,6 @@ const Tab = createMaterialTopTabNavigator();
 
 const PatientDetailScreen = ({navigation, route}: any) => {
   const theme = useTheme();
-  const user = useSelector((state: any) => state.user);
-  const token = useSelector((state: any) => state.token.accessToken);
-  const patientId = route.params.patient.id;
 
   const FoodDiaryScreen = () => <DiaryRecordScreen route={route} />;
   const PersonalInfo = () => (
@@ -27,6 +24,10 @@ const PatientDetailScreen = ({navigation, route}: any) => {
     </View>
   );
   const BookingHistory = () => <BookingHistoryScreen route={route} />;
+  const MedicalHistory = () => (
+    <MedicalHistoryScreen route={route} navigation={navigation} />
+  );
+
   return (
     <View style={styles.container}>
       <CustomAppbar title="Bệnh nhân" goBack={() => navigation.goBack()} />
@@ -70,14 +71,8 @@ const PatientDetailScreen = ({navigation, route}: any) => {
           })}>
           <Tab.Screen name="CurrentInfoScreen" component={CurrentInfoScreen} />
           <Tab.Screen name="FoodDiary" component={FoodDiaryScreen} />
-          <Tab.Screen
-            name="BookingHistoryScreen"
-            component={BookingHistory}
-          />
-          <Tab.Screen
-            name="MedicalHistoryScreen"
-            component={MedicalHistoryScreen}
-          />
+          <Tab.Screen name="BookingHistoryScreen" component={BookingHistory} />
+          <Tab.Screen name="MedicalHistoryScreen" component={MedicalHistory} />
           <Tab.Screen name="PersonalInfoScreen" component={PersonalInfo} />
         </Tab.Navigator>
       </View>

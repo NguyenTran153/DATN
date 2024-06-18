@@ -73,24 +73,6 @@ const MedicalHistoryScreen = ({navigation}: any) => {
           value={searchQuery}
           style={{flex: 1}}
         />
-        <IconButton
-          icon="calendar"
-          iconColor={theme.colors.primary}
-          size={36}
-          onPress={() => setDatePickerVisibility(true)}
-          style={{marginLeft: 8}}
-        />
-        <IconButton
-          icon="plus"
-          iconColor={theme.colors.primary}
-          size={36}
-          onPress={() =>
-            navigation.navigate('DoctorNavigator', {
-              screen: 'ExamineScreen',
-            })
-          }
-          style={{marginLeft: 8}}
-        />
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
         {getCurrentPageData().map((item, index) => (

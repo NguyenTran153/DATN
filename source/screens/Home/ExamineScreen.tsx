@@ -1,42 +1,38 @@
 import {StyleSheet, SafeAreaView, ScrollView, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Button, Text, TextInput, useTheme, Appbar} from 'react-native-paper';
+import CustomAppbar from '../../components/CustomAppbar';
 
-const ExamineScreen = ({navigation}: {navigation: any}) => {
+const ExamineScreen = ({navigation, route}: any) => {
   const theme = useTheme();
-  const [prescription, setPrescription] = useState('');
+  const [diagnotic, setDiagnotic] = useState('');
   const [examination, setExamination] = useState('');
   const [result, setResult] = useState('');
 
   const handleConfirm = () => {
-    const formData = {prescription, examination, result};
+    const formData = {diagnotic, examination, result};
+    const params = {...route.params, ...formData};
     navigation.navigate('DoctorNavigator', {
       screen: 'PrescriptionScreen',
-      params: {formData},
+      params: params,
     });
   };
 
   return (
     <SafeAreaView
       style={[styles.container, {backgroundColor: theme.colors.background}]}>
-      <Appbar.Header style={{backgroundColor: theme.colors.primary}}>
-        <Appbar.BackAction onPress={() => navigation.goBack()} />
-        <Appbar.Content title="Xét nghiệm" />
-      </Appbar.Header>
+      <CustomAppbar title="Xét nghiệm" goBack={() => navigation.goBack()} />
       <ScrollView contentContainerStyle={styles.scrollView}>
         <View
           style={[
             styles.contentContainer,
             {backgroundColor: theme.colors.background},
           ]}>
-          <Text style={[styles.title, {color: theme.colors.primary}]}>
-            Khám bệnh
-          </Text>
           <TextInput
             label="Chẩn đoán"
             mode="outlined"
-            onChangeText={setPrescription}
-            value={prescription}
+            onChangeText={setDiagnotic}
+            value={diagnotic}
             style={styles.input}
             multiline
             numberOfLines={4}

@@ -55,7 +55,7 @@ const MedicalDetailScreen = ({navigation}: any) => {
               value="2024-05-20"
               style={styles.input}
               editable={false}
-              theme={{roundness: 10}} // Round corners of individual TextInput
+              theme={{roundness: 10}}
             />
             <TextInput
               label="Chẩn đoán"
@@ -65,7 +65,7 @@ const MedicalDetailScreen = ({navigation}: any) => {
               numberOfLines={4}
               style={styles.input}
               editable={false}
-              theme={{roundness: 10}} // Round corners of individual TextInput
+              theme={{roundness: 10}}
             />
             <TextInput
               label="Xét nghiệm"
@@ -75,7 +75,7 @@ const MedicalDetailScreen = ({navigation}: any) => {
               numberOfLines={4}
               style={styles.input}
               editable={false}
-              theme={{roundness: 10}} // Round corners of individual TextInput
+              theme={{roundness: 10}}
             />
             <TextInput
               label="Kết quả"
@@ -85,7 +85,7 @@ const MedicalDetailScreen = ({navigation}: any) => {
               numberOfLines={4}
               style={styles.input}
               editable={false}
-              theme={{roundness: 10}} // Round corners of individual TextInput
+              theme={{roundness: 10}}
             />
           </View>
           <View style={styles.section}>

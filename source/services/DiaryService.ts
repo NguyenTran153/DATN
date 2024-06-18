@@ -4,10 +4,8 @@ class DiaryService {
     try {
       const formData = new FormData();
 
-      // Convert JSON data to string and append to FormData
       formData.append('data', JSON.stringify(data));
 
-      // Append files to FormData
       files.forEach(file => {
         formData.append('files', file);
       });

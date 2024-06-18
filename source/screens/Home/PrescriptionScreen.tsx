@@ -1,44 +1,50 @@
-import { View, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
-import { useEffect, useState } from 'react';
+import {View, StyleSheet, ScrollView} from 'react-native';
+import {useEffect, useState} from 'react';
 import React from 'react';
-import DropDown from '../../components/DropDown';
-import { NativeStackScreenProps } from '@react-navigation/native-stack';
-import {
-  List,
-  TextInput,
-  Button,
-  useTheme,
-  Icon,
-  Text,
-} from 'react-native-paper';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { ChatRoutes } from '../../Routes/Route';
+import {TextInput, Button, useTheme, Text} from 'react-native-paper';
+import {SafeAreaView} from 'react-native-safe-area-context';
 import moment from 'moment';
 import AutocompleteTextInput from '../../components/AutoComplete';
 import CustomAppbar from '../../components/CustomAppbar';
-import UserService from '../../services/UserService';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
+import PrescriptionService from '../../services/PrescriptionService';
 
-const MyDropdownComponent = () => {
+interface MyDropdownComponentProps {
+  medicineList: string[];
+  onChangeMedicine: (value: string) => void;
+  onChangeQuantity: (value: string) => void;
+  onChangeMorning: (value: string) => void;
+  onChangeAfternoon: (value: string) => void;
+  onChangeEvening: (value: string) => void;
+  onChangeNight: (value: string) => void;
+}
+
+const MyDropdownComponent: React.FC<MyDropdownComponentProps> = ({
+  medicineList,
+  onChangeMedicine,
+  onChangeQuantity,
+  onChangeMorning,
+  onChangeAfternoon,
+  onChangeEvening,
+  onChangeNight,
+}) => {
   const theme = useTheme();
-  const [showDropDown, setShowDropDown] = useState(false);
   const [medicine, setMedicine] = useState('');
-  const [Dosage, setDosage] = useState('');
   const [quantity, setQuantity] = useState('');
+  const [morning, setMorning] = useState('');
   const [afternoon, setAfternoon] = useState('');
   const [evening, setEvening] = useState('');
   const [night, setNight] = useState('');
-  const medicineList = [
-    'Paracetamol',
-    'Aspirin',
-    'Prospan',
-    'Paracetamol',
-    'Aspirin',
-    'Prospan',
-    'Paracetamol',
-    'Aspirin',
-    'Prospan',
-  ];
+
+  useEffect(() => {
+    onChangeMedicine(medicine);
+    onChangeQuantity(quantity);
+    onChangeMorning(morning);
+    onChangeAfternoon(afternoon);
+    onChangeEvening(evening);
+    onChangeNight(night);
+  }, [medicine, quantity, morning, afternoon, evening, night]);
+
   const styles = StyleSheet.create({
     textInput: {
       borderLeftWidth: 1,
@@ -68,31 +74,66 @@ const MyDropdownComponent = () => {
       <View
         style={{
           flexDirection: 'row',
-          justifyContent: 'center'
+          justifyContent: 'center',
         }}>
-        <View style={{ width: "60%" }}>
+        <View style={{width: '60%'}}>
           <Text style={styles.text}>Tên thuốc</Text>
-          <AutocompleteTextInput suggestions={medicineList} />
+          <AutocompleteTextInput
+            suggestions={medicineList}
+            onSelect={selectedMedicine => setMedicine(selectedMedicine)}
+          />
         </View>
-        <View style={{ marginLeft: "10%", width: "30%" }}>
+        <View style={{marginLeft: '10%', width: '30%'}}>
           <Text style={styles.text}>Số lượng</Text>
           <TextInput
             style={styles.cell}
             placeholder="Số lượng"
-            onChangeText={text => setQuantity(text)}
+            onChangeText={setQuantity}
             value={quantity}
           />
         </View>
       </View>
 
-      <View style={{ flexDirection: 'row', justifyContent: 'center', marginBottom: 10 }}>
-        <View style={{ width: "100%" }}>
-          <Text style={styles.text}>Liều lượng</Text>
+      <View
+        style={{
+          flexDirection: 'row',
+          justifyContent: 'center',
+          marginBottom: 10,
+        }}>
+        <View style={{width: '24%', marginRight: '1%'}}>
+          <Text style={styles.text}>Sáng</Text>
           <TextInput
-            placeholder="Nhập liều lượng"
+            placeholder="Sáng"
             style={styles.cell}
-            onChangeText={text => setDosage(text)}
-            value={Dosage}
+            onChangeText={setMorning}
+            value={morning}
+          />
+        </View>
+        <View style={{width: '24%', marginRight: '1%'}}>
+          <Text style={styles.text}>Trưa</Text>
+          <TextInput
+            placeholder="Trưa"
+            style={styles.cell}
+            onChangeText={setAfternoon}
+            value={afternoon}
+          />
+        </View>
+        <View style={{width: '24%', marginRight: '1%'}}>
+          <Text style={styles.text}>Chiều</Text>
+          <TextInput
+            placeholder="Chiều"
+            style={styles.cell}
+            onChangeText={setEvening}
+            value={evening}
+          />
+        </View>
+        <View style={{width: '24%'}}>
+          <Text style={styles.text}>Tối</Text>
+          <TextInput
+            placeholder="Tối"
+            style={styles.cell}
+            onChangeText={setNight}
+            value={night}
           />
         </View>
       </View>
@@ -100,36 +141,67 @@ const MyDropdownComponent = () => {
   );
 };
 
-const PrescriptionScreen = ({ route, navigation }: any) => {
+const PrescriptionScreen: React.FC<any> = ({route, navigation}) => {
   var date = new Date();
-  const [userInfo, setUserInfo] = useState<UserData>();
-  const token = useSelector((state: any) => state.token);
-  const patientId = route?.params?.patientId;
-  const pres = route?.params?.prescription ? route?.params?.prescription : 'Chưa có chẩn đoán';
+  const [userInfo, setUserInfo] = useState(route.params?.patient || {});
+  const user = useSelector((state: any) => state.user);
+  const token = useSelector((state: any) => state.token.accessToken);
+  const pres = route?.params?.result || 'Chưa có chẩn đoán';
+
   useEffect(() => {
-    fetchData();
+    console.log(route.params);
   }, []);
 
-  const fetchData = async () => {
-    // setUserInfo(await UserService.getUserInfoByID(patientId,token.accessToken));
-    // console.log(userInfo )
-  };
-
   const [components, setComponents] = useState<
-    { id: number; component: React.ReactNode }[]
+    {
+      id: number;
+      medicine: string;
+      quantity: string;
+      morning: string;
+      afternoon: string;
+      evening: string;
+      night: string;
+    }[]
   >([]);
   const [idCounter, setIdCounter] = useState(0);
-  
+
   const [note, setNote] = useState('');
   const theme = useTheme();
+  const medicineList = [
+    'Paracetamol',
+    'Aspirin',
+    'Prospan',
+    'Paracetamol',
+    'Aspirin',
+    'Prospan',
+    'Paracetamol',
+    'Aspirin',
+    'Prospan',
+  ];
+
   const addComponent = () => {
     const newId = idCounter + 1;
     setIdCounter(newId);
     setComponents(prevComponents => [
       ...prevComponents,
-      { id: newId, component: <MyDropdownComponent key={newId} /> },
+      {
+        id: newId,
+        medicine: '',
+        quantity: '',
+        morning: '',
+        afternoon: '',
+        evening: '',
+        night: '',
+      },
     ]);
-    console.log(patientId);
+  };
+
+  const updateComponent = (id: number, field: string, value: string) => {
+    setComponents(prevComponents =>
+      prevComponents.map(comp =>
+        comp.id === id ? {...comp, [field]: value} : comp,
+      ),
+    );
   };
 
   const removeComponent = (idToRemove: number) => {
@@ -137,20 +209,67 @@ const PrescriptionScreen = ({ route, navigation }: any) => {
       prevComponents.filter(comp => comp.id !== idToRemove),
     );
   };
+
+  const handleConfirm = async () => {
+    const prescription = {
+      patientName: `${userInfo?.firstName} ${userInfo?.lastName}`,
+      doctorName: `${user.firstName} ${user.lastName}`,
+      date: moment(date).format('YYYY-MM-DD'),
+      problem: pres,
+      medicines: components.map(comp => ({
+        name: comp.medicine,
+        dosage: comp.quantity,
+        schedule: {
+          morning: comp.morning,
+          afternoon: comp.afternoon,
+          evening: comp.evening,
+          night: comp.night,
+        },
+      })),
+    };
+
+    try {
+      const createdPrescription = await PrescriptionService.postPrescription(
+        token,
+        prescription,
+        [],
+        route.params.patient.id.toString(),
+      );
+      const formData = {
+        diagnotic: route.params?.diagnotic || '',
+        examination: route.params?.examination || '',
+        problem: pres,
+      };
+
+      const createdDiagnosis = await PrescriptionService.postDiagnosis(
+        createdPrescription.id.toString(),
+        formData,
+        token,
+      );
+      console.log(
+        'Đơn xét nghiệm đã được tạo:',
+        JSON.stringify(createdDiagnosis, null, 2),
+      );
+
+      navigation.goBack();
+      navigation.goBack();
+    } catch (error) {
+      console.error('Error posting prescription:', error);
+    }
+  };
+
   const styles = StyleSheet.create({
     container: {
       flex: 1,
       backgroundColor: theme.colors.background,
       padding: 5,
-
     },
-
     prescriptionInput: {
       height: 100,
       width: '100%',
       alignSelf: 'center',
       borderRadius: 5,
-      marginBottom: 10
+      marginBottom: 10,
     },
     row: {
       flexDirection: 'row',
@@ -173,7 +292,7 @@ const PrescriptionScreen = ({ route, navigation }: any) => {
 
   return (
     <>
-      <CustomAppbar title={'Kê đơn thuốc'} goBack={() => navigation.goBack()} /> 
+      <CustomAppbar title={'Kê đơn thuốc'} goBack={() => navigation.goBack()} />
       <ScrollView style={styles.container}>
         <View
           style={{
@@ -181,37 +300,43 @@ const PrescriptionScreen = ({ route, navigation }: any) => {
             justifyContent: 'center',
             marginBottom: 10,
           }}>
-          <Text style={{ fontSize: 26, fontWeight: 'bold' }}>Đơn thuốc</Text>
+          <Text style={{fontSize: 26, fontWeight: 'bold'}}>Đơn thuốc</Text>
         </View>
         <View>
           <View style={styles.row}>
             <View style={styles.infoContainer}>
               <Text style={styles.label}>Họ tên: </Text>
-              <Text style={styles.value}>{userInfo?.firstName} {userInfo?.lastName}</Text>
+              <Text style={styles.value}>
+                {userInfo?.firstName} {userInfo?.lastName}
+              </Text>
             </View>
             <View style={styles.infoContainer}>
               <Text style={styles.label}>Giới tính: </Text>
-              <Text style={styles.value}>{/*userInfo.Gender*/}Nam</Text>
+              <Text style={styles.value}>
+                {userInfo?.gender === 'male' ? 'Nam' : 'Nữ'}
+              </Text>
             </View>
             <View style={styles.infoContainer}>
               <Text style={styles.label}>Tuổi: </Text>
-              <Text style={styles.value}>{/*userInfo.Age*/} 48</Text>
+              <Text style={styles.value}>
+                {moment().diff(userInfo?.birthdate, 'years')}
+              </Text>
             </View>
           </View>
           <View style={styles.row}>
             <View style={styles.infoContainer}>
               <Text style={styles.label}>Địa chỉ: </Text>
-              <Text style={styles.value}>{/*userInfo.Address*/} 123, Nguyễn Văn Đậu, P.15, Quận Bình Thạnh</Text>
+              <Text style={styles.value}>{userInfo?.address}</Text>
             </View>
           </View>
           <View style={styles.row}>
             <View style={styles.infoContainer}>
               <Text style={styles.label}>Chiều cao (cm): </Text>
-              <Text style={styles.value}>{/*userInfo.Height*/} 175</Text>
+              <Text style={styles.value}>{userInfo?.height}</Text>
             </View>
             <View style={styles.infoContainer}>
               <Text style={styles.label}>Cân nặng (kg): </Text>
-              <Text style={styles.value}>{/*userInfo.Weight*/} 60</Text>
+              <Text style={styles.value}>{userInfo?.weight}</Text>
             </View>
           </View>
           <View style={styles.row}>
@@ -221,12 +346,27 @@ const PrescriptionScreen = ({ route, navigation }: any) => {
             </View>
           </View>
         </View>
-        <SafeAreaView style={{ alignSelf: 'center' }}>
-          {components.map(({ id, component }) => (
-            <View key={id} style={{ flexDirection: 'row' }}>
-              {component}
-            </View>
-          ))}
+        <SafeAreaView style={{alignSelf: 'center'}}>
+          {components.map(
+            ({id, medicine, quantity, morning, afternoon, evening, night}) => (
+              <MyDropdownComponent
+                key={id}
+                medicineList={medicineList}
+                onChangeMedicine={value =>
+                  updateComponent(id, 'medicine', value)
+                }
+                onChangeQuantity={value =>
+                  updateComponent(id, 'quantity', value)
+                }
+                onChangeMorning={value => updateComponent(id, 'morning', value)}
+                onChangeAfternoon={value =>
+                  updateComponent(id, 'afternoon', value)
+                }
+                onChangeEvening={value => updateComponent(id, 'evening', value)}
+                onChangeNight={value => updateComponent(id, 'night', value)}
+              />
+            ),
+          )}
         </SafeAreaView>
         <View
           style={{
@@ -234,17 +374,20 @@ const PrescriptionScreen = ({ route, navigation }: any) => {
             flexDirection: 'row',
             alignItems: 'center',
             width: '100%',
-            justifyContent: 'space-between'
+            justifyContent: 'space-between',
           }}>
           <Button
-            mode='contained'
-            style={{ marginRight: 10, width: '25%' }}
+            mode="contained"
+            style={{marginRight: 10, width: '25%'}}
             onPress={() =>
               removeComponent(components[components.length - 1]?.id)
             }>
             Xoá
           </Button>
-          <Button style={{ width: '25%' }} mode='contained' onPress={addComponent}>
+          <Button
+            style={{width: '25%'}}
+            mode="contained"
+            onPress={addComponent}>
             Thêm
           </Button>
         </View>
@@ -252,19 +395,33 @@ const PrescriptionScreen = ({ route, navigation }: any) => {
           label="Ghi chú"
           onChangeText={text => setNote(text)}
           value={note}
-          style={{ alignSelf: 'center', width: "100%" }}
+          style={{alignSelf: 'center', width: '100%'}}
         />
-        <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
-          <View style={{ margin: 20 }}>
+        <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
+          <View style={{margin: 20}}>
             <Text>{moment(date).format('DD/MM/YYYY')}</Text>
             <Text
-              style={{ alignSelf: 'center', fontSize: 15, fontWeight: 'bold' }}>
+              style={{alignSelf: 'center', fontSize: 15, fontWeight: 'bold'}}>
               Chữ ký
             </Text>
-            <View style={{ height: 50, width: 50 }}></View>
+            <View style={{height: 50, width: 50}}></View>
           </View>
         </View>
+        <View
+          style={{
+            marginBottom: 10,
+            flexDirection: 'row',
+            alignItems: 'center',
+            width: '100%',
+            justifyContent: 'flex-end',
+          }}></View>
       </ScrollView>
+      <Button
+        mode="contained"
+        style={{width: '75%', alignSelf: 'center', marginBottom: 16}}
+        onPress={handleConfirm}>
+        Xác nhận
+      </Button>
     </>
   );
 };

@@ -1,12 +1,28 @@
-import React, { useState } from 'react';
-import { View, TextInput, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
-import { useTheme } from 'react-native-paper';
+import React, {useState} from 'react';
+import {
+  View,
+  TextInput,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  ScrollView,
+} from 'react-native';
+import {useTheme} from 'react-native-paper';
 
-const AutocompleteTextInput = ({ suggestions }: { suggestions: string[] }) => {
+interface AutocompleteTextInputProps {
+  suggestions: string[];
+  onSelect: (selectedMedicine: string) => void;
+}
+
+const AutocompleteTextInput: React.FC<AutocompleteTextInputProps> = ({
+  suggestions,
+  onSelect,
+}) => {
   const theme = useTheme();
   const [text, setText] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
+
   const styles = StyleSheet.create({
     container: {
       position: 'relative',
@@ -16,7 +32,7 @@ const AutocompleteTextInput = ({ suggestions }: { suggestions: string[] }) => {
       padding: 10,
       height: 40,
       fontSize: 15,
-      borderRadius:5
+      borderRadius: 5,
     },
     suggestionsContainer: {
       position: 'absolute',
@@ -34,11 +50,12 @@ const AutocompleteTextInput = ({ suggestions }: { suggestions: string[] }) => {
       borderBottomColor: theme.colors.surfaceVariant,
     },
   });
-  const handleInputChange = (inputText: React.SetStateAction<string>) => {
+
+  const handleInputChange = (inputText: string) => {
     setText(inputText);
     if (inputText) {
       const filtered = suggestions.filter(suggestion =>
-        suggestion.toLowerCase().includes(inputText.toString().toLowerCase())
+        suggestion.toLowerCase().includes(inputText.toLowerCase()),
       );
       setFilteredSuggestions(filtered);
       setShowSuggestions(true);
@@ -47,9 +64,10 @@ const AutocompleteTextInput = ({ suggestions }: { suggestions: string[] }) => {
     }
   };
 
-  const handleSuggestionPress = (suggestion: React.SetStateAction<string>) => {
+  const handleSuggestionPress = (suggestion: string) => {
     setText(suggestion);
     setShowSuggestions(false);
+    onSelect(suggestion);
   };
 
   return (
@@ -66,8 +84,7 @@ const AutocompleteTextInput = ({ suggestions }: { suggestions: string[] }) => {
             <TouchableOpacity
               key={index}
               style={styles.suggestion}
-              onPress={() => handleSuggestionPress(suggestion)}
-            >
+              onPress={() => handleSuggestionPress(suggestion)}>
               <Text>{suggestion}</Text>
             </TouchableOpacity>
           ))}
@@ -76,7 +93,5 @@ const AutocompleteTextInput = ({ suggestions }: { suggestions: string[] }) => {
     </View>
   );
 };
-
-
 
 export default AutocompleteTextInput;

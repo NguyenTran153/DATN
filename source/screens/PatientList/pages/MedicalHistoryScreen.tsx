@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, ScrollView, StyleSheet, Dimensions} from 'react-native';
 import {
   useTheme,
@@ -27,7 +27,7 @@ const fakeMedicalHistoryData = [
 
 const ITEMS_PER_PAGE = 7;
 
-const MedicalHistoryScreen = ({navigation}: any) => {
+const MedicalHistoryScreen = ({navigation, route}: any) => {
   const theme = useTheme();
   const [currentPage, setCurrentPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
@@ -87,6 +87,7 @@ const MedicalHistoryScreen = ({navigation}: any) => {
           onPress={() =>
             navigation.navigate('DoctorNavigator', {
               screen: 'ExamineScreen',
+              params: route.params,
             })
           }
           style={{marginLeft: 8}}
