@@ -29,10 +29,31 @@ const SignupScreen = ({navigation}: any) => {
   const theme = useTheme();
 
   const handleInputChange = (name: any, value: any) => {
-    setForm({
-      ...form,
-      [name]: value,
-    });
+    if(name === 'phone')
+    {
+      if (value.startsWith('0') || value.startsWith('+')) {
+        // Replace the first '0' with '+84'
+        const formattedPhoneNumber = value.replace(/^0/, '+84');
+        setForm({
+          ...form,
+          [name]: formattedPhoneNumber,
+        });
+      }
+      else{
+        Dialog.show({
+          type: ALERT_TYPE.DANGER,
+          title: 'Thất bại',
+          textBody: 'Vui lòng nhập số điện thoại hợp lệ',
+          button: 'Đóng',
+        });
+      }
+    }
+    else{
+      setForm({
+        ...form,
+        [name]: value,
+      });
+    }
   };
 
   const handleSignup = async () => {

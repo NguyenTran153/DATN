@@ -1,5 +1,5 @@
-import React, {useState} from 'react';
-import {View, ScrollView, StyleSheet, Dimensions} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, ScrollView, StyleSheet, Dimensions, Alert} from 'react-native';
 import {
   useTheme,
   List,
@@ -9,6 +9,9 @@ import {
   Avatar,
 } from 'react-native-paper';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import AppointmentService from '../../../services/AppointmentService';
+import { useSelector } from 'react-redux';
+import moment from 'moment';
 
 const {height} = Dimensions.get('window');
 
@@ -27,7 +30,7 @@ const fakeMedicalHistoryData = [
 
 const ITEMS_PER_PAGE = 7;
 
-const BookingHistoryScreen = ({navigation}: any) => {
+const BookingHistoryScreen = () => {
   const theme = useTheme();
   const [currentPage, setCurrentPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
@@ -37,9 +40,9 @@ const BookingHistoryScreen = ({navigation}: any) => {
     useState(false);
   const [newBookingDate, setNewBookingDate] = useState<Date | null>(null);
   const [newBookingTime, setNewBookingTime] = useState<Date | null>(null);
-
+  const patient = useSelector((state: any) => state.user);
   const totalPages = Math.ceil(fakeMedicalHistoryData.length / ITEMS_PER_PAGE);
-
+  const token = useSelector((state: any) => state.token);
   const getCurrentPageData = () => {
     const filteredData = searchQuery
       ? fakeMedicalHistoryData.filter(
@@ -51,7 +54,26 @@ const BookingHistoryScreen = ({navigation}: any) => {
     const startIndex = currentPage * ITEMS_PER_PAGE;
     return filteredData.slice(startIndex, startIndex + ITEMS_PER_PAGE);
   };
-
+  const [app, setApp] = useState<any[]>([]);
+  useEffect(() => {
+    const fetchAPI = async () => {
+      const appointments = await AppointmentService.getAppointment(patient.id, token.accessToken)
+      setApp(appointments)
+    };
+    fetchAPI()
+  }, [])
+  const convertedList = app.map(item => {
+    const beginTimestamp = item.beginTimestamp;
+    const date = new Date(beginTimestamp * 1000); // Convert to milliseconds
+  
+    const formattedDate = moment(date).format('DD/MM/YYYY HH:mm');
+    const name = `${item.requestUser.firstName} ${item.requestUser.lastName}`;
+  
+    return {
+      date: formattedDate,
+      name: name
+    };
+  });
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -81,7 +103,7 @@ const BookingHistoryScreen = ({navigation}: any) => {
     setTimePickerVisibility(true);
   };
 
-  const handleNewBookingTimeConfirm = (time: Date) => {
+  const handleNewBookingTimeConfirm = async (time: Date) => {
     if (newBookingDate) {
       const bookingTimestamp = new Date(
         newBookingDate.getFullYear(),
@@ -90,6 +112,17 @@ const BookingHistoryScreen = ({navigation}: any) => {
         time.getHours(),
         time.getMinutes(),
       );
+      const beginTimestamp = moment(bookingTimestamp, 'YYYY-MM-DD HH:mm').valueOf() / 1000;
+      if (beginTimestamp) {
+        console.log('API call with beginTimestamp:', beginTimestamp);
+        await AppointmentService.sendAppointment(token.accessToken, patient.id, {
+           beginTimestamp:beginTimestamp,
+        });
+        Alert.alert('Đã đặt lịch hẹn');
+      
+      } else {
+        Alert.alert('Hãy chọn thời gian');
+      }
       console.log('New Booking Timestamp:', bookingTimestamp.toISOString());
     }
     setTimePickerVisibility(false);
@@ -117,16 +150,12 @@ const BookingHistoryScreen = ({navigation}: any) => {
           icon="plus"
           iconColor={theme.colors.primary}
           size={36}
-          onPress={() =>
-            navigation.navigate('HomeNavigator', {
-              screen: 'BookingScreen',
-            })
-          }
+          onPress={() => setDatePickerVisibility(true)}
           style={{marginLeft: 8}}
         />
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {getCurrentPageData().map((item, index) => (
+        {convertedList.map((item, index) => (
           <List.Section key={index} style={{height: itemHeight}}>
             <List.Item
               title={item.name}
@@ -174,6 +203,20 @@ const BookingHistoryScreen = ({navigation}: any) => {
         mode="date"
         onConfirm={handleSearchDateConfirm}
         onCancel={() => setSearchDatePickerVisibility(false)}
+      />
+      <DateTimePickerModal
+        isVisible={isDatePickerVisible}
+        style={{zIndex: 9, elevation: 9}}
+        mode="date"
+        onConfirm={handleNewBookingDateConfirm}
+        onCancel={() => setDatePickerVisibility(false)}
+      />
+      <DateTimePickerModal
+        isVisible={isTimePickerVisible}
+        style={{zIndex: 9, elevation: 9}}
+        mode="time"
+        onConfirm={handleNewBookingTimeConfirm}
+        onCancel={() => setTimePickerVisibility(false)}
       />
     </View>
   );

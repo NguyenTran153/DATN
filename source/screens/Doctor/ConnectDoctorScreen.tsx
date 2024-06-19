@@ -6,6 +6,7 @@ import CustomAppbar from '../../components/CustomAppbar';
 import {useSelector} from 'react-redux';
 import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
 import UserService from '../../services/UserService'; // import UserService
+import PhoneNumber from '../Authorization/PhoneNumberScreen';
 
 const ConnectDoctorScreen = ({navigation}: any) => {
   const theme = useTheme();
@@ -44,7 +45,22 @@ const ConnectDoctorScreen = ({navigation}: any) => {
       });
     }
   };
-
+  const handlePhoneNumber = (phone:string) => {
+    if (phone.startsWith('0')) {
+      // Replace the first '0' with '+84'
+      const formattedPhoneNumber = phone.replace(/^0/, '+84');
+      setPhone(formattedPhoneNumber)
+      console.log(formattedPhoneNumber)
+    }
+    else{
+      Dialog.show({
+        type: ALERT_TYPE.DANGER,
+        title: 'Thất bại',
+        textBody: 'Vui lòng nhập số điện thoại hợp lệ',
+        button: 'Đóng',
+      });
+    }
+  }
   return (
     <>
       <CustomAppbar
@@ -92,7 +108,7 @@ const ConnectDoctorScreen = ({navigation}: any) => {
               placeholder="Nhập số điện thoại"
               mode="outlined"
               inputMode="numeric"
-              onChangeText={phone => setPhone(phone)}
+              onChangeText={phone => handlePhoneNumber(phone)}
               right={
                 <TextInput.Icon
                   icon="arrow-right-bold"
