@@ -12,6 +12,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import AppointmentService from '../../../services/AppointmentService';
 import {useSelector} from 'react-redux';
 import moment from 'moment';
+import { ALERT_TYPE, Dialog } from 'react-native-alert-notification';
 
 const {height} = Dimensions.get('window');
 
@@ -41,7 +42,6 @@ const BookingHistoryScreen = ({route}: any) => {
   const [newBookingDate, setNewBookingDate] = useState<Date | null>(null);
   const [newBookingTime, setNewBookingTime] = useState<Date | null>(null);
   const patient = route.params.patient;
-  const totalPages = Math.ceil(fakeMedicalHistoryData.length / ITEMS_PER_PAGE);
   const token = useSelector((state: any) => state.token);
 
   const [app, setApp] = useState<any[]>([]);
@@ -67,6 +67,7 @@ const BookingHistoryScreen = ({route}: any) => {
       name: name,
     };
   });
+  const totalPages = Math.ceil(convertedList.length / ITEMS_PER_PAGE);
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -100,16 +101,23 @@ const BookingHistoryScreen = ({route}: any) => {
         moment(bookingTimestamp, 'YYYY-MM-DD HH:mm').valueOf() / 1000;
       if (beginTimestamp) {
         console.log('API call with beginTimestamp:', beginTimestamp);
-        await AppointmentService.sendAppointment(
-          token.accessToken,
-          patient.id,
-          {
-            beginTimestamp: beginTimestamp,
-          },
-        );
-        Alert.alert('Đã đặt lịch hẹn');
+        await AppointmentService.sendAppointment(token.accessToken, patient.id, {
+           beginTimestamp:beginTimestamp,
+        });
+        Dialog.show({
+          type: ALERT_TYPE.SUCCESS,
+          title: 'Đăng ký',
+          textBody: 'Đã đặt lịch hẹn',
+          button: 'Đóng',
+        });
+      
       } else {
-        Alert.alert('Hãy chọn thời gian');
+        Dialog.show({
+          type: ALERT_TYPE.DANGER,
+          title: 'Thất bại',
+          textBody: 'Đặt lịch hẹn thất bại',
+          button: 'Đóng',
+        });
       }
       console.log('New Booking Timestamp:', bookingTimestamp.toISOString());
     }
