@@ -13,7 +13,7 @@ import React, { useState } from 'react';
 import { useTheme } from 'react-native-paper';
 import AuthService from '../../services/AuthService';
 import { ALERT_TYPE, Dialog } from 'react-native-alert-notification';
-const RegisterScreen = ({ route,navigation }: any) => {
+const RegisterScreen = ({ route, navigation }: any) => {
   const theme = useTheme();
   const token = route.params.token
   const [form, setForm] = useState({
@@ -196,13 +196,37 @@ const RegisterScreen = ({ route,navigation }: any) => {
                 //   }
                 // } else {
                 //   if (form.email.length === 0) {
-                    await AuthService.signUp(token,form.email, form.password, form.firstName, form.lastName)
+                if (form.confirmpassword === form.password && (
+                  form.firstName.length !== 0 && form.lastName.length !== 0)) {
+                  const result = await AuthService.signUp(token, form.email, form.password, form.firstName, form.lastName)
+                  if(result === 'error')
+                  {
+                    Dialog.show({
+                      type: ALERT_TYPE.DANGER,
+                      title: 'Thất bại',
+                      textBody: 'Số điện thoại đã được đăng ký',
+                      button: 'Đóng',
+                    });
+                  }
+                  else{
+                    navigation.navigate('LoginScreen')
                     Dialog.show({
                       type: ALERT_TYPE.SUCCESS,
                       title: 'Đăng ký',
                       textBody: 'Đăng ký thành công',
                       button: 'Đóng',
                     });
+                    
+                  }
+                }
+                else {
+                  Dialog.show({
+                    type: ALERT_TYPE.DANGER,
+                    title: 'Thất bại',
+                    textBody: 'Số điện thoại chưa đăng ký hoặc không cho phép tìm kiếm',
+                    button: 'Đóng',
+                  });
+                }
                 //   }
                 //   else{
                 //     Dialog.show({
@@ -212,7 +236,7 @@ const RegisterScreen = ({ route,navigation }: any) => {
                 //       button: 'Đóng',
                 //     });
                 //   }
-                 
+
                 // }
               }}>
               <View style={styles.btn}>

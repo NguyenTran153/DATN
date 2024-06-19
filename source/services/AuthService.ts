@@ -47,9 +47,11 @@ class AuthService {
       });
       const data = response.data;
       console.log('Reponse:', data);
+      return response.data
       // return response.data;
     } catch (error) {
-      console.log('Error logging in:', error);
+      console.log('Signup:', error);
+      return 'error';
     }
   }
   static async PhoneVerification(phoneNumber: string) {
@@ -69,7 +71,8 @@ class AuthService {
       const data = response.data;
       return data.pinId;
     } catch (error) {
-      console.log('Error logging in:', error);
+      console.log('PhoneVerification:', error);
+      return 'error'
     }
   }
   static async ForgotPassword(phoneNumber: string) {
