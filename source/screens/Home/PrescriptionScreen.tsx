@@ -236,15 +236,15 @@ const PrescriptionScreen: React.FC<any> = ({route, navigation}) => {
         route.params.patient.id.toString(),
       );
       const formData = {
-        diagnotic: route.params?.diagnotic || '',
-        examination: route.params?.examination || '',
+        files: route.params?.examination || null,
         problem: pres,
       };
 
       const createdDiagnosis = await PrescriptionService.postDiagnosis(
         createdPrescription.id.toString(),
-        formData,
+        pres,
         token,
+        route.params?.examination || null,
       );
       console.log(
         'Đơn xét nghiệm đã được tạo:',

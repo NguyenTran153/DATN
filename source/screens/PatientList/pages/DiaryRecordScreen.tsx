@@ -111,6 +111,7 @@ const DiaryRecordScreen = ({route}: any) => {
 
       <DataTable.Pagination
         page={currentPage}
+        style={{alignSelf: 'center'}}
         numberOfPages={Math.ceil(filteredEntries.length / entriesPerPage)}
         onPageChange={page => setCurrentPage(page)}
         label={`Page ${currentPage + 1} of ${Math.ceil(

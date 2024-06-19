@@ -1,21 +1,41 @@
 import {StyleSheet, SafeAreaView, ScrollView, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
-import {Button, Text, TextInput, useTheme, Appbar} from 'react-native-paper';
+import {Button, Text, TextInput, useTheme} from 'react-native-paper';
 import CustomAppbar from '../../components/CustomAppbar';
+import DocumentPicker, {
+  DocumentPickerResponse,
+} from 'react-native-document-picker';
 
 const ExamineScreen = ({navigation, route}: any) => {
   const theme = useTheme();
-  const [diagnotic, setDiagnotic] = useState('');
-  const [examination, setExamination] = useState('');
+  const [examination, setExamination] = useState<DocumentPickerResponse[]>([]);
   const [result, setResult] = useState('');
 
   const handleConfirm = () => {
-    const formData = {diagnotic, examination, result};
+    const formData = {examination, result};
     const params = {...route.params, ...formData};
+    console.log(JSON.stringify(params));
     navigation.navigate('DoctorNavigator', {
       screen: 'PrescriptionScreen',
       params: params,
     });
+  };
+
+  const handlePickFiles = async () => {
+    try {
+      const results = await DocumentPicker.pick({
+        type: [DocumentPicker.types.allFiles],
+        allowMultiSelection: true,
+      });
+      setExamination(results);
+    } catch (err) {
+      if (DocumentPicker.isCancel(err)) {
+        // User canceled the picker
+      } else {
+        // Unknown error
+        console.error(err);
+      }
+    }
   };
 
   return (
@@ -28,26 +48,22 @@ const ExamineScreen = ({navigation, route}: any) => {
             styles.contentContainer,
             {backgroundColor: theme.colors.background},
           ]}>
-          <TextInput
-            label="Chẩn đoán"
+          <Button
             mode="outlined"
-            onChangeText={setDiagnotic}
-            value={diagnotic}
+            onPress={handlePickFiles}
             style={styles.input}
-            multiline
-            numberOfLines={4}
-            theme={{roundness: 8}}
-          />
-          <TextInput
-            label="Xét nghiệm"
-            mode="outlined"
-            onChangeText={setExamination}
-            value={examination}
-            style={styles.input}
-            multiline
-            numberOfLines={4}
-            theme={{roundness: 8}}
-          />
+            theme={{roundness: 8}}>
+            Chọn tệp xét nghiệm
+          </Button>
+          {examination.length > 0 && (
+            <View style={styles.filesContainer}>
+              {examination.map((file, index) => (
+                <Text key={index} style={styles.fileName}>
+                  {file.name}
+                </Text>
+              ))}
+            </View>
+          )}
           <TextInput
             label="Kết quả"
             mode="outlined"
@@ -88,12 +104,6 @@ const styles = StyleSheet.create({
     borderRadius: 16,
     elevation: 3,
   },
-  title: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    marginBottom: 16,
-  },
   input: {
     marginBottom: 16,
   },
@@ -102,5 +112,11 @@ const styles = StyleSheet.create({
   },
   buttonContent: {
     paddingVertical: 8,
+  },
+  filesContainer: {
+    marginBottom: 16,
+  },
+  fileName: {
+    fontSize: 16,
   },
 });

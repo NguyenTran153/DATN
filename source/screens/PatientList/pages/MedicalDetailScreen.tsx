@@ -30,8 +30,10 @@ const fakePrescription = {
   ],
 };
 
-const MedicalDetailScreen = ({navigation}: any) => {
+const MedicalDetailScreen = ({navigation, route}: any) => {
   const theme = useTheme();
+
+  console.log(JSON.stringify(route.params));
 
   return (
     <PaperProvider

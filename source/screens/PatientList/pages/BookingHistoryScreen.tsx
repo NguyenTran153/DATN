@@ -10,7 +10,7 @@ import {
 } from 'react-native-paper';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import AppointmentService from '../../../services/AppointmentService';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 import moment from 'moment';
 
 const {height} = Dimensions.get('window');
@@ -30,7 +30,7 @@ const fakeMedicalHistoryData = [
 
 const ITEMS_PER_PAGE = 7;
 
-const BookingHistoryScreen = ({route}:any) => {
+const BookingHistoryScreen = ({route}: any) => {
   const theme = useTheme();
   const [currentPage, setCurrentPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
@@ -43,35 +43,28 @@ const BookingHistoryScreen = ({route}:any) => {
   const patient = route.params.patient;
   const totalPages = Math.ceil(fakeMedicalHistoryData.length / ITEMS_PER_PAGE);
   const token = useSelector((state: any) => state.token);
-  const getCurrentPageData = () => {
-    const filteredData = searchQuery
-      ? fakeMedicalHistoryData.filter(
-          item =>
-            item.date.includes(searchQuery) || item.name.includes(searchQuery),
-        )
-      : fakeMedicalHistoryData;
 
-    const startIndex = currentPage * ITEMS_PER_PAGE;
-    return filteredData.slice(startIndex, startIndex + ITEMS_PER_PAGE);
-  };
   const [app, setApp] = useState<any[]>([]);
   useEffect(() => {
     const fetchAPI = async () => {
-      const appointments = await AppointmentService.getAppointment(patient.id, token.accessToken)
-      setApp(appointments)
+      const appointments = await AppointmentService.getAppointment(
+        patient.id,
+        token.accessToken,
+      );
+      setApp(appointments);
     };
-    fetchAPI()
-  }, [])
+    fetchAPI();
+  }, []);
   const convertedList = app.map(item => {
     const beginTimestamp = item.beginTimestamp;
     const date = new Date(beginTimestamp * 1000); // Convert to milliseconds
-  
+
     const formattedDate = moment(date).format('DD/MM/YYYY HH:mm');
     const name = `${item.requestUser.firstName} ${item.requestUser.lastName}`;
-  
+
     return {
       date: formattedDate,
-      name: name
+      name: name,
     };
   });
   const handlePageChange = (page: number) => {
@@ -84,17 +77,8 @@ const BookingHistoryScreen = ({route}:any) => {
     setSearchDatePickerVisibility(false);
   };
 
-  const handleClearDate = () => {
-    setSearchQuery('');
-    setCurrentPage(0);
-  };
-
   const handleItemRemove = (item: string) => {
     console.log('Item removed:', item);
-  };
-
-  const handleItemConfirm = (item: string) => {
-    console.log('Item confirmed:', item);
   };
 
   const handleNewBookingDateConfirm = (date: Date) => {
@@ -112,14 +96,18 @@ const BookingHistoryScreen = ({route}:any) => {
         time.getHours(),
         time.getMinutes(),
       );
-      const beginTimestamp = moment(bookingTimestamp, 'YYYY-MM-DD HH:mm').valueOf() / 1000;
+      const beginTimestamp =
+        moment(bookingTimestamp, 'YYYY-MM-DD HH:mm').valueOf() / 1000;
       if (beginTimestamp) {
         console.log('API call with beginTimestamp:', beginTimestamp);
-        await AppointmentService.sendAppointment(token.accessToken, patient.id, {
-           beginTimestamp:beginTimestamp,
-        });
+        await AppointmentService.sendAppointment(
+          token.accessToken,
+          patient.id,
+          {
+            beginTimestamp: beginTimestamp,
+          },
+        );
         Alert.alert('Đã đặt lịch hẹn');
-      
       } else {
         Alert.alert('Hãy chọn thời gian');
       }
