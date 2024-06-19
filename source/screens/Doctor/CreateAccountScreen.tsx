@@ -63,6 +63,9 @@ const SignupScreen = ({navigation}: any) => {
           textBody: 'Đăng ký thành công',
           button: 'Đóng',
         });
+        navigation.navigate('DoctorNavigator', {
+          screen: 'ConnectDoctorScreen',
+        });
       } else {
         Dialog.show({
           type: ALERT_TYPE.DANGER,
