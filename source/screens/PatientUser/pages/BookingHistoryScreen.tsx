@@ -12,6 +12,7 @@ import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import AppointmentService from '../../../services/AppointmentService';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
+import { ALERT_TYPE, Dialog } from 'react-native-alert-notification';
 
 const {height} = Dimensions.get('window');
 
@@ -19,13 +20,6 @@ const fakeMedicalHistoryData = [
   {date: '29/06/2024 14:30', name: 'Nguyễn Văn A'},
   {date: '29/06/2025 10:00', name: 'Trần Thị B'},
   {date: '15/07/2023 09:15', name: 'Lê Văn C'},
-  {date: '10/08/2023 11:45', name: 'Phạm Thị D'},
-  {date: '22/09/2023 08:00', name: 'Hoàng Văn E'},
-  {date: '05/10/2023 13:30', name: 'Đỗ Thị F'},
-  {date: '17/11/2023 15:00', name: 'Vũ Văn G'},
-  {date: '01/12/2023 07:45', name: 'Bùi Thị H'},
-  {date: '14/01/2024 16:15', name: 'Ngô Văn I'},
-  {date: '28/02/2024 12:00', name: 'Trịnh Thị J'},
 ];
 
 const ITEMS_PER_PAGE = 7;
@@ -33,6 +27,7 @@ const ITEMS_PER_PAGE = 7;
 const BookingHistoryScreen = () => {
   const theme = useTheme();
   const [currentPage, setCurrentPage] = useState(0);
+  
   const [searchQuery, setSearchQuery] = useState('');
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
@@ -41,7 +36,7 @@ const BookingHistoryScreen = () => {
   const [newBookingDate, setNewBookingDate] = useState<Date | null>(null);
   const [newBookingTime, setNewBookingTime] = useState<Date | null>(null);
   const patient = useSelector((state: any) => state.user);
-  const totalPages = Math.ceil(fakeMedicalHistoryData.length / ITEMS_PER_PAGE);
+  
   const token = useSelector((state: any) => state.token);
   const getCurrentPageData = () => {
     const filteredData = searchQuery
@@ -58,7 +53,9 @@ const BookingHistoryScreen = () => {
   useEffect(() => {
     const fetchAPI = async () => {
       const appointments = await AppointmentService.getAppointment(patient.id, token.accessToken)
+      
       setApp(appointments)
+     
     };
     fetchAPI()
   }, [])
@@ -68,12 +65,16 @@ const BookingHistoryScreen = () => {
   
     const formattedDate = moment(date).format('DD/MM/YYYY HH:mm');
     const name = `${item.requestUser.firstName} ${item.requestUser.lastName}`;
-  
+    console.log({
+      date: formattedDate,
+      name: name
+    })
     return {
       date: formattedDate,
       name: name
     };
   });
+  const totalPages = Math.ceil(convertedList.length / ITEMS_PER_PAGE);
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
@@ -83,13 +84,16 @@ const BookingHistoryScreen = () => {
     setSearchQuery(formattedDate);
     setSearchDatePickerVisibility(false);
   };
-
+  const Print =() => {
+    console.log(Math.ceil(convertedList.length / ITEMS_PER_PAGE))
+  }
   const handleClearDate = () => {
     setSearchQuery('');
     setCurrentPage(0);
   };
 
   const handleItemRemove = (item: string) => {
+    console.log(convertedList.length)
     console.log('Item removed:', item);
   };
 
@@ -118,10 +122,20 @@ const BookingHistoryScreen = () => {
         await AppointmentService.sendAppointment(token.accessToken, patient.id, {
            beginTimestamp:beginTimestamp,
         });
-        Alert.alert('Đã đặt lịch hẹn');
+        Dialog.show({
+          type: ALERT_TYPE.SUCCESS,
+          title: 'Đăng ký',
+          textBody: 'Đã đặt lịch hẹn',
+          button: 'Đóng',
+        });
       
       } else {
-        Alert.alert('Hãy chọn thời gian');
+        Dialog.show({
+          type: ALERT_TYPE.DANGER,
+          title: 'Thất bại',
+          textBody: 'Đặt lịch hẹn thất bại',
+          button: 'Đóng',
+        });
       }
       console.log('New Booking Timestamp:', bookingTimestamp.toISOString());
     }
