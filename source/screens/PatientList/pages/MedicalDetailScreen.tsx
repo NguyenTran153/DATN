@@ -1,5 +1,5 @@
 import React from 'react';
-import {View, ScrollView, StyleSheet} from 'react-native';
+import {View, ScrollView, StyleSheet, Linking} from 'react-native';
 import {
   useTheme,
   Text,
@@ -7,33 +7,25 @@ import {
   List,
   Provider as PaperProvider,
   DataTable,
+  Button,
 } from 'react-native-paper';
 import CustomAppbar from '../../../components/CustomAppbar';
 
-const fakePrescription = {
-  id: 1,
-  patientName: 'Nguyễn Văn A',
-  doctorName: 'Bác sĩ Trần Thị B',
-  date: '2024-05-20',
-  problem: 'Bệnh yếu tim',
-  medicines: [
-    {
-      name: 'Paracetamol',
-      dosage: 2,
-      schedule: {morning: 1, afternoon: 0, evening: 1, night: 0},
-    },
-    {
-      name: 'Prospan',
-      dosage: 3,
-      schedule: {morning: 1, afternoon: 1, evening: 1, night: 0},
-    },
-  ],
-};
-
 const MedicalDetailScreen = ({navigation, route}: any) => {
   const theme = useTheme();
+  const {item} = route.params;
+  const {prescription, diagnosis} = item;
 
-  console.log(JSON.stringify(route.params));
+  const convertString = (inputString: string): string => {
+    if (inputString.startsWith('"') && inputString.endsWith('"')) {
+      return inputString.slice(1, -1).replace(/\\"/g, '"');
+    }
+    return inputString.replace(/\\"/g, '"');
+  };
+
+  const handleDownload = (url: string) => {
+    Linking.openURL(url);
+  };
 
   return (
     <PaperProvider
@@ -54,27 +46,7 @@ const MedicalDetailScreen = ({navigation, route}: any) => {
             <TextInput
               label="Ngày khám bệnh"
               mode="outlined"
-              value="2024-05-20"
-              style={styles.input}
-              editable={false}
-              theme={{roundness: 10}}
-            />
-            <TextInput
-              label="Chẩn đoán"
-              mode="outlined"
-              value="Bệnh yếu tim"
-              multiline
-              numberOfLines={4}
-              style={styles.input}
-              editable={false}
-              theme={{roundness: 10}}
-            />
-            <TextInput
-              label="Xét nghiệm"
-              mode="outlined"
-              value="Xét nghiệm máu"
-              multiline
-              numberOfLines={4}
+              value={prescription.date}
               style={styles.input}
               editable={false}
               theme={{roundness: 10}}
@@ -82,13 +54,32 @@ const MedicalDetailScreen = ({navigation, route}: any) => {
             <TextInput
               label="Kết quả"
               mode="outlined"
-              value="Kết quả bình thường"
+              value={convertString(diagnosis.problem)}
               multiline
               numberOfLines={4}
               style={styles.input}
               editable={false}
               theme={{roundness: 10}}
             />
+          </View>
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Xét nghiệm</Text>
+            {diagnosis.images.map((image: string, index: number) => (
+              <List.Item
+                key={index}
+                title={`File ${index + 1}`}
+                description={image}
+                right={props => (
+                  <Button
+                    {...props}
+                    onPress={() => handleDownload(image)}
+                    mode="outlined"
+                    style={styles.downloadButton}>
+                    Tải xuống
+                  </Button>
+                )}
+              />
+            ))}
           </View>
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Đơn thuốc</Text>
@@ -100,40 +91,42 @@ const MedicalDetailScreen = ({navigation, route}: any) => {
                   Số viên
                 </DataTable.Title>
               </DataTable.Header>
-              {fakePrescription.medicines.map((medicine, index) => (
-                <React.Fragment key={index}>
-                  <DataTable.Row>
-                    <DataTable.Cell style={{flex: 3}}>
-                      {medicine.name}
-                    </DataTable.Cell>
-                    <DataTable.Cell style={{flex: 1}}>Sáng</DataTable.Cell>
-                    <DataTable.Cell numeric style={{flex: 1}}>
-                      {medicine.schedule.morning}
-                    </DataTable.Cell>
-                  </DataTable.Row>
-                  <DataTable.Row>
-                    <DataTable.Cell style={{flex: 3}}>.</DataTable.Cell>
-                    <DataTable.Cell style={{flex: 1}}>Trưa</DataTable.Cell>
-                    <DataTable.Cell numeric style={{flex: 1}}>
-                      {medicine.schedule.afternoon}
-                    </DataTable.Cell>
-                  </DataTable.Row>
-                  <DataTable.Row>
-                    <DataTable.Cell style={{flex: 3}}>.</DataTable.Cell>
-                    <DataTable.Cell style={{flex: 1}}>Chiều</DataTable.Cell>
-                    <DataTable.Cell numeric style={{flex: 1}}>
-                      {medicine.schedule.evening}
-                    </DataTable.Cell>
-                  </DataTable.Row>
-                  <DataTable.Row>
-                    <DataTable.Cell style={{flex: 3}}>.</DataTable.Cell>
-                    <DataTable.Cell style={{flex: 1}}>Tối</DataTable.Cell>
-                    <DataTable.Cell numeric style={{flex: 1}}>
-                      {medicine.schedule.night}
-                    </DataTable.Cell>
-                  </DataTable.Row>
-                </React.Fragment>
-              ))}
+              {prescription.data.medicines.map(
+                (medicine: any, index: number) => (
+                  <React.Fragment key={index}>
+                    <DataTable.Row>
+                      <DataTable.Cell style={{flex: 3}}>
+                        {medicine.name}
+                      </DataTable.Cell>
+                      <DataTable.Cell style={{flex: 1}}>Sáng</DataTable.Cell>
+                      <DataTable.Cell numeric style={{flex: 1}}>
+                        {medicine.schedule.morning}
+                      </DataTable.Cell>
+                    </DataTable.Row>
+                    <DataTable.Row>
+                      <DataTable.Cell style={{flex: 3}}>.</DataTable.Cell>
+                      <DataTable.Cell style={{flex: 1}}>Trưa</DataTable.Cell>
+                      <DataTable.Cell numeric style={{flex: 1}}>
+                        {medicine.schedule.afternoon}
+                      </DataTable.Cell>
+                    </DataTable.Row>
+                    <DataTable.Row>
+                      <DataTable.Cell style={{flex: 3}}>.</DataTable.Cell>
+                      <DataTable.Cell style={{flex: 1}}>Chiều</DataTable.Cell>
+                      <DataTable.Cell numeric style={{flex: 1}}>
+                        {medicine.schedule.evening}
+                      </DataTable.Cell>
+                    </DataTable.Row>
+                    <DataTable.Row>
+                      <DataTable.Cell style={{flex: 3}}>.</DataTable.Cell>
+                      <DataTable.Cell style={{flex: 1}}>Tối</DataTable.Cell>
+                      <DataTable.Cell numeric style={{flex: 1}}>
+                        {medicine.schedule.night}
+                      </DataTable.Cell>
+                    </DataTable.Row>
+                  </React.Fragment>
+                ),
+              )}
             </DataTable>
           </View>
         </ScrollView>
@@ -161,6 +154,9 @@ const styles = StyleSheet.create({
   },
   input: {
     marginBottom: 16,
+  },
+  downloadButton: {
+    alignSelf: 'center',
   },
   medicineContainer: {
     marginBottom: 16,

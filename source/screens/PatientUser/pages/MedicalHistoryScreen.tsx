@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {View, ScrollView, StyleSheet, Dimensions} from 'react-native';
 import {
   useTheme,
@@ -7,23 +7,16 @@ import {
   DataTable,
   Searchbar,
   Button,
+  ActivityIndicator,
+  Text,
+  Appbar,
 } from 'react-native-paper';
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
+import {useSelector} from 'react-redux';
+import LottieView from 'lottie-react-native';
+import {format} from 'date-fns';
+import PrescriptionService from '../../../services/PrescriptionService';
 
 const {height} = Dimensions.get('window');
-
-const fakeMedicalHistoryData = [
-  {date: '29/06/2024', symptoms: 'Ho, sốt'},
-  {date: '29/06/2023', symptoms: 'Đau đầu, mệt mỏi'},
-  {date: '15/07/2023', symptoms: 'Buồn nôn, chóng mặt'},
-  {date: '10/06/2023', symptoms: 'Đau bụng, tiêu chảy'},
-  {date: '22/05/2023', symptoms: 'Khó thở, tức ngực'},
-  {date: '05/05/2023', symptoms: 'Mất ngủ, lo âu'},
-  {date: '17/04/2023', symptoms: 'Đau lưng, đau cổ'},
-  {date: '01/04/2023', symptoms: 'Viêm họng, đau nhức cơ'},
-  {date: '14/03/2024', symptoms: 'Đau mắt, mờ mắt'},
-  {date: '28/02/2024', symptoms: 'Sưng tấy, đỏ da'},
-];
 
 const ITEMS_PER_PAGE = 7;
 
@@ -31,18 +24,22 @@ const MedicalHistoryScreen = ({navigation}: any) => {
   const theme = useTheme();
   const [currentPage, setCurrentPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
-  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [medicalHistoryData, setMedicalHistoryData] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const totalPages = Math.ceil(fakeMedicalHistoryData.length / ITEMS_PER_PAGE);
+  const accessToken = useSelector((state: any) => state.token.accessToken);
+  const userId = useSelector((state: any) => state.user.id);
+
+  const totalPages = Math.ceil(medicalHistoryData.length / ITEMS_PER_PAGE);
 
   const getCurrentPageData = () => {
     const filteredData = searchQuery
-      ? fakeMedicalHistoryData.filter(
+      ? medicalHistoryData.filter(
           item =>
             item.date.includes(searchQuery) ||
-            item.symptoms.includes(searchQuery),
+            convertString(item.symptoms).includes(searchQuery),
         )
-      : fakeMedicalHistoryData;
+      : medicalHistoryData;
 
     const startIndex = currentPage * ITEMS_PER_PAGE;
     return filteredData.slice(startIndex, startIndex + ITEMS_PER_PAGE);
@@ -52,20 +49,68 @@ const MedicalHistoryScreen = ({navigation}: any) => {
     setCurrentPage(page);
   };
 
-  const handleConfirm = (date: Date) => {
-    const formattedDate = date.toLocaleDateString('en-GB');
-    setSearchQuery(formattedDate);
-    setDatePickerVisibility(false);
+  const handleViewDetails = (item: any) => {
+    navigation.navigate('DoctorNavigator', {
+      screen: 'MedicalDetailScreen',
+      params: {item},
+    });
   };
 
-  const handleViewDetails = (item: any) => {
-    navigation.navigate('MedicalDetailScreen', {item});
+  const convertString = (inputString: string): string => {
+    if (inputString.startsWith('"') && inputString.endsWith('"')) {
+      return inputString.slice(1, -1).replace(/\\"/g, '"');
+    }
+    return inputString.replace(/\\"/g, '"');
   };
+
+  useEffect(() => {
+    const getMedicalData = async () => {
+      setLoading(true);
+      try {
+        const prescriptions = await PrescriptionService.getPrescription(
+          userId,
+          accessToken,
+        );
+
+        const medicalDataPromises = prescriptions.map(
+          async (prescription: any) => {
+            const diagnoses = await PrescriptionService.getDiagnosis(
+              prescription.id,
+              accessToken,
+            );
+            return diagnoses.map((diagnosis: any) => ({
+              id: diagnosis.id,
+              date: format(new Date(diagnosis.createdAt), 'yyyy-MM-dd'),
+              symptoms: convertString(diagnosis.problem),
+              prescription,
+              diagnosis,
+            }));
+          },
+        );
+
+        const medicalData = await Promise.all(medicalDataPromises);
+        const flatMedicalData = medicalData.flat();
+        setMedicalHistoryData(flatMedicalData);
+      } catch (error) {
+        console.error('Error getting medical data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+    getMedicalData();
+  }, []);
+
+  useEffect(() => {
+    setCurrentPage(0);
+  }, [searchQuery]);
 
   const itemHeight = height / 10;
 
   return (
-    <View style={styles.screen}>
+    <View style={[styles.screen, {backgroundColor: theme.colors.background}]}>
+      <Appbar.Header>
+        <Appbar.Content title="Lịch sử khám bệnh" />
+      </Appbar.Header>
       <View style={styles.filterContainer}>
         <Searchbar
           placeholder="Tìm kiếm"
@@ -74,53 +119,64 @@ const MedicalHistoryScreen = ({navigation}: any) => {
           style={{flex: 1}}
         />
       </View>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {getCurrentPageData().map((item, index) => (
-          <List.Section key={index} style={{height: itemHeight}}>
-            <List.Item
-              title={item.date}
-              description={item.symptoms}
-              left={props => (
-                <IconButton
-                  {...props}
-                  icon="calendar"
-                  iconColor={theme.colors.primary}
-                  style={{alignSelf: 'center'}}
-                  size={36}
-                />
-              )}
-              right={props => (
-                <Button
-                  mode="outlined"
-                  onPress={() => handleViewDetails(item)}
-                  style={styles.viewDetailsButton}>
-                  Xem chi tiết
-                </Button>
-              )}
-              style={[
-                {
-                  borderColor: theme.colors.primaryContainer,
-                  borderBottomWidth: 1,
-                  height: itemHeight - 1,
-                },
-              ]}
-            />
-          </List.Section>
-        ))}
-      </ScrollView>
+      {loading ? (
+        <ActivityIndicator
+          animating={true}
+          size="large"
+          style={styles.loader}
+        />
+      ) : medicalHistoryData.length === 0 ? (
+        <View style={styles.lottie}>
+          <LottieView
+            source={require('../../../asset/lottie/notfound.json')}
+            autoPlay
+            loop
+            style={{width: 200, height: 200}}
+          />
+          <Text variant="titleLarge">Chưa có nhật ký nào</Text>
+        </View>
+      ) : (
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {getCurrentPageData().map((item, index) => (
+            <List.Section key={index} style={{height: itemHeight}}>
+              <List.Item
+                title={item.date}
+                description={item.symptoms}
+                left={props => (
+                  <IconButton
+                    {...props}
+                    icon="calendar"
+                    iconColor={theme.colors.primary}
+                    style={{alignSelf: 'center'}}
+                    size={36}
+                  />
+                )}
+                right={props => (
+                  <Button
+                    mode="outlined"
+                    onPress={() => handleViewDetails(item)}
+                    style={styles.viewDetailsButton}>
+                    Xem chi tiết
+                  </Button>
+                )}
+                style={[
+                  {
+                    borderColor: theme.colors.primaryContainer,
+                    borderBottomWidth: 1,
+                    height: itemHeight - 1,
+                  },
+                ]}
+              />
+            </List.Section>
+          ))}
+        </ScrollView>
+      )}
       <DataTable.Pagination
         page={currentPage}
         numberOfPages={totalPages}
         onPageChange={handlePageChange}
         label={`${currentPage + 1} of ${totalPages}`}
         style={styles.pagination}
-      />
-      <DateTimePickerModal
-        isVisible={isDatePickerVisible}
-        style={{zIndex: 9, elevation: 9}}
-        mode="date"
-        onConfirm={handleConfirm}
-        onCancel={() => setDatePickerVisibility(false)}
       />
     </View>
   );
@@ -145,5 +201,15 @@ const styles = StyleSheet.create({
   viewDetailsButton: {
     marginRight: 8,
     alignSelf: 'center',
+  },
+  loader: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  lottie: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

@@ -13,6 +13,7 @@ import {
 } from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import LottieView from 'lottie-react-native';
+import {format} from 'date-fns';
 import PrescriptionService from '../../../services/PrescriptionService';
 
 const {height} = Dimensions.get('window');
@@ -24,7 +25,7 @@ const MedicalHistoryScreen = ({navigation, route}: any) => {
   const [currentPage, setCurrentPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
   const [medicalHistoryData, setMedicalHistoryData] = useState<any[]>([]);
-  const [loading, setLoading] = useState(true); // Thêm trạng thái loading
+  const [loading, setLoading] = useState(true);
 
   const accessToken = useSelector((state: any) => state.token.accessToken);
 
@@ -35,7 +36,7 @@ const MedicalHistoryScreen = ({navigation, route}: any) => {
       ? medicalHistoryData.filter(
           item =>
             item.date.includes(searchQuery) ||
-            item.symptoms.includes(searchQuery),
+            convertString(item.symptoms).includes(searchQuery),
         )
       : medicalHistoryData;
 
@@ -53,16 +54,15 @@ const MedicalHistoryScreen = ({navigation, route}: any) => {
 
   const convertString = (inputString: string): string => {
     if (inputString.startsWith('"') && inputString.endsWith('"')) {
-      return inputString.replace(/\\"/g, '"');
-    } else {
-      return inputString;
+      return inputString.slice(1, -1).replace(/\\"/g, '"');
     }
+    return inputString.replace(/\\"/g, '"');
   };
 
   useEffect(() => {
     const getMedicalData = async () => {
       const patientId = route.params.patient.id;
-      setLoading(true); // Bắt đầu quá trình tải
+      setLoading(true);
       try {
         const prescriptions = await PrescriptionService.getPrescription(
           patientId,
@@ -77,8 +77,8 @@ const MedicalHistoryScreen = ({navigation, route}: any) => {
             );
             return diagnoses.map((diagnosis: any) => ({
               id: diagnosis.id,
-              date: diagnosis.createdAt,
-              symptoms: diagnosis.problem,
+              date: format(new Date(diagnosis.createdAt), 'yyyy-MM-dd'),
+              symptoms: convertString(diagnosis.problem),
               prescription,
               diagnosis,
             }));
@@ -91,7 +91,7 @@ const MedicalHistoryScreen = ({navigation, route}: any) => {
       } catch (error) {
         console.error('Error getting medical data:', error);
       } finally {
-        setLoading(false); // Kết thúc quá trình tải
+        setLoading(false);
       }
     };
     getMedicalData();

@@ -18,8 +18,9 @@ import {createDrawerNavigator} from '@react-navigation/drawer';
 const Tab = createMaterialTopTabNavigator();
 const Drawer = createDrawerNavigator();
 
-const TabNavigator = () => {
+const TabNavigator = ({navigation}: any) => {
   const theme = useTheme();
+  const MedicalHistory = () => <MedicalHistoryScreen navigation={navigation} />;
   return (
     <Tab.Navigator
       screenOptions={({route}) => ({
@@ -59,10 +60,7 @@ const TabNavigator = () => {
         name="BookingHistoryScreen"
         component={BookingHistoryScreen}
       />
-      <Tab.Screen
-        name="MedicalHistoryScreen"
-        component={MedicalHistoryScreen}
-      />
+      <Tab.Screen name="MedicalHistoryScreen" component={MedicalHistory} />
       <Tab.Screen name="PersonalInfoScreen" component={PersonalInfoScreen} />
     </Tab.Navigator>
   );
