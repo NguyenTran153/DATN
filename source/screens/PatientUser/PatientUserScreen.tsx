@@ -1,7 +1,7 @@
 // PatientUserScreen.tsx
 import React from 'react';
 import {View, StyleSheet} from 'react-native';
-import {Appbar, useTheme} from 'react-native-paper';
+import {Appbar, IconButton, useTheme} from 'react-native-paper';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import DiaryRecordScreen from './pages/DiaryRecordScreen';
@@ -70,11 +70,25 @@ const PatientUserScreen = ({navigation}: any) => {
   const user = useSelector((state: any) => state.user);
 
   return (
-    <Drawer.Navigator initialRouteName="Home">
+    <Drawer.Navigator
+      initialRouteName="Home"
+      screenOptions={{
+        headerRight: () => (
+          <IconButton
+            icon="bell"
+            size={24}
+            onPress={() =>
+              navigation.navigate('HomeNavigator', {
+                screen: 'NotificationScreen',
+              })
+            }
+          />
+        ),
+      }}>
       <Drawer.Screen
         name="Home"
         component={TabNavigator}
-        options={{drawerLabel: 'Trang chủ'}}
+        options={{drawerLabel: 'Trang chủ', title: 'Trang chủ'}}
       />
       <Drawer.Screen
         name="StoreScreen"
@@ -84,12 +98,15 @@ const PatientUserScreen = ({navigation}: any) => {
       <Drawer.Screen
         name="DoctorListScreen"
         component={DoctorListScreen}
-        options={{drawerLabel: 'Danh sách bác sĩ đã liên hệ'}}
+        options={{
+          drawerLabel: 'Danh sách bác sĩ đã liên hệ',
+          title: 'Danh sách bác sĩ',
+        }}
       />
       <Drawer.Screen
         name="ProfileScreen"
         component={ProfileScreen}
-        options={{drawerLabel: 'Cài đặt'}}
+        options={{drawerLabel: 'Cài đặt', title: 'Cài đặt'}}
       />
     </Drawer.Navigator>
   );

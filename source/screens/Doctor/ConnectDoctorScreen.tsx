@@ -14,7 +14,7 @@ const ConnectDoctorScreen = ({navigation}: any) => {
 
   const [phone, setPhone] = useState('');
   const [accountModal, setAccountModal] = useState(false);
-  const token = useSelector((state: any) => state.token.accessToken); // lấy token từ redux
+  const token = useSelector((state: any) => state.token.accessToken);
 
   const sendFriendRequest = async () => {
     try {
@@ -45,14 +45,13 @@ const ConnectDoctorScreen = ({navigation}: any) => {
       });
     }
   };
-  const handlePhoneNumber = (phone:string) => {
+  const handlePhoneNumber = (phone: string) => {
     if (phone.startsWith('0')) {
       // Replace the first '0' with '+84'
       const formattedPhoneNumber = phone.replace(/^0/, '+84');
-      setPhone(formattedPhoneNumber)
-      console.log(formattedPhoneNumber)
-    }
-    else{
+      setPhone(formattedPhoneNumber);
+      console.log(formattedPhoneNumber);
+    } else {
       Dialog.show({
         type: ALERT_TYPE.DANGER,
         title: 'Thất bại',
@@ -60,7 +59,8 @@ const ConnectDoctorScreen = ({navigation}: any) => {
         button: 'Đóng',
       });
     }
-  }
+  };
+  
   return (
     <>
       <CustomAppbar
@@ -182,8 +182,8 @@ const styles = StyleSheet.create({
     marginVertical: 10,
   },
   input: {
-    width: '80%',
-    height: 50,
+    width: '85%',
+    height: 70,
     borderRadius: 10,
   },
 });

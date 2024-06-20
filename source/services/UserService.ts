@@ -143,7 +143,6 @@ class UserService {
     }
   }
   static async getFriendList(token: string) {
-    console.log(token);
     try {
       const response = await axios.get<Patient[]>(
         `http://10.0.2.2:8080/users/friends/my`,
@@ -157,7 +156,29 @@ class UserService {
       return response;
     } catch (error) {
       console.log('Get friend: ' + error);
-      return;
+      throw error;
+    }
+  }
+  static async acceptFriend(token: string, friendRequestId: string) {
+    try {
+      const body = {
+        status: 'accepted',
+        code: 'string',
+      };
+      const response = await axios.put(
+        `http://10.0.2.2:8080/users/friend-request/response/${friendRequestId}`,
+        JSON.stringify(body),
+        {
+          headers: {
+            'content-type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      return response.data;
+    } catch (error) {
+      console.log('Accept friend: ' + error);
+      throw error;
     }
   }
 }
