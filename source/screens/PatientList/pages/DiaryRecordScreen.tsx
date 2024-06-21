@@ -8,6 +8,7 @@ import {
   IconButton,
   DataTable,
   Appbar,
+  ActivityIndicator,
 } from 'react-native-paper';
 import moment from 'moment';
 import LottieView from 'lottie-react-native';
@@ -34,16 +35,18 @@ const DiaryRecordScreen = ({route}: any) => {
   const token = useSelector((state: any) => state.token);
   const patientId = route.params.patient.id;
 
-  const [searchDate, setSearchDate] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const [entries, setEntries] = useState<Entry[]>([]);
   const [filteredEntries, setFilteredEntries] = useState<Entry[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const entriesPerPage = 7;
 
   useEffect(() => {
     const fetchEntries = async () => {
       try {
+        setLoading(true);
         const fetchedEntries = await DiaryService.getDiaries(
           token.accessToken,
           1, // default page
@@ -51,24 +54,39 @@ const DiaryRecordScreen = ({route}: any) => {
           patientId,
         );
         setEntries(fetchedEntries);
+        setLoading(false);
       } catch (error) {
         console.error('Error fetching diary entries:', error);
+        setLoading(false);
       }
     };
 
     fetchEntries();
-  }, [token.accessToken, patientId]);
+  }, []);
 
   useEffect(() => {
-    const filtered = searchDate
-      ? entries.filter(entry =>
-          moment(entry.createdAt).isSame(moment(searchDate), 'day'),
-        )
-      : entries;
+    const filtered = entries.filter(entry => {
+      const entryDate = moment(entry.createdAt).format('YYYY-MM-DD');
+      const searchText = searchQuery.toLowerCase();
+
+      return (
+        entryDate.includes(searchText) ||
+        (entry.data.time &&
+          entry.data.time.toLowerCase().includes(searchText)) ||
+        (entry.data.food &&
+          entry.data.food.toLowerCase().includes(searchText)) ||
+        (entry.data.bloodPressure &&
+          entry.data.bloodPressure.toLowerCase().includes(searchText)) ||
+        (entry.data.bloodSugar &&
+          entry.data.bloodSugar.toLowerCase().includes(searchText)) ||
+        (entry.data.exercise &&
+          entry.data.exercise.toLowerCase().includes(searchText)) ||
+        (entry.data.note && entry.data.note.toLowerCase().includes(searchText))
+      );
+    });
     setFilteredEntries(filtered);
     setCurrentPage(0);
-  }, [searchDate, entries]);
-
+  }, [searchQuery, entries]);
   const startIndex = currentPage * entriesPerPage;
   const paginatedEntries = filteredEntries.slice(
     startIndex,
@@ -85,29 +103,37 @@ const DiaryRecordScreen = ({route}: any) => {
         <Searchbar
           style={styles.searchBar}
           placeholder="Tìm kiếm"
-          onChangeText={setSearchDate}
-          value={searchDate}
+          onChangeText={setSearchQuery}
+          value={searchQuery}
         />
       </View>
-      <ScrollView
-        contentContainerStyle={styles.listContainer}
-        showsVerticalScrollIndicator={false}>
-        {filteredEntries.length ? (
-          paginatedEntries.map(entry => (
-            <EntryItem key={entry.id} entry={entry} />
-          ))
-        ) : (
-          <View style={styles.lottie}>
-            <LottieView
-              source={require('../../../asset/lottie/notfound.json')}
-              autoPlay
-              loop
-              style={{width: 200, height: 200}}
-            />
-            <Text variant="titleLarge">Chưa có nhật ký nào</Text>
-          </View>
-        )}
-      </ScrollView>
+      {loading ? (
+        <ActivityIndicator
+          animating={true}
+          size="large"
+          style={styles.loading}
+        />
+      ) : (
+        <ScrollView
+          contentContainerStyle={styles.listContainer}
+          showsVerticalScrollIndicator={false}>
+          {filteredEntries.length ? (
+            paginatedEntries.map(entry => (
+              <EntryItem key={entry.id} entry={entry} />
+            ))
+          ) : (
+            <View style={styles.lottie}>
+              <LottieView
+                source={require('../../../asset/lottie/notfound.json')}
+                autoPlay
+                loop
+                style={{width: 200, height: 200}}
+              />
+              <Text variant="titleLarge">Chưa có nhật ký nào</Text>
+            </View>
+          )}
+        </ScrollView>
+      )}
 
       <DataTable.Pagination
         page={currentPage}
@@ -146,5 +172,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 20,
+  },
+  loading: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

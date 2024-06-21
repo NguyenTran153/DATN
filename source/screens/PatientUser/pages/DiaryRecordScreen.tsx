@@ -1,13 +1,13 @@
 import React, {useState, useEffect} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import {
-  Button,
   Searchbar,
   useTheme,
   Text,
   IconButton,
   DataTable,
   Appbar,
+  ActivityIndicator,
 } from 'react-native-paper';
 import moment from 'moment';
 import LottieView from 'lottie-react-native';
@@ -18,7 +18,7 @@ import {useSelector} from 'react-redux';
 
 interface Entry {
   id: string;
-  createdAt: string; // Thay đổi từ 'date' thành 'createdAt'
+  createdAt: string; // Date the entry was created
   data: {
     time: string;
     food: string;
@@ -34,40 +34,55 @@ const DiaryRecordScreen = ({navigation}: any) => {
   const token = useSelector((state: any) => state.token);
   const user = useSelector((state: any) => state.user);
 
-  const [searchDate, setSearchDate] = useState<string>('');
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const [entries, setEntries] = useState<Entry[]>([]);
   const [filteredEntries, setFilteredEntries] = useState<Entry[]>([]);
   const [currentPage, setCurrentPage] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(true);
 
   const entriesPerPage = 7;
 
+  // Fetch entries when the component mounts or when token or user ID changes
   useEffect(() => {
     const fetchEntries = async () => {
       try {
+        setLoading(true); // Start loading
         const fetchedEntries = await DiaryService.getDiaries(
           token.accessToken,
           1, // default page
-          entriesPerPage,
+          100,
           user.id,
         );
         setEntries(fetchedEntries);
       } catch (error) {
         console.error('Error fetching diary entries:', error);
+      } finally {
+        setLoading(false); // Stop loading
       }
     };
 
     fetchEntries();
   }, [token.accessToken, user.id]);
 
+  // Filter entries based on the search query
   useEffect(() => {
-    const filtered = searchDate
-      ? entries.filter(entry =>
-          moment(entry.createdAt).isSame(moment(searchDate), 'day'),
-        )
+    const filtered = searchQuery
+      ? entries.filter(entry => {
+          const searchDate = moment(searchQuery, 'YYYY-MM-DD', true);
+          const createdAtMatch = searchDate.isValid()
+            ? moment(entry.createdAt).isSame(searchDate, 'day')
+            : false;
+
+          const dataMatch = Object.values(entry.data).some(value =>
+            value.toLowerCase().includes(searchQuery.toLowerCase()),
+          );
+
+          return createdAtMatch || dataMatch;
+        })
       : entries;
     setFilteredEntries(filtered);
     setCurrentPage(0);
-  }, [searchDate, entries]);
+  }, [searchQuery, entries]);
 
   const startIndex = currentPage * entriesPerPage;
   const paginatedEntries = filteredEntries.slice(
@@ -85,8 +100,8 @@ const DiaryRecordScreen = ({navigation}: any) => {
         <Searchbar
           style={styles.searchBar}
           placeholder="Tìm kiếm"
-          onChangeText={setSearchDate}
-          value={searchDate}
+          onChangeText={setSearchQuery}
+          value={searchQuery}
         />
         <IconButton
           icon="plus"
@@ -100,32 +115,35 @@ const DiaryRecordScreen = ({navigation}: any) => {
           style={{marginLeft: 8}}
         />
       </View>
-      <ScrollView
-        contentContainerStyle={styles.listContainer}
-        showsVerticalScrollIndicator={false}>
-        {filteredEntries.length ? (
-          paginatedEntries.map(entry => (
-            <EntryItem key={entry.id} entry={entry} />
-          ))
-        ) : (
-          <View style={styles.lottie}>
-            <LottieView
-              source={require('../../../asset/lottie/notfound.json')}
-              autoPlay
-              loop
-              style={{width: 200, height: 200}}
-            />
-            <Text variant="titleLarge">Chưa có nhật ký nào</Text>
-          </View>
-        )}
-      </ScrollView>
-
+      {loading ? (
+        <ActivityIndicator animating={true} size="large" />
+      ) : (
+        <ScrollView
+          contentContainerStyle={styles.listContainer}
+          showsVerticalScrollIndicator={false}>
+          {filteredEntries.length ? (
+            paginatedEntries.map(entry => (
+              <EntryItem key={entry.id} entry={entry} />
+            ))
+          ) : (
+            <View style={styles.lottie}>
+              <LottieView
+                source={require('../../../asset/lottie/notfound.json')}
+                autoPlay
+                loop
+                style={{width: 200, height: 200}}
+              />
+              <Text variant="titleLarge">Chưa có nhật ký nào</Text>
+            </View>
+          )}
+        </ScrollView>
+      )}
       <DataTable.Pagination
         style={{alignSelf: 'center'}}
         page={currentPage}
         numberOfPages={Math.ceil(filteredEntries.length / entriesPerPage)}
         onPageChange={page => setCurrentPage(page)}
-        label={`Page ${currentPage + 1} of ${Math.ceil(
+        label={`Trang ${currentPage + 1} trên ${Math.ceil(
           filteredEntries.length / entriesPerPage,
         )}`}
       />
@@ -156,7 +174,7 @@ const styles = StyleSheet.create({
   lottie: {
     justifyContent: 'center',
     alignItems: 'center',
-    marginTop: 20,
+    flex: 1,
     alignSelf: 'center',
   },
 });

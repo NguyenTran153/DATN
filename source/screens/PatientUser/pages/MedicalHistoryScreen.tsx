@@ -116,7 +116,7 @@ const MedicalHistoryScreen = ({navigation}: any) => {
           placeholder="Tìm kiếm"
           onChangeText={setSearchQuery}
           value={searchQuery}
-          style={{flex: 1}}
+          style={styles.searchbar}
         />
       </View>
       {loading ? (
@@ -126,17 +126,19 @@ const MedicalHistoryScreen = ({navigation}: any) => {
           style={styles.loader}
         />
       ) : medicalHistoryData.length === 0 ? (
-        <View style={styles.lottie}>
+        <View style={styles.lottieContainer}>
           <LottieView
             source={require('../../../asset/lottie/notfound.json')}
             autoPlay
             loop
-            style={{width: 200, height: 200}}
+            style={styles.lottie}
           />
-          <Text variant="titleLarge">Chưa có nhật ký nào</Text>
+          <Text variant="titleLarge">Chưa có lịch sử nào</Text>
         </View>
       ) : (
-        <ScrollView showsVerticalScrollIndicator={false}>
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={styles.scrollView}>
           {getCurrentPageData().map((item, index) => (
             <List.Section key={index} style={{height: itemHeight}}>
               <List.Item
@@ -147,7 +149,7 @@ const MedicalHistoryScreen = ({navigation}: any) => {
                     {...props}
                     icon="calendar"
                     iconColor={theme.colors.primary}
-                    style={{alignSelf: 'center'}}
+                    style={styles.iconButton}
                     size={36}
                   />
                 )}
@@ -160,9 +162,9 @@ const MedicalHistoryScreen = ({navigation}: any) => {
                   </Button>
                 )}
                 style={[
+                  styles.listItem,
                   {
                     borderColor: theme.colors.primaryContainer,
-                    borderBottomWidth: 1,
                     height: itemHeight - 1,
                   },
                 ]}
@@ -194,6 +196,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 10,
   },
+  searchbar: {
+    flex: 1,
+  },
   pagination: {
     alignSelf: 'center',
     marginVertical: 10,
@@ -207,9 +212,24 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  lottie: {
+  lottieContainer: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    alignSelf: 'center',
+    marginBottom: 260,
+  },
+  lottie: {
+    width: 200,
+    height: 200,
+  },
+  scrollView: {
+    marginBottom: 10,
+  },
+  listItem: {
+    borderBottomWidth: 1,
+  },
+  iconButton: {
+    alignSelf: 'center',
   },
 });

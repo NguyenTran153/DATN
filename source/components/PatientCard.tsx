@@ -10,12 +10,8 @@ import {
   Avatar,
   Icon,
 } from 'react-native-paper';
-import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
-import {UserInfo} from 'react-native-agora';
-import {useSelector} from 'react-redux';
 
-const avatar = require('../asset/7677205.jpg');
+const defaultAvatar = require('../asset/7677205.jpg');
 
 interface ListItemProps {
   icon: string;
@@ -41,7 +37,9 @@ const PatientCard: React.FC<PatientCardProps> = ({patient, navigation}) => {
       }
       style={[styles.card, {borderBlockColor: theme.colors.primaryContainer}]}>
       <View style={styles.cardContainer}>
-        <Avatar.Image source={avatar} />
+        <Avatar.Image
+          source={patient.avatar ? {uri: patient.avatar} : defaultAvatar}
+        />
         <View style={styles.textContainer}>
           <Text variant="titleMedium">
             Bệnh nhân {patient.firstName + ' ' + patient.lastName}

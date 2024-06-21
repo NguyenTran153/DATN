@@ -1,18 +1,18 @@
-import {useTheme, Text, Button, List} from 'react-native-paper';
+import {useTheme, Text, Button, List, Switch} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {StyleSheet, View, Image, ScrollView} from 'react-native';
-import {useEffect, useState} from 'react';
-import UserService from '../../services/UserService';
 import {useSelector, useDispatch} from 'react-redux';
-import {setUser} from '../../redux/slices/userSlice';
 import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
 import AuthService from '../../services/AuthService';
+import {toggleDarkMode} from '../../redux/slices/themeSlice';
+import dayjs from 'dayjs';
 
 const ProfileScreen = ({navigation}: {navigation: any}) => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const userData = useSelector((state: any) => state.user);
   const token = useSelector((state: any) => state.token);
+  const isDarkMode = useSelector((state: any) => state.theme.isDarkMode);
 
   const handleLogout = async () => {
     try {
@@ -28,27 +28,43 @@ const ProfileScreen = ({navigation}: {navigation: any}) => {
     }
   };
 
+  const handleToggleDarkMode = () => {
+    dispatch(toggleDarkMode());
+  };
+
+  const formatGender = (gender: string) => {
+    if (gender === 'male') return 'Nam';
+    if (gender === 'female') return 'Nữ';
+    return 'Không xác định';
+  };
+
+  const formatDate = (date: string) => {
+    return dayjs(date).format('DD/MM/YYYY');
+  };
+
   return (
     <SafeAreaView
       style={[styles.container, {backgroundColor: theme.colors.background}]}>
       <View style={styles.profile}>
-        <Image source={require('../../asset/7677205.jpg')} style={styles.img} />
+        <Image
+          source={{uri: userData?.avatar || 'default_avatar_url'}}
+          style={styles.img}
+        />
         <View style={styles.patientInfo}>
-          <View style={styles.editContainer}>
-            <Text style={styles.patientName}>
-              {userData?.lastName + ' ' + userData?.firstName}
-            </Text>
-            <Button
-              icon="pencil"
-              mode="text"
-              onPress={() => {}}
-              contentStyle={{flexDirection: 'row-reverse'}}>
-              Chỉnh sửa
-            </Button>
-          </View>
-          <Text>Ngày sinh: 1991/02/01</Text>
-          <Text>Giới tính: Nữ</Text>
-          <Text>Email: {userData?.email}</Text>
+          <Text style={styles.patientName}>
+            {userData
+              ? `${userData.lastName} ${userData.firstName}`
+              : 'Không cập nhật'}
+          </Text>
+          <Text>
+            Ngày sinh:{' '}
+            {userData ? formatDate(userData.birthday) : 'Không cập nhật'}
+          </Text>
+          <Text>
+            Giới tính:{' '}
+            {userData ? formatGender(userData.gender) : 'Không cập nhật'}
+          </Text>
+          <Text>Email: {userData?.email || 'Không cập nhật'}</Text>
         </View>
       </View>
       <ScrollView>
@@ -99,7 +115,7 @@ const ProfileScreen = ({navigation}: {navigation: any}) => {
             right={() => <List.Icon icon="chevron-right" />}
             onPress={() => {}}
           />
-          {userData.role !== 'doctor' && (
+          {userData?.role !== 'doctor' && (
             <List.Item
               title="Đăng Ký Bác Sĩ"
               description="Đăng ký tài khoản bác sĩ"
@@ -114,6 +130,27 @@ const ProfileScreen = ({navigation}: {navigation: any}) => {
               }}
             />
           )}
+          <List.Item
+            title="Chính Sách"
+            description="Điều khoản và chính sách"
+            left={() => (
+              <List.Icon
+                style={styles.settingCenter}
+                icon="file-document-outline"
+              />
+            )}
+            right={() => <List.Icon icon="chevron-right" />}
+            onPress={() => console.log('')}
+          />
+          {/* <List.Item
+            title="Chế Độ Tối"
+            left={() => (
+              <List.Icon style={styles.settingCenter} icon="theme-light-dark" />
+            )}
+            right={() => (
+              <Switch value={isDarkMode} onValueChange={handleToggleDarkMode} />
+            )}
+          /> */}
         </List.Section>
       </ScrollView>
       <Button
@@ -144,10 +181,6 @@ const styles = StyleSheet.create({
   },
   settingCenter: {
     paddingLeft: 20,
-  },
-  editContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
   },
   patientName: {
     fontSize: 18,

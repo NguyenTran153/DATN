@@ -25,9 +25,10 @@ const DoctorListScreen = ({navigation}: any) => {
     const fetchFriendList = async () => {
       try {
         const response = await UserService.getFriendList(token);
+        console.log('Friend List' + response.data);
         if (response && response.data) {
           setDoctors(response.data);
-          setFilteredDoctors(response.data); // Initialize with all doctors
+          setFilteredDoctors(response.data);
         }
       } catch (error) {
         console.log('Error fetching friend list:', error);

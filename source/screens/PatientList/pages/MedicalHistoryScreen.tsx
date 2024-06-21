@@ -142,7 +142,7 @@ const MedicalHistoryScreen = ({navigation, route}: any) => {
             loop
             style={{width: 200, height: 200}}
           />
-          <Text variant="titleLarge">Chưa có nhật ký nào</Text>
+          <Text variant="titleLarge">Chưa có lịch sử nào</Text>
         </View>
       ) : (
         <ScrollView showsVerticalScrollIndicator={false}>
@@ -220,5 +220,6 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+    marginBottom: 260,
   },
 });

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react';
-import { View, ScrollView, StyleSheet, Dimensions, Alert } from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {View, ScrollView, StyleSheet, Dimensions, Alert} from 'react-native';
 import {
   useTheme,
   List,
@@ -11,29 +11,15 @@ import {
 } from 'react-native-paper';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import AppointmentService from '../../../services/AppointmentService';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 import moment from 'moment';
-import { ALERT_TYPE, Dialog } from 'react-native-alert-notification';
+import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
 import LottieView from 'lottie-react-native';
 
-const { height } = Dimensions.get('window');
-
-const fakeMedicalHistoryData = [
-  { date: '29/06/2024 14:30', name: 'Nguyễn Văn A' },
-  { date: '29/06/2025 10:00', name: 'Trần Thị B' },
-  { date: '15/07/2023 09:15', name: 'Lê Văn C' },
-  { date: '10/08/2023 11:45', name: 'Phạm Thị D' },
-  { date: '22/09/2023 08:00', name: 'Hoàng Văn E' },
-  { date: '05/10/2023 13:30', name: 'Đỗ Thị F' },
-  { date: '17/11/2023 15:00', name: 'Vũ Văn G' },
-  { date: '01/12/2023 07:45', name: 'Bùi Thị H' },
-  { date: '14/01/2024 16:15', name: 'Ngô Văn I' },
-  { date: '28/02/2024 12:00', name: 'Trịnh Thị J' },
-];
-
+const {height} = Dimensions.get('window');
 const ITEMS_PER_PAGE = 7;
 
-const BookingHistoryScreen = ({ route }: any) => {
+const BookingHistoryScreen = ({route}: any) => {
   const theme = useTheme();
   const [currentPage, setCurrentPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
@@ -85,14 +71,13 @@ const BookingHistoryScreen = ({ route }: any) => {
   };
 
   const handleNewBookingDateConfirm = (date: Date) => {
-    console.log("Selected date: " + date)
+    console.log('Selected date: ' + date);
     setNewBookingDate(date);
     setDatePickerVisibility(false);
     setTimePickerVisibility(true);
   };
 
   const handleNewBookingTimeConfirm = async (time: Date) => {
-    
     if (newBookingDate) {
       const bookingTimestamp = new Date(
         newBookingDate.getFullYear(),
@@ -101,24 +86,30 @@ const BookingHistoryScreen = ({ route }: any) => {
         time.getHours(),
         time.getMinutes(),
       );
-      console.log(newBookingDate)
+      console.log(newBookingDate);
       const beginTimestamp = Math.floor(bookingTimestamp.getTime() / 1000);
       const now = new Date();
       const nowTimestamp = Math.floor(now.getTime() / 1000);
       const oneDayInMilliseconds = 24 * 60 * 60;
-      console.log(beginTimestamp - nowTimestamp)
-      if (beginTimestamp && (beginTimestamp - nowTimestamp) >= oneDayInMilliseconds) {
+      console.log(beginTimestamp - nowTimestamp);
+      if (
+        beginTimestamp &&
+        beginTimestamp - nowTimestamp >= oneDayInMilliseconds
+      ) {
         console.log('API call with beginTimestamp:', beginTimestamp);
-        await AppointmentService.sendAppointment(token.accessToken, patient.id, {
-          beginTimestamp: beginTimestamp,
-        });
+        await AppointmentService.sendAppointment(
+          token.accessToken,
+          patient.id,
+          {
+            beginTimestamp: beginTimestamp,
+          },
+        );
         Dialog.show({
           type: ALERT_TYPE.SUCCESS,
           title: 'Đăng ký',
           textBody: 'Đã đặt lịch hẹn',
           button: 'Đóng',
         });
-
       } else {
         Dialog.show({
           type: ALERT_TYPE.DANGER,
@@ -141,58 +132,60 @@ const BookingHistoryScreen = ({ route }: any) => {
           placeholder="Tìm kiếm"
           onChangeText={setSearchQuery}
           value={searchQuery}
-          style={{ flex: 1 }}
+          style={{flex: 1}}
         />
         <IconButton
           icon="calendar"
           iconColor={theme.colors.primary}
           size={36}
           onPress={() => setSearchDatePickerVisibility(true)}
-          style={{ marginLeft: 8 }}
+          style={{marginLeft: 8}}
         />
         <IconButton
           icon="plus"
           iconColor={theme.colors.primary}
           size={36}
           onPress={() => setDatePickerVisibility(true)}
-          style={{ marginLeft: 8 }}
+          style={{marginLeft: 8}}
         />
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {convertedList.length ? convertedList.map((item, index) => (
-          <List.Section key={index} style={{ height: itemHeight }}>
-            <List.Item
-              title={item.name}
-              description={item.date}
-              left={props => (
-                <Avatar.Image
-                  {...props}
-                  source={require('../../../asset/7677205.jpg')}
-                  size={36}
-                  style={{ alignSelf: 'center' }}
-                />
-              )}
-              right={props => (
-                <View style={{ flexDirection: 'row', alignItems: 'center' }}>
-                  <IconButton
+        {convertedList.length ? (
+          convertedList.map((item, index) => (
+            <List.Section key={index} style={{height: itemHeight}}>
+              <List.Item
+                title={item.name}
+                description={item.date}
+                left={props => (
+                  <Avatar.Image
                     {...props}
-                    icon="close-circle-outline"
-                    iconColor={theme.colors.error}
+                    source={require('../../../asset/7677205.jpg')}
                     size={36}
-                    onPress={() => handleItemRemove(item.date)}
+                    style={{alignSelf: 'center'}}
                   />
-                </View>
-              )}
-              style={[
-                {
-                  borderColor: theme.colors.primaryContainer,
-                  borderBottomWidth: 1,
-                  height: itemHeight - 1,
-                },
-              ]}
-            />
-          </List.Section>
-        )): (
+                )}
+                right={props => (
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <IconButton
+                      {...props}
+                      icon="close-circle-outline"
+                      iconColor={theme.colors.error}
+                      size={36}
+                      onPress={() => handleItemRemove(item.date)}
+                    />
+                  </View>
+                )}
+                style={[
+                  {
+                    borderColor: theme.colors.primaryContainer,
+                    borderBottomWidth: 1,
+                    height: itemHeight - 1,
+                  },
+                ]}
+              />
+            </List.Section>
+          ))
+        ) : (
           <View style={styles.lottie}>
             <LottieView
               source={require('../../../asset/lottie/notfound.json')}
@@ -200,7 +193,7 @@ const BookingHistoryScreen = ({ route }: any) => {
               loop
               style={{width: 200, height: 200}}
             />
-            <Text variant="titleLarge">Chưa có nhật ký nào</Text>
+            <Text variant="titleLarge">Chưa có lịch hẹn nào</Text>
           </View>
         )}
       </ScrollView>
@@ -213,21 +206,21 @@ const BookingHistoryScreen = ({ route }: any) => {
       />
       <DateTimePickerModal
         isVisible={isSearchDatePickerVisible}
-        style={{ zIndex: 9, elevation: 9 }}
+        style={{zIndex: 9, elevation: 9}}
         mode="date"
         onConfirm={handleSearchDateConfirm}
         onCancel={() => setSearchDatePickerVisibility(false)}
       />
       <DateTimePickerModal
         isVisible={isDatePickerVisible}
-        style={{ zIndex: 9, elevation: 9 }}
+        style={{zIndex: 9, elevation: 9}}
         mode="date"
         onConfirm={handleNewBookingDateConfirm}
         onCancel={() => setDatePickerVisibility(false)}
       />
       <DateTimePickerModal
         isVisible={isTimePickerVisible}
-        style={{ zIndex: 9, elevation: 9 }}
+        style={{zIndex: 9, elevation: 9}}
         mode="time"
         onConfirm={handleNewBookingTimeConfirm}
         onCancel={() => setTimePickerVisibility(false)}
