@@ -13,6 +13,7 @@ import CustomAppbar from '../../components/CustomAppbar';
 import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
 import NotificationService from '../../services/NotificationService';
 import UserService from '../../services/UserService';
+import axios from 'axios';
 
 const NotificationScreen = ({navigation}: any) => {
   const theme = useTheme();
@@ -62,8 +63,20 @@ const NotificationScreen = ({navigation}: any) => {
     notificationId: string,
   ) => {
     try {
+      console.log('Notification I: ' + notificationId);
       await UserService.acceptFriend(token, friendRequestId);
-      await NotificationService.markAsRead(token, notificationId);
+      // await NotificationService.markAsRead(token, notificationId);
+      await fetch(
+        `http://10.0.2.2:8080/notifications/${notificationId}/mark-as-read`,
+        {
+          method: 'POST',
+          headers: {
+            Accept: '*/*',
+            Authorization: `Bearer ${token}`,
+          },
+          body: '',
+        },
+      );
       Dialog.show({
         type: ALERT_TYPE.SUCCESS,
         title: 'Kết bạn thành công',

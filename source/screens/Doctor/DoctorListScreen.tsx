@@ -8,9 +8,13 @@ import {
   IconButton,
   List,
   SegmentedButtons,
+  Portal,
+  Modal,
+  Button,
 } from 'react-native-paper';
 import UserService from '../../services/UserService';
 import {useSelector} from 'react-redux';
+import DoctorModal from '../../components/DoctorModal';
 
 const DoctorListScreen = ({navigation}: any) => {
   const theme = useTheme();
@@ -19,13 +23,16 @@ const DoctorListScreen = ({navigation}: any) => {
   const [doctors, setDoctors] = useState<any[]>([]);
   const [filteredDoctors, setFilteredDoctors] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [modalVisible, setModalVisible] = useState(false);
+  const [selectedDoctor, setSelectedDoctor] = useState<any>(null);
+
   const token = useSelector((state: any) => state.token.accessToken);
 
   useEffect(() => {
     const fetchFriendList = async () => {
       try {
         const response = await UserService.getFriendList(token);
-        console.log('Friend List' + response.data);
+        console.log('Friend List' + JSON.stringify(response.data));
         if (response && response.data) {
           setDoctors(response.data);
           setFilteredDoctors(response.data);
@@ -38,7 +45,7 @@ const DoctorListScreen = ({navigation}: any) => {
     };
 
     fetchFriendList();
-  }, [token]);
+  }, []);
 
   useEffect(() => {
     const filterDoctors = () => {
@@ -93,12 +100,15 @@ const DoctorListScreen = ({navigation}: any) => {
               filteredDoctors.map(doctor => (
                 <List.Item
                   key={doctor.id}
+                  onPress={() => {
+                    setSelectedDoctor(doctor);
+                    setModalVisible(true);
+                  }}
                   style={[
                     styles.listItem,
                     {borderBottomColor: theme.colors.surfaceVariant},
                   ]}
                   title={`${doctor.firstName} ${doctor.lastName}`}
-                  onPress={() => {}}
                   left={() => (
                     <Avatar.Image
                       style={{alignSelf: 'center'}}
@@ -143,6 +153,11 @@ const DoctorListScreen = ({navigation}: any) => {
             )}
           </List.Section>
         </ScrollView>
+        <DoctorModal
+          visible={modalVisible}
+          doctor={selectedDoctor}
+          onClose={() => setModalVisible(false)}
+        />
       </View>
     </View>
   );
