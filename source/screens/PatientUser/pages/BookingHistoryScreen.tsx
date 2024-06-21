@@ -7,12 +7,14 @@ import {
   DataTable,
   Searchbar,
   Avatar,
+  Text,
 } from 'react-native-paper';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import AppointmentService from '../../../services/AppointmentService';
 import { useSelector } from 'react-redux';
 import moment from 'moment';
 import { ALERT_TYPE, Dialog } from 'react-native-alert-notification';
+import LottieView from 'lottie-react-native';
 
 const {height} = Dimensions.get('window');
 
@@ -24,7 +26,7 @@ const fakeMedicalHistoryData = [
 
 const ITEMS_PER_PAGE = 7;
 
-const BookingHistoryScreen = () => {
+const BookingHistoryScreen = ({navigation}:any) => {
   const theme = useTheme();
   const [currentPage, setCurrentPage] = useState(0);
   
@@ -52,40 +54,44 @@ const BookingHistoryScreen = () => {
   const [app, setApp] = useState<any[]>([]);
   useEffect(() => {
     const fetchAPI = async () => {
-      const appointments = await AppointmentService.getAppointment(patient.id, token.accessToken)
+      const appointments = await AppointmentService.getAppointmentHistory(patient.id, token.accessToken)
+      console.log(appointments)
+      const convertedList = appointments.map(item => {
+        const beginTimestamp = item.beginTimestamp;
+        const date = new Date(beginTimestamp * 1000); // Convert to milliseconds
       
-      setApp(appointments)
-     
+        const formattedDate = moment(date).format('DD/MM/YYYY HH:mm');
+        const name = `${item.requestUser.firstName} ${item.requestUser.lastName}`;
+        console.log({
+          date: formattedDate,
+          name: name
+        })
+        return {
+          date: formattedDate,
+          name: name
+        };
+      });
+      console.log(convertedList)
+      setApp(convertedList)
+      
     };
     fetchAPI()
   }, [])
-  const convertedList = app.map(item => {
-    const beginTimestamp = item.beginTimestamp;
-    const date = new Date(beginTimestamp * 1000); // Convert to milliseconds
   
-    const formattedDate = moment(date).format('DD/MM/YYYY HH:mm');
-    const name = `${item.requestUser.firstName} ${item.requestUser.lastName}`;
-    console.log({
-      date: formattedDate,
-      name: name
-    })
-    return {
-      date: formattedDate,
-      name: name
-    };
-  });
-  const totalPages = Math.ceil(convertedList.length / ITEMS_PER_PAGE);
+  const totalPages = Math.ceil(app.length / ITEMS_PER_PAGE);
   const handlePageChange = (page: number) => {
+    
     setCurrentPage(page);
   };
 
   const handleSearchDateConfirm = (date: Date) => {
+    
     const formattedDate = date.toLocaleDateString('en-GB');
     setSearchQuery(formattedDate);
     setSearchDatePickerVisibility(false);
   };
   const Print =() => {
-    console.log(Math.ceil(convertedList.length / ITEMS_PER_PAGE))
+    console.log(Math.ceil(app.length / ITEMS_PER_PAGE))
   }
   const handleClearDate = () => {
     setSearchQuery('');
@@ -93,7 +99,7 @@ const BookingHistoryScreen = () => {
   };
 
   const handleItemRemove = (item: string) => {
-    console.log(convertedList.length)
+    console.log(app.length)
     console.log('Item removed:', item);
   };
 
@@ -116,8 +122,12 @@ const BookingHistoryScreen = () => {
         time.getHours(),
         time.getMinutes(),
       );
-      const beginTimestamp = moment(bookingTimestamp, 'YYYY-MM-DD HH:mm').valueOf() / 1000;
-      if (beginTimestamp) {
+      const beginTimestamp = Math.floor(bookingTimestamp.getTime() / 1000);
+      const now = new Date();
+      const nowTimestamp = Math.floor(now.getTime() / 1000);
+      const oneDayInMilliseconds = 24 * 60 * 60;
+      console.log(beginTimestamp - nowTimestamp)
+      if (beginTimestamp && (beginTimestamp - nowTimestamp) >= oneDayInMilliseconds) {
         console.log('API call with beginTimestamp:', beginTimestamp);
         await AppointmentService.sendAppointment(token.accessToken, patient.id, {
            beginTimestamp:beginTimestamp,
@@ -164,12 +174,13 @@ const BookingHistoryScreen = () => {
           icon="plus"
           iconColor={theme.colors.primary}
           size={36}
-          onPress={() => setDatePickerVisibility(true)}
+          onPress={() => {navigation.navigate('HomeNavigator', {
+            screen: 'BookingScreen'})}}
           style={{marginLeft: 8}}
         />
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {convertedList.map((item, index) => (
+        {app.length !== 0 ? app.map((item, index) => (
           <List.Section key={index} style={{height: itemHeight}}>
             <List.Item
               title={item.name}
@@ -201,8 +212,18 @@ const BookingHistoryScreen = () => {
                 },
               ]}
             />
-          </List.Section>
-        ))}
+          </List.Section>)
+        ):(
+          <View style={styles.lottie}>
+            <LottieView
+              source={require('../../../asset/lottie/notfound.json')}
+              autoPlay
+              loop
+              style={{width: 200, height: 200}}
+            />
+            <Text variant="titleLarge">Chưa có nhật ký nào</Text>
+          </View>
+        )}
       </ScrollView>
       <DataTable.Pagination
         page={currentPage}
@@ -251,5 +272,10 @@ const styles = StyleSheet.create({
   pagination: {
     alignSelf: 'center',
     marginVertical: 10,
+  },
+  lottie: {
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 20,
   },
 });

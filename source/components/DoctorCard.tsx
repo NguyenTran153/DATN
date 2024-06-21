@@ -2,7 +2,7 @@ import {StyleSheet, View} from 'react-native';
 import {useState} from 'react';
 import {Avatar, Text, useTheme, IconButton} from 'react-native-paper';
 
-const DoctorCard = ({doctorId}: {doctorId: number}) => {
+const DoctorCard = ({doctor}: {doctor:any}) => {
   const theme = useTheme();
   const [isFavorite, setIsFavorite] = useState(false);
 
@@ -30,9 +30,8 @@ const DoctorCard = ({doctorId}: {doctorId: number}) => {
         <Avatar.Image size={100} source={require('../asset/7677205.jpg')} />
       </View>
       <View style={styles.inforContainer}>
-        <Text variant="titleLarge">TS Bác Sĩ {doctorId}</Text>
-        <Text variant="titleMedium">CK: Khám chức năng hô hấp</Text>
-        <Text variant="titleMedium">Giới tính: Nam</Text>
+        <Text variant="titleLarge">Bác Sĩ {doctor.name}</Text>
+        <Text variant="titleMedium">Giới tính: {doctor.gender ? doctor.gender : "Chưa cập nhật"}</Text>
       </View>
 
       <IconButton

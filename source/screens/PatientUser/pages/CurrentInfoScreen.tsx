@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import PrescriptionService from '../../../services/PrescriptionService';
 import DiaryService from '../../../services/DiaryService';
 import AppointmentService from '../../../services/AppointmentService';
+import moment from 'moment';
 
 const CurrentInfoScreen = () => {
   const theme = useTheme();
@@ -19,12 +20,17 @@ const CurrentInfoScreen = () => {
     const fetchAPI = async () => {
       const prescriptions = await PrescriptionService.getPrescription(patient.id, token.accessToken)
       const diaries = await DiaryService.getDiaries(token.accessToken, 1, 100, patient.id)
-      const appointments = await AppointmentService.getAppointment(patient.id, token.accessToken)
-      const beginTimestamp = appointments[0].beginTimestamp;
-      const date = new Date(beginTimestamp * 1000); 
-      const formattedDate = `${('0' + date.getDate()).slice(-2)}/${('0' + (date.getMonth() + 1)).slice(-2)}/${date.getFullYear()} ${('0' + date.getHours()).slice(-2)}:${('0' + date.getMinutes()).slice(-2)}`;
-      console.log(formattedDate);
-      setDate(formattedDate);
+      const appointments = await AppointmentService.getAppointment(token.accessToken)
+      const beginTimestamp = appointments.filter(item => (item.confirmUser.id === patient.id));
+      const dates = beginTimestamp.map(item => new Date(item.confirmUser.createdAt));
+      const now = new Date();
+      dates.sort((a, b) => Math.abs(now.getTime() - a.getTime()) - Math.abs(now.getTime() - b.getTime()));
+      console.log(dates)
+      if(dates[0].getTime() > now.getTime())
+      {
+          const formattedDate = moment(dates[0]).format('DD/MM/YYYY HH:mm:ss');
+          setDate(formattedDate);
+      }
       setApp(appointments)
       setPres(prescriptions);
       SetDiary(diaries)
@@ -52,7 +58,7 @@ const CurrentInfoScreen = () => {
           />
           <Card.Content>
             <Text style={styles.cardContent}>
-              {nextAppointment
+              {nextAppointment !== ''
                 ? nextAppointment
                 : 'Không có lịch khám tiếp theo'}
             </Text>

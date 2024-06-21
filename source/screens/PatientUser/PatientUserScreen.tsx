@@ -14,6 +14,7 @@ import DoctorListScreen from '../Doctor/DoctorListScreen';
 import ProfileScreen from '../Profile/ProfileScreen';
 import {useSelector} from 'react-redux';
 import {createDrawerNavigator} from '@react-navigation/drawer';
+import BookingScreen from '../Home/BookingScreen';
 
 const Tab = createMaterialTopTabNavigator();
 const Drawer = createDrawerNavigator();

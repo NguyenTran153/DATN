@@ -18,6 +18,7 @@ import moment from 'moment';
 import {useDispatch, useSelector} from 'react-redux';
 import UserService from '../../services/UserService';
 import {setUser} from '../../redux/slices/userSlice';
+import { ALERT_TYPE, Dialog } from 'react-native-alert-notification';
 
 LocaleConfig.locales['en'] = {
   formatAccessibilityLabel: "dddd d 'of' MMMM 'of' yyyy",
@@ -68,13 +69,23 @@ const BookingScreen = ({route, navigation}: any) => {
   const dispatch = useDispatch();
 
   const [data, setData] = useState<UserData>();
-
+  const [doctorList, setDoctorList] = useState<any[]>();
   useEffect(() => {
     fetchData();
   }, []);
 
   const fetchData = async () => {
     setData(await UserService.getUserInfo(token.accessToken));
+    const friends = await UserService.getFriendList(token.accessToken)
+    const doctors = friends.data.map(item => ({
+        id:item.id,
+        avatar: item.avatar,
+        name: `${item.firstName} ${item.lastName}`,
+        gender: item.gender
+      }));
+    ;
+    setDoctorList(doctors)
+    console.log(doctorList)
     dispatch(setUser(data!));
   };
 
@@ -88,7 +99,7 @@ const BookingScreen = ({route, navigation}: any) => {
   const [selectedHour, setSelectedHour] = useState<string | null>(null);
 
   const [searchDoctor, setSearchDoctor] = useState<string>('');
-
+  const [doctorID, setDocID] = useState("")
   const [isSpecialtySearch, setIsSpecialtySearch] = useState(false);
   const [isDoctorSearch, setIsDoctorSearch] = useState(false);
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
@@ -170,17 +181,18 @@ const BookingScreen = ({route, navigation}: any) => {
           onChangeText={setSearchDoctor}
           value={searchDoctor}
         />
-        {filteredDoctors.map((doctor, index) => (
+        {doctorList ? doctorList.map((doctor, index) => (
           <TouchableOpacity
             key={index}
             style={{width: '100%'}}
             onPress={() => {
               setSelectedDoctor(doctor.name);
+              setDocID(doctor.id)
               setIsDoctorSearch(false);
             }}>
-            <DoctorCard doctorId={index} />
+            <DoctorCard doctor={doctor} />
           </TouchableOpacity>
-        ))}
+        )):"Không có bác sĩ nào"}
       </View>
     );
   };
@@ -228,16 +240,30 @@ const BookingScreen = ({route, navigation}: any) => {
   };
 
   const handleConfirmBooking = () => {
-    const beginTimestamp = getBeginTimestamp();
-    if (beginTimestamp) {
-      console.log('API call with beginTimestamp:', beginTimestamp);
-      AppointmentService.sendAppointment(token.accessToken, user.id, {
+    const TimestampInMilliseconds = getBeginTimestamp();
+    const beginTimestamp = Math.floor(TimestampInMilliseconds?TimestampInMilliseconds/1000:0)
+    const now = new Date();
+    const nowTimestamp = Math.floor(now.getTime() / 1000);
+    const oneDayInSeconds = 24 * 60 * 60;
+    if (beginTimestamp && (beginTimestamp - nowTimestamp >= oneDayInSeconds)) {
+      console.log(doctorID)
+      AppointmentService.sendAppointment(token.accessToken, Number.parseInt(doctorID), {
         beginTimestamp,
       });
-      Alert.alert('Đã đặt lịch hẹn');
+      Dialog.show({
+        type: ALERT_TYPE.SUCCESS,
+        title: 'Đăng ký',
+        textBody: 'Đã đặt lịch hẹn',
+        button: 'Đóng',
+      });
       navigation.goBack();
     } else {
-      Alert.alert('Hãy chọn thời gian');
+      Dialog.show({
+        type: ALERT_TYPE.DANGER,
+        title: 'Thất bại',
+        textBody: 'Đặt lịch hẹn thất bại',
+        button: 'Đóng',
+      });
     }
   };
 
@@ -258,7 +284,7 @@ const BookingScreen = ({route, navigation}: any) => {
             <Text style={{fontWeight: '400', fontSize: 18}}>Đặt lại</Text>
           </TouchableOpacity>
         </View>
-        <View style={styles.informationContainer}>
+        {/*<View style={styles.informationContainer}>
           <Text style={{fontSize: 20, fontWeight: 'bold'}}>Chuyên khoa</Text>
           <TouchableOpacity
             style={[
@@ -308,7 +334,7 @@ const BookingScreen = ({route, navigation}: any) => {
             </View>
           )}
           <Horizon />
-        </View>
+        </View>*/}
         <View style={styles.informationContainer}>
           <Text style={{fontSize: 20, fontWeight: 'bold'}}>Bác sĩ</Text>
           <TouchableOpacity
@@ -329,7 +355,7 @@ const BookingScreen = ({route, navigation}: any) => {
           <Horizon />
         </View>
 
-        <View style={styles.informationContainer}>
+        {/*<View style={styles.informationContainer}>
           <Text style={{fontSize: 20, fontWeight: 'bold'}}>Dịch vụ</Text>
           <TouchableOpacity
             style={[
@@ -344,7 +370,7 @@ const BookingScreen = ({route, navigation}: any) => {
             </Text>
           </TouchableOpacity>
           <Horizon />
-        </View>
+        </View>*/}
         <View style={styles.informationContainer}>
           <Text style={{fontSize: 20, fontWeight: 'bold'}}>Ngày khám</Text>
           <TouchableOpacity
@@ -391,7 +417,7 @@ const BookingScreen = ({route, navigation}: any) => {
 
           <Horizon />
         </View>
-        <View style={{marginHorizontal: 10}}>
+        {/*<View style={{marginHorizontal: 10}}>
           <Text style={{color: theme.colors.primary}}>
             Vui lòng kiểm tra lại thông tin trước khi đặt lịch
           </Text>
@@ -402,7 +428,7 @@ const BookingScreen = ({route, navigation}: any) => {
               <Text> 150.000 VNĐ</Text>
             </View>
           </View>
-        </View>
+        </View>*/}
         <Button
           style={styles.confirmButton}
           mode="contained"

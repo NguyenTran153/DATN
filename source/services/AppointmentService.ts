@@ -30,9 +30,27 @@ class AppointmentService {
       throw new Error(error);
     }
   }
-  static async getAppointment(userId: string, accessToken: string) {
+  static async getAppointment(accessToken: string) {
     try {
-      const response = await axios.get(
+      const response = await axios.get<any[]>(
+        `http://10.0.2.2:8080/appointments/me`,
+        {
+          headers: {
+            'content-type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
+      console.log(response.data)
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
+  }
+  static async getAppointmentHistory(userId: string, accessToken: string) {
+    try {
+      const response = await axios.get<any[]>(
         `http://10.0.2.2:8080/appointments/history/${userId}`,
         {
           headers: {
@@ -48,7 +66,6 @@ class AppointmentService {
       throw error;
     }
   }
-
 }
 
 export default AppointmentService;
