@@ -17,8 +17,9 @@ const ConnectDoctorScreen = ({navigation}: any) => {
   const token = useSelector((state: any) => state.token.accessToken);
 
   const sendFriendRequest = async () => {
+    const phoneNumber = `+84${phone.slice(1)}`
     try {
-      const response = await UserService.findUserByPhone(phone, token);
+      const response = await UserService.findUserByPhone(phoneNumber, token);
       if (response) {
         const userId = response[0].id;
         await UserService.sendFriendRequest(userId, token);
@@ -45,20 +46,8 @@ const ConnectDoctorScreen = ({navigation}: any) => {
       });
     }
   };
-  const handlePhoneNumber = (phone: string) => {
-    if (phone.startsWith('0')) {
-      // Replace the first '0' with '+84'
-      const formattedPhoneNumber = phone.replace(/^0/, '+84');
-      setPhone(formattedPhoneNumber);
-      console.log(formattedPhoneNumber);
-    } else {
-      Dialog.show({
-        type: ALERT_TYPE.DANGER,
-        title: 'Thất bại',
-        textBody: 'Vui lòng nhập số điện thoại hợp lệ',
-        button: 'Đóng',
-      });
-    }
+  const handlePhoneNumber = (phone: string) => { 
+      setPhone(phone);
   };
   
   return (
