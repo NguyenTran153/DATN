@@ -135,7 +135,6 @@ class UserService {
           },
         },
       );
-      console.log('Success to register doctor');
       return response.data;
     } catch (error) {
       console.log('Error register doctor' + error);

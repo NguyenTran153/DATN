@@ -5,9 +5,10 @@ import {
   Image,
   TouchableOpacity,
   ScrollView,
+  Text,
 } from 'react-native';
 import React, {useState} from 'react';
-import {useTheme, ActivityIndicator, Text} from 'react-native-paper';
+import {useTheme, ActivityIndicator} from 'react-native-paper';
 import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
 
 import AuthService from '../../services/AuthService';
@@ -66,6 +67,8 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
         button: 'Đóng',
       });
     } finally {
+      navigation.navigate('MainNavigator');
+
       setIsLoading(false);
     }
   };

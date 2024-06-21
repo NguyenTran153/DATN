@@ -1,6 +1,5 @@
 import {useEffect, useState} from 'react';
 import {View, Text, StyleSheet, Pressable, Platform} from 'react-native';
-import {Button} from 'react-native-paper';
 import Svg, {Rect} from 'react-native-svg';
 import {
   Camera,
@@ -10,12 +9,19 @@ import {
 } from 'react-native-vision-camera';
 import {useSharedValue} from 'react-native-worklets-core';
 import {CropRegion, crop} from 'vision-camera-cropper';
+import {setImage1, setImage2} from '../../redux/slices/doctorFormSlice';
+import {useDispatch} from 'react-redux';
 
-export default function CameraScreen({navigation, route}: any) {
+export interface CameraScreenProps {
+  route: any;
+  navigation: any;
+}
+
+export default function CameraScreen(props: CameraScreenProps) {
   const [hasPermission, setHasPermission] = useState(false);
   const [isActive, setIsActive] = useState(true);
-
   const device = useCameraDevice('back');
+  const dispatch = useDispatch();
   const format = useCameraFormat(device, [
     {videoResolution: {width: 1920, height: 1080}},
     {fps: 30},
@@ -60,12 +66,14 @@ export default function CameraScreen({navigation, route}: any) {
   };
 
   const onCaptured = (base64: string) => {
-    setIsActive(false);
-
-    navigation.navigate('ProfileNavigator', {
-      screen: 'BecomeDoctorScreen',
-      params: {base64},
-    });
+    try {
+      props.navigation.navigate('ProfileNavigator', {
+        screen: 'BecomeDoctorScreen',
+        params: {base64},
+      });
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const onCapturedJS = Worklets.createRunInJsFn(onCaptured);
@@ -114,7 +122,7 @@ export default function CameraScreen({navigation, route}: any) {
               y={(cropRegion.top / 100) * getFrameSize().height}
               width={(cropRegion.width / 100) * getFrameSize().width}
               height={(cropRegion.height / 100) * getFrameSize().height}
-              strokeWidth="8"
+              strokeWidth="2"
               stroke="white"
               fillOpacity={0.0}
             />
@@ -173,3 +181,6 @@ const styles = StyleSheet.create({
     backgroundColor: 'lightgray',
   },
 });
+function dispatch(arg0: any) {
+  throw new Error('Function not implemented.');
+}

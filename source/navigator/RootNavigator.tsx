@@ -27,6 +27,7 @@ const RootNavigator = () => {
       <Tabs.Screen name="RegisterScreen" component={RegisterScreen} />
       <Tabs.Screen name="MainNavigator" component={MainNavigator} />
       <Tabs.Screen name="HomeNavigator" component={HomeNavigator} />
+      <Tabs.Screen name="CameraScreen" component={CameraScreen} />
       <Tabs.Screen name="StoreNavigator" component={StoreNavigator} />
       <Tabs.Screen name="ProfileNavigator" component={ProfileNavigator} />
       <Tabs.Screen name="DoctorNavigator" component={DoctorNavigator} />
@@ -43,7 +44,6 @@ const RootNavigator = () => {
         name="ForgotPasswordScreen"
         component={ForgotPasswordScreen}
       />
-      <Tabs.Screen name="CameraScreen" component={CameraScreen} />
     </Tabs.Navigator>
   );
 };

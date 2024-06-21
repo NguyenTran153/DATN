@@ -93,13 +93,13 @@ const PatientUserScreen = ({navigation}: any) => {
       <Drawer.Screen
         name="StoreScreen"
         component={StoreScreen}
-        options={{drawerLabel: 'Cửa hàng'}}
+        options={{drawerLabel: 'Cửa hàng', title: 'Cửa hàng'}}
       />
       <Drawer.Screen
         name="DoctorListScreen"
         component={DoctorListScreen}
         options={{
-          drawerLabel: 'Danh sách bác sĩ đã liên hệ',
+          drawerLabel: 'Danh sách bác sĩ',
           title: 'Danh sách bác sĩ',
         }}
       />

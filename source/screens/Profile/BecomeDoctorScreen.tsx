@@ -6,6 +6,7 @@ import {
   Platform,
   TouchableOpacity,
   Image,
+  Dimensions,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {
@@ -23,7 +24,7 @@ import DropDown from '../../components/DropDown';
 import {useSelector} from 'react-redux';
 import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
 import UserService from '../../services/UserService';
-
+import {UseSelector} from 'react-redux';
 interface FormData {
   image1: string | null;
   image2: string | null;
@@ -82,19 +83,19 @@ const BecomeDoctorScreen = ({navigation, route}: any) => {
   };
 
   const handleRegisterDoctor = async () => {
-    // if (!form || !form.image1 || !form.image2 || !form.specialitites.length) {
-    //   Dialog.show({
-    //     type: ALERT_TYPE.WARNING,
-    //     title: 'Thiếu thông tin',
-    //     textBody: 'Vui lòng điền đầy đủ thông tin.',
-    //     button: 'Đóng',
-    //   });
-    //   return;
-    // }
+    if (!form || !form.image1 || !form.image2 || !form.specialitites.length) {
+      Dialog.show({
+        type: ALERT_TYPE.WARNING,
+        title: 'Thiếu thông tin',
+        textBody: 'Vui lòng điền đầy đủ thông tin.',
+        button: 'Đóng',
+      });
+      return;
+    }
     try {
       setIsLoading(true);
       const fakeForm = {
-        status: form,
+        status: {},
       };
       const response = await UserService.registerDoctor(token, fakeForm);
       navigation.goBack();
@@ -164,7 +165,7 @@ const BecomeDoctorScreen = ({navigation, route}: any) => {
             <TouchableOpacity
               onPress={() => {
                 setIsFront(true);
-                navigation.navigate('CameraScreen');
+                navigation.navigate('CameraScreen', isFront);
               }}
               style={[
                 styles.photoContainer,
@@ -183,8 +184,7 @@ const BecomeDoctorScreen = ({navigation, route}: any) => {
             <TouchableOpacity
               onPress={() => {
                 setIsFront(false);
-                console.log(isFront);
-                navigation.navigate('CameraScreen');
+                navigation.navigate('CameraScreen', isFront);
               }}
               style={[
                 styles.photoContainer,

@@ -52,8 +52,7 @@
     "react-native-vision-camera": "^3.9.0",
     "react-native-worklets-core": "^0.3.0",
     "react-redux": "^9.1.2",
-    "vision-camera-cropper": "^0.1.1",
-    "vision-camera-dynamsoft-label-recognizer": "^1.2.0"
+    "vision-camera-cropper": "^0.1.1"
   },
   "devDependencies": {
     "@babel/core": "^7.20.0",

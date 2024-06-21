@@ -5,6 +5,7 @@ import QRScreen from '../screens/QRScreen';
 import BecomeDoctorScreen from '../screens/Profile/BecomeDoctorScreen';
 import PatientDiaryScreen from '../screens/Profile/PatientDiaryScreen';
 import DiaryRecordScreen from '../screens/Profile/DiaryRecordScreen';
+import CameraScreen from '../screens/Profile/CameraScreen';
 
 const Stacks = createNativeStackNavigator();
 
