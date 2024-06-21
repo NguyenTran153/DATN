@@ -8,28 +8,23 @@ import {
   Searchbar,
   Avatar,
   Text,
+  Appbar,
 } from 'react-native-paper';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import AppointmentService from '../../../services/AppointmentService';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 import moment from 'moment';
-import { ALERT_TYPE, Dialog } from 'react-native-alert-notification';
+import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
 import LottieView from 'lottie-react-native';
 
 const {height} = Dimensions.get('window');
 
-const fakeMedicalHistoryData = [
-  {date: '29/06/2024 14:30', name: 'Nguyễn Văn A'},
-  {date: '29/06/2025 10:00', name: 'Trần Thị B'},
-  {date: '15/07/2023 09:15', name: 'Lê Văn C'},
-];
-
 const ITEMS_PER_PAGE = 7;
 
-const BookingHistoryScreen = ({navigation}:any) => {
+const BookingHistoryScreen = ({navigation}: any) => {
   const theme = useTheme();
   const [currentPage, setCurrentPage] = useState(0);
-  
+
   const [searchQuery, setSearchQuery] = useState('');
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
@@ -38,68 +33,58 @@ const BookingHistoryScreen = ({navigation}:any) => {
   const [newBookingDate, setNewBookingDate] = useState<Date | null>(null);
   const [newBookingTime, setNewBookingTime] = useState<Date | null>(null);
   const patient = useSelector((state: any) => state.user);
-  
-  const token = useSelector((state: any) => state.token);
-  const getCurrentPageData = () => {
-    const filteredData = searchQuery
-      ? fakeMedicalHistoryData.filter(
-          item =>
-            item.date.includes(searchQuery) || item.name.includes(searchQuery),
-        )
-      : fakeMedicalHistoryData;
 
-    const startIndex = currentPage * ITEMS_PER_PAGE;
-    return filteredData.slice(startIndex, startIndex + ITEMS_PER_PAGE);
-  };
+  const token = useSelector((state: any) => state.token);
+
   const [app, setApp] = useState<any[]>([]);
   useEffect(() => {
     const fetchAPI = async () => {
-      const appointments = await AppointmentService.getAppointmentHistory(patient.id, token.accessToken)
-      console.log(appointments)
+      const appointments = await AppointmentService.getAppointmentHistory(
+        patient.id,
+        token.accessToken,
+      );
+      console.log(appointments);
       const convertedList = appointments.map(item => {
         const beginTimestamp = item.beginTimestamp;
         const date = new Date(beginTimestamp * 1000); // Convert to milliseconds
-      
+
         const formattedDate = moment(date).format('DD/MM/YYYY HH:mm');
         const name = `${item.requestUser.firstName} ${item.requestUser.lastName}`;
         console.log({
           date: formattedDate,
-          name: name
-        })
+          name: name,
+        });
         return {
           date: formattedDate,
-          name: name
+          name: name,
         };
       });
-      console.log(convertedList)
-      setApp(convertedList)
-      
+      console.log(convertedList);
+      setApp(convertedList);
     };
-    fetchAPI()
-  }, [])
-  
+    fetchAPI();
+  }, []);
+
   const totalPages = Math.ceil(app.length / ITEMS_PER_PAGE);
   const handlePageChange = (page: number) => {
-    
     setCurrentPage(page);
   };
 
   const handleSearchDateConfirm = (date: Date) => {
-    
     const formattedDate = date.toLocaleDateString('en-GB');
     setSearchQuery(formattedDate);
     setSearchDatePickerVisibility(false);
   };
-  const Print =() => {
-    console.log(Math.ceil(app.length / ITEMS_PER_PAGE))
-  }
+  const Print = () => {
+    console.log(Math.ceil(app.length / ITEMS_PER_PAGE));
+  };
   const handleClearDate = () => {
     setSearchQuery('');
     setCurrentPage(0);
   };
 
   const handleItemRemove = (item: string) => {
-    console.log(app.length)
+    console.log(app.length);
     console.log('Item removed:', item);
   };
 
@@ -126,19 +111,25 @@ const BookingHistoryScreen = ({navigation}:any) => {
       const now = new Date();
       const nowTimestamp = Math.floor(now.getTime() / 1000);
       const oneDayInMilliseconds = 24 * 60 * 60;
-      console.log(beginTimestamp - nowTimestamp)
-      if (beginTimestamp && (beginTimestamp - nowTimestamp) >= oneDayInMilliseconds) {
+      console.log(beginTimestamp - nowTimestamp);
+      if (
+        beginTimestamp &&
+        beginTimestamp - nowTimestamp >= oneDayInMilliseconds
+      ) {
         console.log('API call with beginTimestamp:', beginTimestamp);
-        await AppointmentService.sendAppointment(token.accessToken, patient.id, {
-           beginTimestamp:beginTimestamp,
-        });
+        await AppointmentService.sendAppointment(
+          token.accessToken,
+          patient.id,
+          {
+            beginTimestamp: beginTimestamp,
+          },
+        );
         Dialog.show({
           type: ALERT_TYPE.SUCCESS,
           title: 'Đăng ký',
           textBody: 'Đã đặt lịch hẹn',
           button: 'Đóng',
         });
-      
       } else {
         Dialog.show({
           type: ALERT_TYPE.DANGER,
@@ -155,7 +146,10 @@ const BookingHistoryScreen = ({navigation}:any) => {
   const itemHeight = height / 10;
 
   return (
-    <View style={styles.screen}>
+    <View style={[styles.screen, {backgroundColor: theme.colors.background}]}>
+      <Appbar.Header>
+        <Appbar.Content title="Lịch hẹn" />
+      </Appbar.Header>
       <View style={styles.filterContainer}>
         <Searchbar
           placeholder="Tìm kiếm"
@@ -174,46 +168,51 @@ const BookingHistoryScreen = ({navigation}:any) => {
           icon="plus"
           iconColor={theme.colors.primary}
           size={36}
-          onPress={() => {navigation.navigate('HomeNavigator', {
-            screen: 'BookingScreen'})}}
+          onPress={() => {
+            navigation.navigate('HomeNavigator', {
+              screen: 'BookingScreen',
+            });
+          }}
           style={{marginLeft: 8}}
         />
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {app.length !== 0 ? app.map((item, index) => (
-          <List.Section key={index} style={{height: itemHeight}}>
-            <List.Item
-              title={item.name}
-              description={item.date}
-              left={props => (
-                <Avatar.Image
-                  {...props}
-                  source={require('../../../asset/7677205.jpg')}
-                  size={36}
-                  style={{alignSelf: 'center'}}
-                />
-              )}
-              right={props => (
-                <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                  <IconButton
+        {app.length !== 0 ? (
+          app.map((item, index) => (
+            <List.Section key={index} style={{height: itemHeight}}>
+              <List.Item
+                title={item.name}
+                description={item.date}
+                left={props => (
+                  <Avatar.Image
                     {...props}
-                    icon="close-circle-outline"
-                    iconColor={theme.colors.error}
+                    source={require('../../../asset/7677205.jpg')}
                     size={36}
-                    onPress={() => handleItemRemove(item.date)}
+                    style={{alignSelf: 'center'}}
                   />
-                </View>
-              )}
-              style={[
-                {
-                  borderColor: theme.colors.primaryContainer,
-                  borderBottomWidth: 1,
-                  height: itemHeight - 1,
-                },
-              ]}
-            />
-          </List.Section>)
-        ):(
+                )}
+                right={props => (
+                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
+                    <IconButton
+                      {...props}
+                      icon="close-circle-outline"
+                      iconColor={theme.colors.error}
+                      size={36}
+                      onPress={() => handleItemRemove(item.date)}
+                    />
+                  </View>
+                )}
+                style={[
+                  {
+                    borderColor: theme.colors.primaryContainer,
+                    borderBottomWidth: 1,
+                    height: itemHeight - 1,
+                  },
+                ]}
+              />
+            </List.Section>
+          ))
+        ) : (
           <View style={styles.lottie}>
             <LottieView
               source={require('../../../asset/lottie/notfound.json')}
@@ -221,7 +220,7 @@ const BookingHistoryScreen = ({navigation}:any) => {
               loop
               style={{width: 200, height: 200}}
             />
-            <Text variant="titleLarge">Chưa có nhật ký nào</Text>
+            <Text variant="titleLarge">Chưa có lịch hẹn nào</Text>
           </View>
         )}
       </ScrollView>
@@ -277,5 +276,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 20,
+    alignSelf: 'center',
   },
 });

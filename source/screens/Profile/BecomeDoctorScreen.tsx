@@ -25,6 +25,7 @@ import {useSelector} from 'react-redux';
 import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
 import UserService from '../../services/UserService';
 import {UseSelector} from 'react-redux';
+import CustomAppbar from '../../components/CustomAppbar';
 interface FormData {
   image1: string | null;
   image2: string | null;
@@ -155,6 +156,10 @@ const BecomeDoctorScreen = ({navigation, route}: any) => {
           <ActivityIndicator size={64} />
         </View>
       )}
+      <CustomAppbar
+        title="Đăng ký trở thành bác sĩ"
+        goBack={() => navigation.goBack()}
+      />
       <ScrollView contentContainerStyle={styles.container}>
         <View style={{gap: 10}}>
           <Text variant="titleMedium">

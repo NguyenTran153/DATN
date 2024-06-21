@@ -121,6 +121,7 @@ const DiaryRecordScreen = ({navigation}: any) => {
       </ScrollView>
 
       <DataTable.Pagination
+        style={{alignSelf: 'center'}}
         page={currentPage}
         numberOfPages={Math.ceil(filteredEntries.length / entriesPerPage)}
         onPageChange={page => setCurrentPage(page)}
@@ -156,5 +157,6 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 20,
+    alignSelf: 'center',
   },
 });
