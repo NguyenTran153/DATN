@@ -21,16 +21,27 @@ const CurrentInfoScreen = () => {
       const prescriptions = await PrescriptionService.getPrescription(patient.id, token.accessToken)
       const diaries = await DiaryService.getDiaries(token.accessToken, 1, 100, patient.id)
       const appointments = await AppointmentService.getAppointment(token.accessToken)
-      const beginTimestamp = appointments.filter(item => (item.confirmUser.id === patient.id));
-      const dates = beginTimestamp.map(item => new Date(item.confirmUser.createdAt));
+      const beginTimestamp = appointments.filter(item => (item.status === 'ongoing'));
+      const dates = beginTimestamp.map(item => new Date(item.beginTimestamp * 1000));
+    
       const now = new Date();
       dates.sort((a, b) => Math.abs(now.getTime() - a.getTime()) - Math.abs(now.getTime() - b.getTime()));
-      console.log(dates)
-      if(dates[0].getTime() > now.getTime())
+      console.log("Dates array" + dates)
+      const thresholdDate = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+      for(let i = 0; i < dates.length; i++)
       {
-          const formattedDate = moment(dates[0]).format('DD/MM/YYYY HH:mm:ss');
-          setDate(formattedDate);
+       
+        if(dates[i].getTime() - thresholdDate.getTime() > 24 * 60 * 60 * 1000)
+          {
+              console.log(dates[i])
+              console.log(dates[i].getTime() - thresholdDate.getTime() > 24 * 60 * 60 * 1000)
+              const formattedDate = moment(dates[i]).format('DD/MM/YYYY HH:mm:ss');
+              console.log(formattedDate)
+              setDate(formattedDate);
+              break
+          }
       }
+     
       setApp(appointments)
       setPres(prescriptions);
       SetDiary(diaries)

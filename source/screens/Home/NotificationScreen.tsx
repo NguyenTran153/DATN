@@ -101,7 +101,49 @@ const NotificationScreen = ({navigation}: any) => {
       });
     }
   };
+  const acceptAppointment = async (
+    appointmentId: string,
+    notificationId: string,
+  ) => {
+    try {
+      console.log('Notification I: ' + notificationId);
+      await UserService.acceptAppointment(token, appointmentId);
+      // await NotificationService.markAsRead(token, notificationId);
+      await fetch(
+        `http://10.0.2.2:8080/notifications/${notificationId}/mark-as-read`,
+        {
+          method: 'POST',
+          headers: {
+            Accept: '*/*',
+            Authorization: `Bearer ${token}`,
+          },
+          body: '',
+        },
+      );
+      Dialog.show({
+        type: ALERT_TYPE.SUCCESS,
+        title: 'Chấp nhận cuộc hẹn thành công',
+        button: 'Đóng',
+      });
 
+      // Cập nhật trạng thái của thông báo trong danh sách
+      setData(prevData =>
+        prevData.map(notification =>
+          notification.id === notificationId
+            ? {...notification, isRead: true}
+            : notification,
+        ),
+      );
+    } catch (error) {
+      console.log(error);
+      Dialog.show({
+        type: ALERT_TYPE.DANGER,
+        title: 'Lỗi',
+        textBody: 'Không thể chấp nhận cuộc họp',
+        button: 'Đóng',
+      });
+    }
+  };
   return (
     <View
       style={[
@@ -213,6 +255,16 @@ const NotificationScreen = ({navigation}: any) => {
                       disabled={isRead}
                       style={{alignSelf: 'flex-end', marginTop: 10}}>
                       {isRead ? 'Đã kết bạn' : 'Kết bạn'}
+                    </Button>
+                  )}
+                  {type === 'appointment' && (
+                    <Button
+                      icon="account-check"
+                      mode="contained"
+                      onPress={() => acceptAppointment(referenceId, id)}
+                      disabled={isRead}
+                      style={{alignSelf: 'flex-end', marginTop: 10}}>
+                      {isRead ? 'Đã hẹn' : 'Đồng ý'}
                     </Button>
                   )}
                 </View>

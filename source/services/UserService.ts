@@ -59,7 +59,27 @@ class UserService {
       throw error;
     }
   }
-
+  static async acceptAppointment(token: string, appointmentId: string) {
+    try {
+      const body = {
+        action: 'accept',
+      };
+      const response = await axios.patch(
+        `http://10.0.2.2:8080/appointments/response/${appointmentId}`,
+        JSON.stringify(body),
+        {
+          headers: {
+            'content-type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      return response.data;
+    } catch (error) {
+      console.log('Accept appointment: ' + error);
+      throw error;
+    }
+  }
   static async uploadAvatar(avatar: string, token: string) {
     try {
       const formData = new FormData();
