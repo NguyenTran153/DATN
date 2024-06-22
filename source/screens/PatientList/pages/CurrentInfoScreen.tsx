@@ -16,6 +16,7 @@ const CurrentInfoScreen = ({ route }: any) => {
   const [med, setMed] = useState<any[]>([]);
   const [app, setApp] = useState<any[]>([]);
   const [date, setDate] = useState('');
+  const [diagnosis, setDiag] = useState('');
   const beginTimestamps = [
     { confirmUser: { createdAt: '2024-06-18T18:59:03.333Z' } },
     { confirmUser: { createdAt: '2024-06-17T14:30:00.000Z' } },
@@ -29,7 +30,12 @@ const CurrentInfoScreen = ({ route }: any) => {
       const appointments = await AppointmentService.getAppointment(token.accessToken)
       const beginTimestamp = appointments.filter(item => (item.status === 'ongoing'));
       const dates = beginTimestamp.map(item => new Date(item.beginTimestamp * 1000));
-    
+      const dianoses = await PrescriptionService.getDiagnosis(prescriptions[0].id,token.accessToken)
+      console.log(dianoses)
+      if(dianoses)
+        {
+            setDiag(dianoses[0].problem)
+        }
       const now = new Date();
       dates.sort((a, b) => Math.abs(now.getTime() - a.getTime()) - Math.abs(now.getTime() - b.getTime()));
       console.log("Dates array" + dates)
@@ -59,7 +65,7 @@ const CurrentInfoScreen = ({ route }: any) => {
   // Sample data
   const nextAppointment = date;
   const recentDietLog = diary.length !== 0 ? diary[0].data.mockKey : "Không tìm thấy nhật ký gần nhất";
-  const recentDiagnosis = '13/06/2024 - Viêm họng';
+  const recentDiagnosis = diagnosis !== '' ? diagnosis:"Không tìm thấy chẩn đoán gần nhất";
   const recentPrescription = med
 
   return (
