@@ -261,7 +261,7 @@ const BookingScreen = ({route, navigation}: any) => {
       Dialog.show({
         type: ALERT_TYPE.DANGER,
         title: 'Thất bại',
-        textBody: 'Đặt lịch hẹn thất bại',
+        textBody: 'Lưu ý người dùng chỉ có thể đặt lịch trước 1 ngày',
         button: 'Đóng',
       });
     }
