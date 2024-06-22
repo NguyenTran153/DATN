@@ -18,7 +18,7 @@ import moment from 'moment';
 import {useDispatch, useSelector} from 'react-redux';
 import UserService from '../../services/UserService';
 import {setUser} from '../../redux/slices/userSlice';
-import { ALERT_TYPE, Dialog } from 'react-native-alert-notification';
+import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
 
 LocaleConfig.locales['en'] = {
   formatAccessibilityLabel: "dddd d 'of' MMMM 'of' yyyy",
@@ -76,16 +76,15 @@ const BookingScreen = ({route, navigation}: any) => {
 
   const fetchData = async () => {
     setData(await UserService.getUserInfo(token.accessToken));
-    const friends = await UserService.getFriendList(token.accessToken)
+    const friends = await UserService.getFriendList(token.accessToken);
     const doctors = friends.data.map(item => ({
-        id:item.id,
-        avatar: item.avatar,
-        name: `${item.firstName} ${item.lastName}`,
-        gender: item.gender
-      }));
-    ;
-    setDoctorList(doctors)
-    console.log(doctorList)
+      id: item.id,
+      avatar: item.avatar,
+      name: `${item.firstName} ${item.lastName}`,
+      gender: item.gender,
+    }));
+    setDoctorList(doctors);
+    console.log(doctorList);
     dispatch(setUser(data!));
   };
 
@@ -99,7 +98,7 @@ const BookingScreen = ({route, navigation}: any) => {
   const [selectedHour, setSelectedHour] = useState<string | null>(null);
 
   const [searchDoctor, setSearchDoctor] = useState<string>('');
-  const [doctorID, setDocID] = useState("")
+  const [doctorID, setDocID] = useState('');
   const [isSpecialtySearch, setIsSpecialtySearch] = useState(false);
   const [isDoctorSearch, setIsDoctorSearch] = useState(false);
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
@@ -181,18 +180,20 @@ const BookingScreen = ({route, navigation}: any) => {
           onChangeText={setSearchDoctor}
           value={searchDoctor}
         />
-        {doctorList ? doctorList.map((doctor, index) => (
-          <TouchableOpacity
-            key={index}
-            style={{width: '100%'}}
-            onPress={() => {
-              setSelectedDoctor(doctor.name);
-              setDocID(doctor.id)
-              setIsDoctorSearch(false);
-            }}>
-            <DoctorCard doctor={doctor} />
-          </TouchableOpacity>
-        )):"Không có bác sĩ nào"}
+        {doctorList
+          ? doctorList.map((doctor, index) => (
+              <TouchableOpacity
+                key={index}
+                style={{width: '100%'}}
+                onPress={() => {
+                  setSelectedDoctor(doctor.name);
+                  setDocID(doctor.id);
+                  setIsDoctorSearch(false);
+                }}>
+                <DoctorCard doctor={doctor} />
+              </TouchableOpacity>
+            ))
+          : 'Không có bác sĩ nào'}
       </View>
     );
   };
@@ -241,15 +242,21 @@ const BookingScreen = ({route, navigation}: any) => {
 
   const handleConfirmBooking = () => {
     const TimestampInMilliseconds = getBeginTimestamp();
-    const beginTimestamp = Math.floor(TimestampInMilliseconds?TimestampInMilliseconds/1000:0)
+    const beginTimestamp = Math.floor(
+      TimestampInMilliseconds ? TimestampInMilliseconds / 1000 : 0,
+    );
     const now = new Date();
     const nowTimestamp = Math.floor(now.getTime() / 1000);
     const oneDayInSeconds = 24 * 60 * 60;
-    if (beginTimestamp && (beginTimestamp - nowTimestamp >= oneDayInSeconds)) {
-      console.log(doctorID)
-      AppointmentService.sendAppointment(token.accessToken, Number.parseInt(doctorID), {
-        beginTimestamp,
-      });
+    if (beginTimestamp && beginTimestamp - nowTimestamp >= oneDayInSeconds) {
+      console.log(doctorID);
+      AppointmentService.sendAppointment(
+        token.accessToken,
+        Number.parseInt(doctorID),
+        {
+          beginTimestamp,
+        },
+      );
       Dialog.show({
         type: ALERT_TYPE.SUCCESS,
         title: 'Đăng ký',
@@ -389,7 +396,7 @@ const BookingScreen = ({route, navigation}: any) => {
           </TouchableOpacity>
           {isCalendarVisible && (
             <Calendar
-              onDayPress={day => {
+              onDayPress={(day: any) => {
                 setSelectedDate(day.dateString);
                 setIsCalendarVisible(false);
               }}

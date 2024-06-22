@@ -8,6 +8,9 @@ import {
   Searchbar,
   Avatar,
   Text,
+  Appbar,
+  ActivityIndicator,
+  SegmentedButtons,
 } from 'react-native-paper';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import AppointmentService from '../../../services/AppointmentService';
@@ -25,45 +28,81 @@ const BookingHistoryScreen = ({route}: any) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
-  const [isSearchDatePickerVisible, setSearchDatePickerVisibility] =
-    useState(false);
   const [newBookingDate, setNewBookingDate] = useState<Date | null>(null);
-  const [newBookingTime, setNewBookingTime] = useState<Date | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [selectedSegment, setSelectedSegment] = useState('completed');
   const patient = route.params.patient;
   const token = useSelector((state: any) => state.token);
 
-  const [app, setApp] = useState<any[]>([]);
+  const [appointments, setAppointments] = useState<any[]>([]);
+
   useEffect(() => {
     const fetchAPI = async () => {
-      const appointments = await AppointmentService.getAppointmentHistory(
-        patient.id,
-        token.accessToken,
-      );
-      setApp(appointments);
+      try {
+        let fetchedAppointments;
+        if (selectedSegment === 'upcoming') {
+          fetchedAppointments = await AppointmentService.getAppointment(
+            token.accessToken,
+          );
+          fetchedAppointments = fetchedAppointments.filter(
+            item => item.confirmUser.id === patient.id,
+          );
+        } else {
+          fetchedAppointments = await AppointmentService.getAppointmentHistory(
+            patient.id,
+            token.accessToken,
+          );
+        }
+        setAppointments(fetchedAppointments);
+      } catch (error) {
+        console.error('Failed to fetch appointments:', error);
+        Alert.alert('Error', 'Failed to fetch appointment history.');
+      } finally {
+        setLoading(false);
+      }
     };
     fetchAPI();
-  }, []);
-  const convertedList = app.map(item => {
+  }, [selectedSegment, patient.id, token.accessToken]);
+
+  const filterAppointments = (appointments: any[], query: string) => {
+    if (!query.trim()) return appointments;
+
+    const formattedQuery = moment(
+      query,
+      ['DD/MM/YYYY', 'DD-MM-YYYY', 'DD/MM', 'DD-MM', 'DD'],
+      true,
+    );
+
+    return appointments.filter(item => {
+      const appointmentDate = moment(
+        new Date(item.beginTimestamp * 1000),
+      ).format('DD/MM/YYYY');
+      return formattedQuery.isValid()
+        ? appointmentDate.includes(
+            formattedQuery.format('DD/MM/YYYY').slice(0, query.length),
+          )
+        : false;
+    });
+  };
+
+  const filteredAppointments = filterAppointments(appointments, searchQuery);
+
+  const convertedList = filteredAppointments.map(item => {
     const beginTimestamp = item.beginTimestamp;
     const date = new Date(beginTimestamp * 1000); // Convert to milliseconds
 
     const formattedDate = moment(date).format('DD/MM/YYYY HH:mm');
-    const name = `${item.requestUser.firstName} ${item.requestUser.lastName}`;
+    const name = `${patient.firstName} ${patient.lastName}`; // Update to display patient's name
 
     return {
       date: formattedDate,
       name: name,
     };
   });
+
   const totalPages = Math.ceil(convertedList.length / ITEMS_PER_PAGE);
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
-  };
-
-  const handleSearchDateConfirm = (date: Date) => {
-    const formattedDate = date.toLocaleDateString('en-GB');
-    setSearchQuery(formattedDate);
-    setSearchDatePickerVisibility(false);
   };
 
   const handleItemRemove = (item: string) => {
@@ -78,68 +117,69 @@ const BookingHistoryScreen = ({route}: any) => {
   };
 
   const handleNewBookingTimeConfirm = async (time: Date) => {
-    if (newBookingDate) {
-      const bookingTimestamp = new Date(
-        newBookingDate.getFullYear(),
-        newBookingDate.getMonth(),
-        newBookingDate.getDate(),
-        time.getHours(),
-        time.getMinutes(),
-      );
-      console.log(newBookingDate);
-      const beginTimestamp = Math.floor(bookingTimestamp.getTime() / 1000);
-      const now = new Date();
-      const nowTimestamp = Math.floor(now.getTime() / 1000);
-      const oneDayInMilliseconds = 24 * 60 * 60;
-      console.log(beginTimestamp - nowTimestamp);
-      if (
-        beginTimestamp &&
-        beginTimestamp - nowTimestamp >= oneDayInMilliseconds
-      ) {
-        console.log('API call with beginTimestamp:', beginTimestamp);
-        await AppointmentService.sendAppointment(
-          token.accessToken,
-          patient.id,
-          {
-            beginTimestamp: beginTimestamp,
-          },
+    try {
+      if (newBookingDate) {
+        const bookingTimestamp = new Date(
+          newBookingDate.getFullYear(),
+          newBookingDate.getMonth(),
+          newBookingDate.getDate(),
+          time.getHours(),
+          time.getMinutes(),
         );
-        Dialog.show({
-          type: ALERT_TYPE.SUCCESS,
-          title: 'Đăng ký',
-          textBody: 'Đã đặt lịch hẹn',
-          button: 'Đóng',
-        });
-      } else {
-        Dialog.show({
-          type: ALERT_TYPE.DANGER,
-          title: 'Thất bại',
-          textBody: 'Lưu ý người dùng chỉ có thể đặt lịch trước 1 ngày',
-          button: 'Đóng',
-        });
+        const beginTimestamp = Math.floor(bookingTimestamp.getTime() / 1000);
+        const now = new Date();
+        const nowTimestamp = Math.floor(now.getTime() / 1000);
+        const oneDayInMilliseconds = 24 * 60 * 60;
+        if (
+          beginTimestamp &&
+          beginTimestamp - nowTimestamp >= oneDayInMilliseconds
+        ) {
+          await AppointmentService.sendAppointment(
+            token.accessToken,
+            patient.id,
+            {
+              beginTimestamp: beginTimestamp,
+            },
+          );
+          Dialog.show({
+            type: ALERT_TYPE.SUCCESS,
+            title: 'Đăng ký',
+            textBody: 'Đã đặt lịch hẹn',
+            button: 'Đóng',
+          });
+        } else {
+          Dialog.show({
+            type: ALERT_TYPE.DANGER,
+            title: 'Thất bại',
+            textBody: 'Lưu ý người dùng chỉ có thể đặt lịch trước 1 ngày',
+            button: 'Đóng',
+          });
+        }
       }
-      console.log('New Booking Timestamp:', bookingTimestamp.toISOString());
+      setTimePickerVisibility(false);
+    } catch (error) {
+      Dialog.show({
+        type: ALERT_TYPE.DANGER,
+        title: 'Thất bại',
+        textBody: 'Đã có lỗi xảy ra! Vui lòng thử lại',
+        button: 'Đóng',
+      });
     }
-    setTimePickerVisibility(false);
   };
 
   const itemHeight = height / 10;
 
   return (
-    <View style={styles.screen}>
+    <View style={[styles.screen, {backgroundColor: theme.colors.background}]}>
+      <Appbar.Header>
+        <Appbar.Content title="Lịch hẹn" />
+      </Appbar.Header>
       <View style={styles.filterContainer}>
         <Searchbar
-          placeholder="Tìm kiếm"
+          placeholder="Tìm kiếm..."
           onChangeText={setSearchQuery}
           value={searchQuery}
           style={{flex: 1}}
-        />
-        <IconButton
-          icon="calendar"
-          iconColor={theme.colors.primary}
-          size={36}
-          onPress={() => setSearchDatePickerVisibility(true)}
-          style={{marginLeft: 8}}
         />
         <IconButton
           icon="plus"
@@ -149,67 +189,85 @@ const BookingHistoryScreen = ({route}: any) => {
           style={{marginLeft: 8}}
         />
       </View>
-      <ScrollView showsVerticalScrollIndicator={false}>
-        {convertedList.length ? (
-          convertedList.map((item, index) => (
-            <List.Section key={index} style={{height: itemHeight}}>
-              <List.Item
-                title={item.name}
-                description={item.date}
-                left={props => (
-                  <Avatar.Image
-                    {...props}
-                    source={require('../../../asset/7677205.jpg')}
-                    size={36}
-                    style={{alignSelf: 'center'}}
+      <SegmentedButtons
+        value={selectedSegment}
+        onValueChange={setSelectedSegment}
+        buttons={[
+          {value: 'upcoming', label: 'Sắp tới'},
+          {value: 'completed', label: 'Hoàn tất'},
+        ]}
+        style={{marginVertical: 10}}
+      />
+      {loading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator animating={true} size="large" />
+        </View>
+      ) : (
+        <ScrollView showsVerticalScrollIndicator={false}>
+          {convertedList.length ? (
+            convertedList
+              .slice(
+                currentPage * ITEMS_PER_PAGE,
+                (currentPage + 1) * ITEMS_PER_PAGE,
+              )
+              .map((item, index) => (
+                <List.Section key={index} style={{height: itemHeight}}>
+                  <List.Item
+                    title={item.name}
+                    description={item.date}
+                    left={props => (
+                      <Avatar.Image
+                        {...props}
+                        source={
+                          patient.avatar
+                            ? {uri: patient.avatar}
+                            : require('../../../asset/7677205.jpg')
+                        }
+                        size={36}
+                        style={{alignSelf: 'center'}}
+                      />
+                    )}
+                    right={props => (
+                      <View
+                        style={{flexDirection: 'row', alignItems: 'center'}}>
+                        <IconButton
+                          {...props}
+                          icon="close-circle-outline"
+                          iconColor={theme.colors.error}
+                          size={36}
+                          onPress={() => handleItemRemove(item.date)}
+                        />
+                      </View>
+                    )}
+                    style={[
+                      {
+                        borderColor: theme.colors.primaryContainer,
+                        borderBottomWidth: 1,
+                        height: itemHeight - 1,
+                      },
+                    ]}
                   />
-                )}
-                right={props => (
-                  <View style={{flexDirection: 'row', alignItems: 'center'}}>
-                    <IconButton
-                      {...props}
-                      icon="close-circle-outline"
-                      iconColor={theme.colors.error}
-                      size={36}
-                      onPress={() => handleItemRemove(item.date)}
-                    />
-                  </View>
-                )}
-                style={[
-                  {
-                    borderColor: theme.colors.primaryContainer,
-                    borderBottomWidth: 1,
-                    height: itemHeight - 1,
-                  },
-                ]}
+                </List.Section>
+              ))
+          ) : (
+            <View style={styles.lottie}>
+              <LottieView
+                source={require('../../../asset/lottie/notfound.json')}
+                autoPlay
+                loop
+                style={{width: 200, height: 200}}
               />
-            </List.Section>
-          ))
-        ) : (
-          <View style={styles.lottie}>
-            <LottieView
-              source={require('../../../asset/lottie/notfound.json')}
-              autoPlay
-              loop
-              style={{width: 200, height: 200}}
-            />
-            <Text variant="titleLarge">Chưa có lịch hẹn nào</Text>
-          </View>
-        )}
-      </ScrollView>
+              <Text variant="titleLarge">Chưa có lịch hẹn nào</Text>
+            </View>
+          )}
+        </ScrollView>
+      )}
       <DataTable.Pagination
         page={currentPage}
         numberOfPages={totalPages}
         onPageChange={handlePageChange}
         label={`${currentPage + 1} of ${totalPages}`}
         style={styles.pagination}
-      />
-      <DateTimePickerModal
-        isVisible={isSearchDatePickerVisible}
-        style={{zIndex: 9, elevation: 9}}
-        mode="date"
-        onConfirm={handleSearchDateConfirm}
-        onCancel={() => setSearchDatePickerVisibility(false)}
       />
       <DateTimePickerModal
         isVisible={isDatePickerVisible}
@@ -249,5 +307,10 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
     marginTop: 20,
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

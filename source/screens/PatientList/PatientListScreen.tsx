@@ -2,7 +2,6 @@ import {ActivityIndicator, FlatList, StyleSheet, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import {IconButton, DataTable, Searchbar, useTheme} from 'react-native-paper';
-
 import PatientCard from '../../components/PatientCard';
 import {useSelector} from 'react-redux';
 import UserService from '../../services/UserService';
@@ -17,6 +16,7 @@ const PatientListScreen = ({navigation}: any) => {
   const [totalPatients, setTotalPatients] = useState(0);
   const itemsPerPage = 10;
   const token = useSelector((state: any) => state.token);
+
   useEffect(() => {
     fetchPatients(token.accessToken);
   }, []);
@@ -24,32 +24,22 @@ const PatientListScreen = ({navigation}: any) => {
   const fetchPatients = async (token: string) => {
     if (loading) return;
     setLoading(true);
-    const response = await UserService.getFriendList(token);
-    if (response && response.data) {
-      setPatients(response.data);
-      setTotalPatients(response.data.length);
+    try {
+      const response = await UserService.getFriendList(token);
+      if (response && response.data) {
+        setPatients(response.data);
+        setTotalPatients(response.data.length);
+      }
+    } catch (error) {
+      console.error('Failed to fetch patients:', error);
     }
-    // console.log(patients)
     setLoading(false);
-    return patients;
   };
 
   const handleRefresh = async () => {
     setRefreshing(true);
     try {
-      const newPatients = await fetchPatients(token.accessToken);
-
-      if (page === 1) {
-        const filteredNewPatients = newPatients!.filter(
-          newPatient =>
-            !patients.some(oldPatient => oldPatient.id === newPatient.id),
-        );
-
-        setPatients(prevPatients => [...filteredNewPatients, ...prevPatients]);
-      } else {
-        setPatients(newPatients!);
-      }
-
+      await fetchPatients(token.accessToken);
       setPage(1);
     } catch (error) {
       console.error(error);
@@ -65,6 +55,12 @@ const PatientListScreen = ({navigation}: any) => {
       </View>
     );
   };
+
+  const filteredPatients = patients.filter(patient =>
+    `${patient.firstName} ${patient.lastName} ${patient.phoneNumber}`
+      .toLowerCase()
+      .includes(searchPatient.toLowerCase()),
+  );
 
   return (
     <SafeAreaView
@@ -99,7 +95,7 @@ const PatientListScreen = ({navigation}: any) => {
       </View>
       <View style={{flex: 1, padding: 10, width: '100%'}}>
         <FlatList
-          data={patients}
+          data={filteredPatients}
           renderItem={({item}) => (
             <PatientCard patient={item} navigation={navigation} />
           )}

@@ -19,15 +19,11 @@ const PatientDetailScreen = ({navigation, route}: any) => {
   const user = useSelector((state: any) => state.user);
   const token = useSelector((state: any) => state.token.accessToken);
   const patientId = route.params.patient.id;
-  useEffect(()=>{
-    console.log(patientId)
-  })
+  useEffect(() => {
+    console.log(patientId);
+  });
   const FoodDiaryScreen = () => <DiaryRecordScreen route={route} />;
-  const PersonalInfo = () => (
-    <View style={styles.screen}>
-      <PersonalInfoScreen route={route} />
-    </View>
-  );
+  const PersonalInfo = () => <PersonalInfoScreen route={route} />;
   const MedicalHistory = () => (
     <MedicalHistoryScreen route={route} navigation={navigation} />
   );
