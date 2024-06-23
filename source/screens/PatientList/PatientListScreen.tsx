@@ -5,11 +5,13 @@ import {IconButton, DataTable, Searchbar, useTheme} from 'react-native-paper';
 import PatientCard from '../../components/PatientCard';
 import {useSelector} from 'react-redux';
 import UserService from '../../services/UserService';
+import moment from 'moment';
 
 const PatientListScreen = ({navigation}: any) => {
   const theme = useTheme();
   const [searchPatient, setSearchPatient] = useState<string>('');
   const [patients, setPatients] = useState<Patient[]>([]);
+  const [filteredPatients, setFilteredPatients] = useState<Patient[]>([]);
   const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -29,6 +31,7 @@ const PatientListScreen = ({navigation}: any) => {
       if (response && response.data) {
         setPatients(response.data);
         setTotalPatients(response.data.length);
+        setFilteredPatients(response.data);
       }
     } catch (error) {
       console.error('Failed to fetch patients:', error);
@@ -47,6 +50,31 @@ const PatientListScreen = ({navigation}: any) => {
     setRefreshing(false);
   };
 
+  useEffect(() => {
+    const filtered = searchPatient
+      ? patients.filter(patient => {
+          const searchDate = moment(searchPatient, 'YYYY-MM-DD', true);
+          const createdAtMatch = searchDate.isValid()
+            ? moment(patient.createdAt).isSame(searchDate, 'day')
+            : false;
+
+          const dataMatch = Object.values(patient).some(value =>
+            value.toLowerCase().includes(searchPatient.toLowerCase()),
+          );
+
+          return createdAtMatch || dataMatch;
+        })
+      : patients;
+    setFilteredPatients(filtered);
+    setPage(1);
+  }, [searchPatient, patients]);
+
+  const startIndex = (page - 1) * itemsPerPage;
+  const paginatedPatients = filteredPatients.slice(
+    startIndex,
+    startIndex + itemsPerPage,
+  );
+
   const renderFooter = () => {
     if (!loading) return null;
     return (
@@ -55,12 +83,6 @@ const PatientListScreen = ({navigation}: any) => {
       </View>
     );
   };
-
-  const filteredPatients = patients.filter(patient =>
-    `${patient.firstName} ${patient.lastName} ${patient.phoneNumber}`
-      .toLowerCase()
-      .includes(searchPatient.toLowerCase()),
-  );
 
   return (
     <SafeAreaView
@@ -95,7 +117,7 @@ const PatientListScreen = ({navigation}: any) => {
       </View>
       <View style={{flex: 1, padding: 10, width: '100%'}}>
         <FlatList
-          data={filteredPatients}
+          data={paginatedPatients}
           renderItem={({item}) => (
             <PatientCard patient={item} navigation={navigation} />
           )}
@@ -110,12 +132,12 @@ const PatientListScreen = ({navigation}: any) => {
       <DataTable.Pagination
         style={{bottom: 0, alignSelf: 'flex-end'}}
         page={page - 1}
-        numberOfPages={Math.ceil(totalPatients / itemsPerPage)}
+        numberOfPages={Math.ceil(filteredPatients.length / itemsPerPage)}
         onPageChange={page => setPage(page + 1)}
         label={`${(page - 1) * itemsPerPage + 1}-${Math.min(
           page * itemsPerPage,
-          totalPatients,
-        )} of ${totalPatients}`}
+          filteredPatients.length,
+        )} của ${filteredPatients.length}`}
         showFastPaginationControls
       />
     </SafeAreaView>

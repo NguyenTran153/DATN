@@ -1,5 +1,5 @@
 import React, {useEffect, useState} from 'react';
-import {View, ScrollView, StyleSheet, Dimensions, Alert} from 'react-native';
+import {View, ScrollView, StyleSheet, Dimensions} from 'react-native';
 import {
   useTheme,
   List,
@@ -24,7 +24,6 @@ const ITEMS_PER_PAGE = 7;
 const BookingHistoryScreen = ({navigation}: any) => {
   const theme = useTheme();
   const [currentPage, setCurrentPage] = useState(0);
-
   const [searchQuery, setSearchQuery] = useState('');
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
   const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
@@ -32,64 +31,92 @@ const BookingHistoryScreen = ({navigation}: any) => {
     useState(false);
   const [newBookingDate, setNewBookingDate] = useState<Date | null>(null);
   const [newBookingTime, setNewBookingTime] = useState<Date | null>(null);
+  const [searchDate, setSearchDate] = useState<Date | null>(null);
   const patient = useSelector((state: any) => state.user);
-
   const token = useSelector((state: any) => state.token);
+  const [appointments, setAppointments] = useState<any[]>([]);
 
-  const [app, setApp] = useState<any[]>([]);
   useEffect(() => {
-    const fetchAPI = async () => {
-      const appointments = await AppointmentService.getAppointmentHistory(
-        patient.id,
-        token.accessToken,
-      );
-      console.log(appointments);
-      const convertedList = appointments.map(item => {
-        const beginTimestamp = item.beginTimestamp;
-        const date = new Date(beginTimestamp * 1000); // Convert to milliseconds
+    const fetchAppointments = async () => {
+      try {
+        const appointments = await AppointmentService.getAppointment(
+          token.accessToken,
+        );
 
-        const formattedDate = moment(date).format('DD/MM/YYYY HH:mm');
-        const name = `${item.requestUser.firstName} ${item.requestUser.lastName}`;
-        console.log({
-          date: formattedDate,
-          name: name,
+        // Lọc và chuyển đổi danh sách lịch hẹn
+        const convertedList = appointments.map(item => {
+          const beginTimestamp = item.beginTimestamp;
+          const date = new Date(beginTimestamp * 1000); // Chuyển đổi thành mili giây
+          const formattedDate = moment(date).format('DD/MM/YYYY HH:mm');
+
+          // Xác định thông tin của bác sĩ từ requestUser hoặc confirmUser
+          const doctorUser =
+            item.requestUser.role === 'doctor'
+              ? item.requestUser
+              : item.confirmUser;
+
+          // Lấy thông tin từ doctorUser nếu tồn tại
+          const doctorFirstName = doctorUser ? doctorUser.firstName : '';
+          const doctorLastName = doctorUser ? doctorUser.lastName : '';
+          const doctorAvatar = doctorUser ? doctorUser.avatar : '';
+
+          return {
+            id: item.id,
+            date: formattedDate,
+            doctorFirstName: doctorFirstName,
+            doctorLastName: doctorLastName,
+            doctorAvatar: doctorAvatar,
+          };
         });
-        return {
-          date: formattedDate,
-          name: name,
-        };
-      });
-      console.log(convertedList);
-      setApp(convertedList);
+
+        setAppointments(convertedList);
+      } catch (error) {
+        console.error('Error fetching appointments:', error);
+        // Xử lý lỗi khi fetch dữ liệu nếu cần
+      }
     };
-    fetchAPI();
+
+    fetchAppointments();
   }, []);
 
-  const totalPages = Math.ceil(app.length / ITEMS_PER_PAGE);
+  const filteredAppointments = appointments.filter(item => {
+    const matchesName = item.doctorFirstName
+      .toLowerCase()
+      .includes(searchQuery.toLowerCase());
+
+    const dateFormats = [
+      'DD/MM/YYYY',
+      'MM/DD/YYYY',
+      'YYYY/MM/DD',
+      'DD-MM-YYYY',
+      'DD',
+    ];
+
+    const matchesDate =
+      !searchDate ||
+      dateFormats.some(format =>
+        moment(item.date, 'DD/MM/YYYY HH:mm')
+          .format(format)
+          .includes(moment(searchDate).format(format)),
+      );
+
+    return matchesName && matchesDate;
+  });
+
+  const totalPages = Math.ceil(filteredAppointments.length / ITEMS_PER_PAGE);
+
   const handlePageChange = (page: number) => {
     setCurrentPage(page);
   };
 
   const handleSearchDateConfirm = (date: Date) => {
-    const formattedDate = date.toLocaleDateString('en-GB');
-    setSearchQuery(formattedDate);
+    setSearchDate(date);
     setSearchDatePickerVisibility(false);
   };
-  const Print = () => {
-    console.log(Math.ceil(app.length / ITEMS_PER_PAGE));
-  };
-  const handleClearDate = () => {
-    setSearchQuery('');
-    setCurrentPage(0);
-  };
 
-  const handleItemRemove = (item: string) => {
-    console.log(app.length);
-    console.log('Item removed:', item);
-  };
-
-  const handleItemConfirm = (item: string) => {
-    console.log('Item confirmed:', item);
+  const handleItemRemove = (id: number) => {
+    // Xử lý logic xóa item theo id
+    console.log('Item removed with id:', id);
   };
 
   const handleNewBookingDateConfirm = (date: Date) => {
@@ -111,25 +138,34 @@ const BookingHistoryScreen = ({navigation}: any) => {
       const now = new Date();
       const nowTimestamp = Math.floor(now.getTime() / 1000);
       const oneDayInMilliseconds = 24 * 60 * 60;
-      console.log(beginTimestamp - nowTimestamp);
       if (
         beginTimestamp &&
         beginTimestamp - nowTimestamp >= oneDayInMilliseconds
       ) {
-        console.log('API call with beginTimestamp:', beginTimestamp);
-        await AppointmentService.sendAppointment(
-          token.accessToken,
-          patient.id,
-          {
-            beginTimestamp: beginTimestamp,
-          },
-        );
-        Dialog.show({
-          type: ALERT_TYPE.SUCCESS,
-          title: 'Đăng ký',
-          textBody: 'Đã đặt lịch hẹn',
-          button: 'Đóng',
-        });
+        try {
+          await AppointmentService.sendAppointment(
+            token.accessToken,
+            patient.id,
+            {
+              beginTimestamp: beginTimestamp,
+            },
+          );
+          Dialog.show({
+            type: ALERT_TYPE.SUCCESS,
+            title: 'Đăng ký',
+            textBody: 'Đã đặt lịch hẹn',
+            button: 'Đóng',
+          });
+        } catch (error) {
+          console.error('Error sending appointment:', error);
+          // Xử lý lỗi khi gửi lịch hẹn nếu cần
+          Dialog.show({
+            type: ALERT_TYPE.DANGER,
+            title: 'Thất bại',
+            textBody: 'Đặt lịch hẹn thất bại',
+            button: 'Đóng',
+          });
+        }
       } else {
         Dialog.show({
           type: ALERT_TYPE.DANGER,
@@ -138,10 +174,13 @@ const BookingHistoryScreen = ({navigation}: any) => {
           button: 'Đóng',
         });
       }
-      console.log('New Booking Timestamp:', bookingTimestamp.toISOString());
     }
     setTimePickerVisibility(false);
   };
+
+  const start = currentPage * ITEMS_PER_PAGE;
+  const end = start + ITEMS_PER_PAGE;
+  const currentItems = filteredAppointments.slice(start, end);
 
   const itemHeight = height / 10;
 
@@ -158,13 +197,6 @@ const BookingHistoryScreen = ({navigation}: any) => {
           style={{flex: 1}}
         />
         <IconButton
-          icon="calendar"
-          iconColor={theme.colors.primary}
-          size={36}
-          onPress={() => setSearchDatePickerVisibility(true)}
-          style={{marginLeft: 8}}
-        />
-        <IconButton
           icon="plus"
           iconColor={theme.colors.primary}
           size={36}
@@ -177,16 +209,16 @@ const BookingHistoryScreen = ({navigation}: any) => {
         />
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {app.length !== 0 ? (
-          app.map((item, index) => (
+        {currentItems.length !== 0 ? (
+          currentItems.map((item, index) => (
             <List.Section key={index} style={{height: itemHeight}}>
               <List.Item
-                title={item.name}
+                title={`${item.doctorFirstName} ${item.doctorLastName}`}
                 description={item.date}
                 left={props => (
                   <Avatar.Image
                     {...props}
-                    source={require('../../../asset/7677205.jpg')}
+                    source={{uri: item.doctorAvatar}}
                     size={36}
                     style={{alignSelf: 'center'}}
                   />
@@ -198,7 +230,7 @@ const BookingHistoryScreen = ({navigation}: any) => {
                       icon="close-circle-outline"
                       iconColor={theme.colors.error}
                       size={36}
-                      onPress={() => handleItemRemove(item.date)}
+                      onPress={() => handleItemRemove(item.id)}
                     />
                   </View>
                 )}

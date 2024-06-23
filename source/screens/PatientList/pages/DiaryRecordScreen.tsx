@@ -19,7 +19,7 @@ import {useSelector} from 'react-redux';
 
 interface Entry {
   id: string;
-  createdAt: string; // Thay đổi từ 'date' thành 'createdAt'
+  createdAt: string;
   data: {
     time: string;
     food: string;
@@ -66,13 +66,21 @@ const DiaryRecordScreen = ({route}: any) => {
 
   useEffect(() => {
     const filtered = entries.filter(entry => {
-      const entryDate = moment(entry.createdAt).format('YYYY-MM-DD');
+      const entryDate = moment(entry.createdAt).format('DD-MM-YYYY');
+      const entryDateSlash = moment(entry.createdAt).format('DD/MM/YYYY');
+      const entryTime = entry.data.time
+        ? moment(entry.data.time, 'HH:mm:ss').format('DD-MM-YYYY')
+        : '';
+      const entryTimeSlash = entry.data.time
+        ? moment(entry.data.time, 'HH:mm:ss').format('DD/MM/YYYY')
+        : '';
       const searchText = searchQuery.toLowerCase();
 
       return (
         entryDate.includes(searchText) ||
-        (entry.data.time &&
-          entry.data.time.toLowerCase().includes(searchText)) ||
+        entryDateSlash.includes(searchText) ||
+        (entryTime && entryTime.includes(searchText)) ||
+        (entryTimeSlash && entryTimeSlash.includes(searchText)) ||
         (entry.data.food &&
           entry.data.food.toLowerCase().includes(searchText)) ||
         (entry.data.bloodPressure &&
@@ -87,6 +95,7 @@ const DiaryRecordScreen = ({route}: any) => {
     setFilteredEntries(filtered);
     setCurrentPage(0);
   }, [searchQuery, entries]);
+
   const startIndex = currentPage * entriesPerPage;
   const paginatedEntries = filteredEntries.slice(
     startIndex,

@@ -26,6 +26,11 @@ interface PatientCardProps {
 
 const PatientCard: React.FC<PatientCardProps> = ({patient, navigation}) => {
   const theme = useTheme();
+  const renderGender = (gender: string | undefined | null) => {
+    if (gender === 'male') return 'Nam';
+    if (gender === 'female') return 'Nữ';
+    return gender ? gender : 'Chưa cập nhật';
+  };
 
   return (
     <TouchableRipple
@@ -45,10 +50,10 @@ const PatientCard: React.FC<PatientCardProps> = ({patient, navigation}) => {
             Bệnh nhân {patient.firstName + ' ' + patient.lastName}
           </Text>
           <Text variant="titleSmall">
-            Giới tính: {patient.gender ? patient.gender : 'Chưa cập nhật'}
+            Giới tính: {renderGender(patient.gender)}
           </Text>
         </View>
-        <View style={styles.textContainer}>
+        <View style={styles.infoContainer}>
           <Icon source={'arrow-right-bold'} size={24} />
         </View>
       </View>
@@ -68,13 +73,16 @@ const styles = StyleSheet.create({
   cardContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
+    alignItems: 'center',
   },
   textContainer: {
     justifyContent: 'center',
     alignItems: 'flex-start',
+    flex: 1,
+    marginLeft: 10,
   },
   infoContainer: {
-    flexDirection: 'column',
-    flex: 4,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
 });

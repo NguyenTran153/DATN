@@ -95,7 +95,7 @@ const MedicalHistoryScreen = ({navigation, route}: any) => {
       }
     };
     getMedicalData();
-  }, [route.params.patient.id, accessToken]);
+  }, []);
 
   useEffect(() => {
     setCurrentPage(0);

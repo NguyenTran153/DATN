@@ -92,7 +92,7 @@ const DoctorListScreen = ({navigation}: any) => {
             {value: 'new', label: 'Mới nhất'},
           ]}
         />
-        <ScrollView>
+        <ScrollView showsVerticalScrollIndicator={false}>
           <List.Section style={{alignItems: 'flex-start'}}>
             {loading ? (
               <Text>Loading...</Text>

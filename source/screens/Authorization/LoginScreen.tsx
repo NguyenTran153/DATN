@@ -67,8 +67,6 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
         button: 'Đóng',
       });
     } finally {
-      navigation.navigate('MainNavigator');
-
       setIsLoading(false);
     }
   };

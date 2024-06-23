@@ -46,7 +46,7 @@ const MedicalDetailScreen = ({navigation, route}: any) => {
             <TextInput
               label="Ngày khám bệnh"
               mode="outlined"
-              value={prescription.date}
+              value={item.date}
               style={styles.input}
               editable={false}
               theme={{roundness: 10}}

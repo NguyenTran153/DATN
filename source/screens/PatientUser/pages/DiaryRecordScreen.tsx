@@ -18,7 +18,7 @@ import {useSelector} from 'react-redux';
 
 interface Entry {
   id: string;
-  createdAt: string; // Date the entry was created
+  createdAt: string;
   data: {
     time: string;
     food: string;
@@ -62,22 +62,31 @@ const DiaryRecordScreen = ({navigation}: any) => {
     };
 
     fetchEntries();
-  }, [token.accessToken, user.id]);
+  }, []);
 
   // Filter entries based on the search query
   useEffect(() => {
     const filtered = searchQuery
       ? entries.filter(entry => {
-          const searchDate = moment(searchQuery, 'YYYY-MM-DD', true);
+          const searchDate = moment(
+            searchQuery,
+            ['DD/MM/YYYY', 'DD-MM-YYYY', 'DD', 'MM'],
+            true,
+          );
           const createdAtMatch = searchDate.isValid()
             ? moment(entry.createdAt).isSame(searchDate, 'day')
             : false;
+
+          const timeMatch =
+            entry.data.time && moment(entry.data.time, 'HH:mm:ss').isValid()
+              ? moment(entry.data.time, 'HH:mm:ss').isSame(searchDate, 'day')
+              : false;
 
           const dataMatch = Object.values(entry.data).some(value =>
             value.toLowerCase().includes(searchQuery.toLowerCase()),
           );
 
-          return createdAtMatch || dataMatch;
+          return createdAtMatch || timeMatch || dataMatch;
         })
       : entries;
     setFilteredEntries(filtered);

@@ -436,15 +436,15 @@ const BookingScreen = ({route, navigation}: any) => {
             </View>
           </View>
         </View>*/}
-        <Button
-          style={styles.confirmButton}
-          mode="contained"
-          onPress={() => {
-            handleConfirmBooking();
-          }}>
-          Xác nhận
-        </Button>
       </ScrollView>
+      <Button
+        style={styles.confirmButton}
+        mode="contained"
+        onPress={() => {
+          handleConfirmBooking();
+        }}>
+        Xác nhận
+      </Button>
     </View>
   );
 };
@@ -517,6 +517,6 @@ const styles = StyleSheet.create({
   confirmButton: {
     margin: 10,
     padding: 8,
-    marginTop: 20,
+    marginBottom: 20,
   },
 });

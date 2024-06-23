@@ -182,7 +182,6 @@ class UserService {
     try {
       const body = {
         status: 'accepted',
-        code: 'string',
       };
       const response = await axios.put(
         `http://10.0.2.2:8080/users/friend-request/response/${friendRequestId}`,

@@ -118,7 +118,7 @@ const UpdatePersonalInfoScreen = ({navigation}: any) => {
       Dialog.show({
         title: 'Lỗi',
         type: ALERT_TYPE.DANGER,
-        textBody: 'Thông tin cá nhân không được cập nhật thành công!',
+        textBody: 'Thông tin cá nhân không được cập nhật thành công! Kiểm tra lại thông tin có hợp lệ hay không',
         button: 'Đóng',
       });
     } finally {

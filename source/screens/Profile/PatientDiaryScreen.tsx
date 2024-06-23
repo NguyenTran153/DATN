@@ -5,6 +5,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import DiaryService from '../../services/DiaryService';
 import {useSelector} from 'react-redux';
 import CustomAppbar from '../../components/CustomAppbar';
+import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
 
 const PatientDiaryScreen = ({navigation, route}: any) => {
   const theme = useTheme();
@@ -49,8 +50,28 @@ const PatientDiaryScreen = ({navigation, route}: any) => {
 
     try {
       await DiaryService.postDiary(token.accessToken, data, []);
+      setForm({
+        time: new Date().toLocaleString(),
+        food: '',
+        bloodPressure: '',
+        bloodSugar: '',
+        exercise: '',
+        note: '',
+      });
+      Dialog.show({
+        type: ALERT_TYPE.SUCCESS,
+        title: 'Thành công',
+        textBody: 'Nhật ký đã được viết',
+        button: 'Đóng',
+      });
       navigation.goBack();
     } catch (error) {
+      Dialog.show({
+        type: ALERT_TYPE.DANGER,
+        title: 'Lỗi',
+        textBody: 'Không thể viết nhật ký được',
+        button: 'Đóng',
+      });
       console.error('Error saving data', error);
     }
 

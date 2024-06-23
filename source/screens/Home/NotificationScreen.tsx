@@ -64,6 +64,7 @@ const NotificationScreen = ({navigation}: any) => {
   ) => {
     try {
       console.log('Notification I: ' + notificationId);
+      console.log('FriendId' + friendRequestId);
       await UserService.acceptFriend(token, friendRequestId);
       // await NotificationService.markAsRead(token, notificationId);
       await fetch(
@@ -107,6 +108,7 @@ const NotificationScreen = ({navigation}: any) => {
   ) => {
     try {
       console.log('Notification I: ' + notificationId);
+      console.log(appointmentId);
       await UserService.acceptAppointment(token, appointmentId);
       // await NotificationService.markAsRead(token, notificationId);
       await fetch(
@@ -122,7 +124,7 @@ const NotificationScreen = ({navigation}: any) => {
       );
       Dialog.show({
         type: ALERT_TYPE.SUCCESS,
-        title: 'Chấp nhận cuộc hẹn thành công',
+        title: 'Chấp nhận lịch hẹn thành công',
         button: 'Đóng',
       });
 
@@ -139,7 +141,7 @@ const NotificationScreen = ({navigation}: any) => {
       Dialog.show({
         type: ALERT_TYPE.DANGER,
         title: 'Lỗi',
-        textBody: 'Không thể chấp nhận cuộc họp',
+        textBody: 'Đã quá thời hạn để chấp nhận lịch hẹn',
         button: 'Đóng',
       });
     }

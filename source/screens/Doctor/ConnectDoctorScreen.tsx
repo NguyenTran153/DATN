@@ -17,7 +17,7 @@ const ConnectDoctorScreen = ({navigation}: any) => {
   const token = useSelector((state: any) => state.token.accessToken);
 
   const sendFriendRequest = async () => {
-    const phoneNumber = `+84${phone.slice(1)}`
+    const phoneNumber = `+84${phone.slice(1)}`;
     try {
       const response = await UserService.findUserByPhone(phoneNumber, token);
       if (response) {
@@ -41,15 +41,15 @@ const ConnectDoctorScreen = ({navigation}: any) => {
       Dialog.show({
         type: ALERT_TYPE.DANGER,
         title: 'Thất bại',
-        textBody: 'Đã xảy ra lỗi, vui lòng thử lại',
+        textBody: 'Số điện thoại chưa đăng ký hoặc không cho phép tìm kiếm',
         button: 'Đóng',
       });
     }
   };
-  const handlePhoneNumber = (phone: string) => { 
-      setPhone(phone);
+  const handlePhoneNumber = (phone: string) => {
+    setPhone(phone);
   };
-  
+
   return (
     <>
       <CustomAppbar
