@@ -6,7 +6,6 @@ import {
   Platform,
   TouchableOpacity,
   Image,
-  Dimensions,
 } from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {
@@ -24,7 +23,6 @@ import DropDown from '../../components/DropDown';
 import {useSelector} from 'react-redux';
 import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
 import UserService from '../../services/UserService';
-import {UseSelector} from 'react-redux';
 import CustomAppbar from '../../components/CustomAppbar';
 interface FormData {
   image1: string | null;
@@ -82,9 +80,31 @@ const BecomeDoctorScreen = ({navigation, route}: any) => {
       specialitites: specialities,
     }));
   };
+  function base64toBlob(base64Data: string, contentType: string = ''): Blob {
+    const sliceSize = 512;
+    const byteCharacters = atob(base64Data);
+    const bytesLength = byteCharacters.length;
+    const slicesCount = Math.ceil(bytesLength / sliceSize);
+    const byteArrays = new Array(slicesCount);
 
+    for (let sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
+      const begin = sliceIndex * sliceSize;
+      const end = Math.min(begin + sliceSize, bytesLength);
+
+      const bytes = new Array(end - begin);
+      for (let offset = begin, i = 0; offset < end; ++i, ++offset) {
+        bytes[i] = byteCharacters.charCodeAt(offset);
+      }
+      byteArrays[sliceIndex] = new Uint8Array(bytes);
+    }
+
+    // Define BlobOptions with type property
+    const options: any = {type: contentType};
+
+    return new Blob(byteArrays, options);
+  }
   const handleRegisterDoctor = async () => {
-    if (!form || !form.image1 || !form.image2 || !form.specialitites.length) {
+    if (!form || !form.image1 || !form.image2) {
       Dialog.show({
         type: ALERT_TYPE.WARNING,
         title: 'Thiếu thông tin',
@@ -95,10 +115,19 @@ const BecomeDoctorScreen = ({navigation, route}: any) => {
     }
     try {
       setIsLoading(true);
-      const fakeForm = {
-        status: {},
-      };
-      const response = await UserService.registerDoctor(token, fakeForm);
+      const formData = new FormData();
+
+      formData.append('idCardFront', form.image1);
+      formData.append('idCardBack', form.image2);
+
+      form.files.forEach(file => {
+        formData.append('files', file);
+      });
+
+      formData.append('specialties', JSON.stringify(form.specialitites));
+      formData.append('metadata', {textarea: form.textarea});
+
+      const response = await UserService.registerDoctor(token, formData);
       navigation.goBack();
       Dialog.show({
         type: ALERT_TYPE.SUCCESS,

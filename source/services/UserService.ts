@@ -142,16 +142,17 @@ class UserService {
       throw error;
     }
   }
-
-  static async registerDoctor(accessToken: string, form: any) {
+  static async registerDoctor(accessToken: string, formData: any) {
     try {
+      console.log(1);
+      console.log(formData);
       const response = await axios.post(
         'http://10.0.2.2:8080/users/doctor-register',
-        JSON.stringify(form),
+        formData,
         {
           headers: {
-            'Content-Type': 'application/json',
             Authorization: `Bearer ${accessToken}`,
+            'Content-Type': 'multipart/form-data',
           },
         },
       );
