@@ -17,6 +17,7 @@ import {
   Icon,
 } from 'react-native-paper';
 import DocumentPicker from 'react-native-document-picker';
+import RNFetchBlob from 'rn-fetch-blob';
 
 import {specialties} from '../../utils/constant';
 import DropDown from '../../components/DropDown';
@@ -80,29 +81,27 @@ const BecomeDoctorScreen = ({navigation, route}: any) => {
       specialitites: specialities,
     }));
   };
-  function base64toBlob(base64Data: string, contentType: string = ''): Blob {
-    const sliceSize = 512;
-    const byteCharacters = atob(base64Data);
-    const bytesLength = byteCharacters.length;
-    const slicesCount = Math.ceil(bytesLength / sliceSize);
-    const byteArrays = new Array(slicesCount);
+  async function base64toBlob(
+    base64Data: string,
+    contentType: string = '',
+  ): Promise<Blob> {
+    // Define a file path to save the temporary file
+    const path = `${RNFetchBlob.fs.dirs.CacheDir}/temp_blob`;
 
-    for (let sliceIndex = 0; sliceIndex < slicesCount; ++sliceIndex) {
-      const begin = sliceIndex * sliceSize;
-      const end = Math.min(begin + sliceSize, bytesLength);
+    // Write the base64 data to a temporary file
+    await RNFetchBlob.fs.writeFile(path, base64Data, 'base64');
 
-      const bytes = new Array(end - begin);
-      for (let offset = begin, i = 0; offset < end; ++i, ++offset) {
-        bytes[i] = byteCharacters.charCodeAt(offset);
-      }
-      byteArrays[sliceIndex] = new Uint8Array(bytes);
-    }
+    // Read the file and convert it to a Blob
+    const blobData = await RNFetchBlob.wrap(path);
 
-    // Define BlobOptions with type property
-    const options: any = {type: contentType};
-
-    return new Blob(byteArrays, options);
+    // Create a new Blob with the required options
+    const blobOptions: BlobOptions = {
+      type: contentType,
+      lastModified: Date.now(),
+    };
+    return new Blob([blobData], blobOptions);
   }
+
   const handleRegisterDoctor = async () => {
     if (!form || !form.image1 || !form.image2) {
       Dialog.show({
@@ -117,16 +116,18 @@ const BecomeDoctorScreen = ({navigation, route}: any) => {
       setIsLoading(true);
       const formData = new FormData();
 
-      formData.append('idCardFront', form.image1);
-      formData.append('idCardBack', form.image2);
+      const idCardFrontBlob = await base64toBlob(form.image1, 'image/jpeg');
+      const idCardBackBlob = await base64toBlob(form.image2, 'image/jpeg');
+
+      formData.append('idCardFront', idCardFrontBlob);
+      formData.append('idCardBack', idCardBackBlob);
 
       form.files.forEach(file => {
         formData.append('files', file);
       });
 
       formData.append('specialties', JSON.stringify(form.specialitites));
-      formData.append('metadata', {textarea: form.textarea});
-
+      formData.append('metadata', JSON.stringify({textarea: form.textarea}));
       const response = await UserService.registerDoctor(token, formData);
       navigation.goBack();
       Dialog.show({

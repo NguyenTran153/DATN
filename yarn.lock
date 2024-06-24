@@ -2442,6 +2442,11 @@
     "@types/prop-types" "*"
     csstype "^3.0.2"
 
+"@types/rn-fetch-blob@^1.2.7":
+  version "1.2.7"
+  resolved "https://registry.yarnpkg.com/@types/rn-fetch-blob/-/rn-fetch-blob-1.2.7.tgz#84c9968456e4d7ad2acc7f799a172b9fd5573937"
+  integrity sha512-pPYjtScarEx02GjJQXd4tl8AkwqyVuqdUXlRVhowxIYf3zAbDvifOCrhDJ0sm61mHkLAB8HtxqkiPG+7ospxvg==
+
 "@types/semver@^7.3.12":
   version "7.5.8"
   resolved "https://registry.yarnpkg.com/@types/semver/-/semver-7.5.8.tgz#8268a8c57a3e4abd25c165ecd36237db7948a55e"
@@ -8696,6 +8701,7 @@ word-wrap@^1.2.5:
   integrity sha512-BN22B5eaMMI9UMtjrGd5g5eCYPpCPDUy0FJXbYsaT5zYxjFOckS53SQDE3pWkVoWpHXVb3BrYcEN4Twa55B5cA==
 
 "wrap-ansi-cjs@npm:wrap-ansi@^7.0.0", wrap-ansi@^7.0.0:
+  name wrap-ansi-cjs
   version "7.0.0"
   resolved "https://registry.yarnpkg.com/wrap-ansi/-/wrap-ansi-7.0.0.tgz#67e145cff510a6a6984bdf1152911d69d2eb9e43"
   integrity sha512-YVGIj2kamLSTxw6NsZjoBxfSwsn0ycdesmc4p+Q21c5zPuZ1pl+NfxVdxPtdHvmNVOQ6XSYG4AUtyt/Fi7D16Q==
