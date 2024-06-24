@@ -1,7 +1,7 @@
 import {View, StyleSheet, ScrollView} from 'react-native';
 import {useEffect, useState} from 'react';
 import React from 'react';
-import {TextInput, Button, useTheme, Text} from 'react-native-paper';
+import {TextInput, Button, useTheme, Text, Portal} from 'react-native-paper';
 import {SafeAreaView} from 'react-native-safe-area-context';
 import moment from 'moment';
 import AutocompleteTextInput from '../../components/AutoComplete';
@@ -10,6 +10,8 @@ import {useSelector} from 'react-redux';
 import PrescriptionService from '../../services/PrescriptionService';
 
 interface MyDropdownComponentProps {
+  text: string;
+  setText: (text: string) => void;
   medicineList: string[];
   onChangeMedicine: (value: string) => void;
   onChangeQuantity: (value: string) => void;
@@ -20,6 +22,8 @@ interface MyDropdownComponentProps {
 }
 
 const MyDropdownComponent: React.FC<MyDropdownComponentProps> = ({
+  text,
+  setText,
   medicineList,
   onChangeMedicine,
   onChangeQuantity,
@@ -44,6 +48,7 @@ const MyDropdownComponent: React.FC<MyDropdownComponentProps> = ({
     onChangeEvening(evening);
     onChangeNight(night);
   }, [medicine, quantity, morning, afternoon, evening, night]);
+  useEffect(() => {}, [medicine]);
 
   const styles = StyleSheet.create({
     textInput: {
@@ -79,6 +84,8 @@ const MyDropdownComponent: React.FC<MyDropdownComponentProps> = ({
         <View style={{width: '60%'}}>
           <Text style={styles.text}>Tên thuốc</Text>
           <AutocompleteTextInput
+            text={text}
+            setText={setText}
             suggestions={medicineList}
             onSelect={selectedMedicine => setMedicine(selectedMedicine)}
           />
@@ -148,10 +155,6 @@ const PrescriptionScreen: React.FC<any> = ({route, navigation}) => {
   const token = useSelector((state: any) => state.token.accessToken);
   const pres = route?.params?.result || 'Chưa có chẩn đoán';
 
-  useEffect(() => {
-    console.log(route.params);
-  }, []);
-
   const [components, setComponents] = useState<
     {
       id: number;
@@ -166,18 +169,24 @@ const PrescriptionScreen: React.FC<any> = ({route, navigation}) => {
   const [idCounter, setIdCounter] = useState(0);
 
   const [note, setNote] = useState('');
+  const [search, setSearch] = useState('');
   const theme = useTheme();
-  const medicineList = [
-    'Paracetamol',
-    'Aspirin',
-    'Prospan',
-    'Paracetamol',
-    'Aspirin',
-    'Prospan',
-    'Paracetamol',
-    'Aspirin',
-    'Prospan',
-  ];
+
+  const [medicineList, setMedicineList] = useState([]);
+
+  useEffect(() => {
+    const fetchMedicineList = async () => {
+      try {
+        const response = await PrescriptionService.getDrug(token, '', 1, 10);
+        const names = response?.result.items.map((item: any) => item.tenThuoc);
+        setMedicineList(names);
+      } catch (error) {
+        console.error('Error fetching medicine list:', error);
+      }
+    };
+
+    fetchMedicineList();
+  }, [search]);
 
   const addComponent = () => {
     const newId = idCounter + 1;
@@ -346,10 +355,13 @@ const PrescriptionScreen: React.FC<any> = ({route, navigation}) => {
             </View>
           </View>
         </View>
-        <SafeAreaView style={{alignSelf: 'center'}}>
+
+        <SafeAreaView style={{alignSelf: 'center', zIndex: 999}}>
           {components.map(
             ({id, medicine, quantity, morning, afternoon, evening, night}) => (
               <MyDropdownComponent
+                text={search}
+                setText={setSearch}
                 key={id}
                 medicineList={medicineList}
                 onChangeMedicine={value =>
@@ -378,14 +390,14 @@ const PrescriptionScreen: React.FC<any> = ({route, navigation}) => {
           }}>
           <Button
             mode="contained"
-            style={{marginRight: 10, width: '25%'}}
+            style={{marginRight: 10, width: '25%', zIndex: 5}}
             onPress={() =>
               removeComponent(components[components.length - 1]?.id)
             }>
             Xoá
           </Button>
           <Button
-            style={{width: '25%'}}
+            style={{width: '25%', zIndex: 5}}
             mode="contained"
             onPress={addComponent}>
             Thêm

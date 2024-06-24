@@ -2,7 +2,7 @@ import {StyleSheet, TouchableOpacity, View, Image} from 'react-native';
 import React from 'react';
 import {useTheme, Card, Text, IconButton} from 'react-native-paper';
 
-const ProductCard = ({data, addToCart, navigation, route}: any) => {
+const ProductCard = ({data, addToCart}: any) => {
   const theme = useTheme();
 
   return (
@@ -14,11 +14,18 @@ const ProductCard = ({data, addToCart, navigation, route}: any) => {
         />
         <View style={{flexDirection: 'row', flex: 1, flexWrap: 'wrap'}}>
           <View style={styles.textContainer}>
-            <Text style={{flex: 1}} variant="titleMedium" ellipsizeMode="tail">
-              {data.name}
+            <Text
+              style={{flex: 1, maxWidth: '80%'}}
+              variant="titleMedium"
+              ellipsizeMode="tail">
+              {data.tenThuoc}
             </Text>
-            <Text style={{flex: 1}} variant="titleSmall">
-              {data.category}
+            <Text
+              style={{flex: 1, maxWidth: '80%'}}
+              numberOfLines={1}
+              ellipsizeMode="tail"
+              variant="titleSmall">
+              {data.dangBaoChe || "Chưa cập nhật"}
             </Text>
             <Text
               style={{
@@ -27,13 +34,13 @@ const ProductCard = ({data, addToCart, navigation, route}: any) => {
                 fontWeight: 'bold',
               }}
               variant="titleSmall">
-              {data.price} VNĐ
+              {data.giaBanBuon} VNĐ
             </Text>
           </View>
           <View style={{alignItems: 'center', justifyContent: 'center'}}>
             <IconButton icon="plus-box" size={36} onPress={addToCart} />
           </View>
-        </View> 
+        </View>
       </Card>
     </View>
   );

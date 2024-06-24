@@ -16,7 +16,7 @@ class PrescriptionService {
       });
       console.log(response);
 
-      return response.data;
+      return response;
     } catch (error) {
       console.log('Prescription: ' + error);
       throw error;
@@ -71,7 +71,7 @@ class PrescriptionService {
 
       return response.data;
     } catch (error) {
-      console.log('Error post prescriptions:', error);
+      console.log('Error post prescriptions:', JSON.stringify(error));
       throw error;
     }
   }
@@ -106,6 +106,28 @@ class PrescriptionService {
     } catch (error) {
       console.error('Error adding diagnosis:', error);
       throw error; // You may handle error as per your application's error handling strategy
+    }
+  }
+
+  static async getDrug(
+    token: string,
+    query: string,
+    page: number,
+    pageSize: number,
+  ) {
+    try {
+      const response = await axios.get(
+        `http://10.0.2.2:8080/drugs?page=${page}&pageSize=${pageSize}&filterAll=${query}`,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+          },
+        },
+      );
+      return response.data;
+    } catch (error) {
+      throw error;
     }
   }
 }

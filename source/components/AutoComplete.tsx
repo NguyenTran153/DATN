@@ -7,25 +7,30 @@ import {
   StyleSheet,
   ScrollView,
 } from 'react-native';
-import {useTheme} from 'react-native-paper';
+import {Portal, useTheme} from 'react-native-paper';
 
 interface AutocompleteTextInputProps {
+  text: string;
+  setText: (text: string) => void;
   suggestions: string[];
   onSelect: (selectedMedicine: string) => void;
 }
 
 const AutocompleteTextInput: React.FC<AutocompleteTextInputProps> = ({
+  text,
+  setText,
   suggestions,
   onSelect,
 }) => {
   const theme = useTheme();
-  const [text, setText] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
 
   const styles = StyleSheet.create({
     container: {
       position: 'relative',
+      zIndex: 9999,
+      elevation: 8
     },
     input: {
       borderWidth: 1,
@@ -42,7 +47,7 @@ const AutocompleteTextInput: React.FC<AutocompleteTextInputProps> = ({
       backgroundColor: theme.colors.background,
       borderWidth: 1,
       borderColor: theme.colors.outline,
-      zIndex: 1,
+      zIndex: 9999,
     },
     suggestion: {
       fontSize: 10,

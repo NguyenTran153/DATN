@@ -5,7 +5,7 @@ import {
   SafeAreaView,
   TouchableOpacity,
 } from 'react-native';
-import {useState} from 'react';
+import {useEffect, useState} from 'react';
 import {
   useTheme,
   Text,
@@ -13,134 +13,44 @@ import {
   SegmentedButtons,
   IconButton,
 } from 'react-native-paper';
-import {useDispatch} from 'react-redux';
+import {useDispatch, useSelector} from 'react-redux';
 
 import {addToCart} from '../../redux/slices/medicalOrderSlice';
 import ProductCard from '../../components/ProductCard';
+import PrescriptionService from '../../services/PrescriptionService';
 
-const fakeData = [
-  {
-    id: 1,
-    name: 'Paracetamol',
-    category: 'Hạ sốt',
-    price: 5000,
-    brand: 'Hapaco',
-    isOff: false,
-    offPercentage: 0,
-    productImage: '../asset/7677205.jpg',
-    isAvailable: true,
-  },
-  {
-    id: 2,
-    name: 'Ibuprofen',
-    category: 'Giảm đau',
-    price: 7000,
-    brand: 'Bogota',
-    isOff: true,
-    offPercentage: 10,
-    productImage: '../asset/7677205.jpg',
-    isAvailable: true,
-  },
-  {
-    id: 3,
-    name: 'Azithromycin',
-    category: 'Kháng sinh',
-    price: 15000,
-    brand: 'US Pharma',
-    isOff: false,
-    offPercentage: 0,
-    productImage: '../asset/7677205.jpg',
-    isAvailable: true,
-  },
-  {
-    id: 4,
-    name: 'Azithromycinqdfwefsadqwdasdqwfwfwefewfew',
-    category: 'Kháng sinh',
-    price: 14000,
-    brand: 'US Pharma',
-    isOff: false,
-    offPercentage: 0,
-    productImage: '../asset/7677205.jpg',
-    isAvailable: true,
-  },
-  {
-    id: 5,
-    name: 'Azithromycin',
-    category: 'Kháng sinh',
-    price: 15000,
-    brand: 'US Pharma',
-    isOff: false,
-    offPercentage: 0,
-    productImage: '../asset/7677205.jpg',
-    isAvailable: true,
-  },
-  {
-    id: 6,
-    name: 'Azithromycin',
-    category: 'Kháng sinh',
-    price: 15000,
-    brand: 'US Pharma',
-    isOff: false,
-    offPercentage: 0,
-    productImage: '../asset/7677205.jpg',
-    isAvailable: true,
-  },
-  {
-    id: 7,
-    name: 'Azithromycin',
-    category: 'Kháng sinh',
-    price: 15000,
-    brand: 'US Pharma',
-    isOff: false,
-    offPercentage: 0,
-    productImage: '../asset/7677205.jpg',
-    isAvailable: true,
-  },
-  {
-    id: 8,
-    name: 'Azithromycin',
-    category: 'Kháng sinh',
-    price: 15000,
-    brand: 'US Pharma',
-    isOff: false,
-    offPercentage: 0,
-    productImage: '../asset/7677205.jpg',
-    isAvailable: true,
-  },
-];
+
 const StoreScreen = ({navigation}: {navigation: any}) => {
   const theme = useTheme();
   const dispatch = useDispatch();
+  const token = useSelector((state: any) => state.token.accessToken);
 
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [value, setValue] = useState<string>('top');
+  const [page, setPage] = useState<number>(1);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
+  const [filteredData, setFilteredData] = useState<any>([]);
 
-  const [filteredData, setFilteredData] = useState<any>(fakeData);
+  useEffect(() => {
+    fetchProducts();
+  }, [searchQuery, selectedCategory]);
 
-  const handleSearch = (query: string) => {
-    setSearchQuery(query);
-    const filtered = fakeData.filter(item => {
-      const nameMatch = item.name.toLowerCase().includes(query.toLowerCase());
-      const CategoryMatch =
-        selectedCategory === '' || item.category === selectedCategory;
-      return nameMatch && CategoryMatch;
-    });
-    setFilteredData(filtered);
+  const fetchProducts = async () => {
+    try {
+      const response = await PrescriptionService.getDrug(
+        token,
+        searchQuery,
+        page,
+        10,
+      );
+      if (response?.result?.items) {
+        setFilteredData(response.result.items);
+      }
+    } catch (error) {
+      console.error('Error fetching products:', error);
+    }
   };
 
-  const handleFilterByCategory = (category: any) => {
-    setSelectedCategory(category);
-
-    const filtered = fakeData.filter(item => {
-      const nameMatch =
-        searchQuery === '' ||
-        item.name.toLowerCase().includes(searchQuery.toLowerCase());
-      const CategoryMatch = category === '' || item.category === category;
-      return nameMatch && CategoryMatch;
-    });
-    setFilteredData(filtered);
-  };
 
   return (
     <SafeAreaView
@@ -190,7 +100,7 @@ const StoreScreen = ({navigation}: {navigation: any}) => {
             contentContainerStyle={{
               alignItems: 'center',
             }}
-            data={fakeData}
+            data={filteredData}
             renderItem={({item}) => (
               <TouchableOpacity
                 onPress={() =>
@@ -205,10 +115,10 @@ const StoreScreen = ({navigation}: {navigation: any}) => {
                     dispatch(
                       addToCart({
                         id: item.id,
-                        name: item.name,
-                        category: item.category,
-                        image: item.productImage,
-                        price: item.price,
+                        name: item.tenThuoc || 'Aspirin',
+                        category: item.dangBaoChe || 'Viên nén',
+                        image: item.productImage || '../asset/7677205.jpg',
+                        price: item.giaBanBuon || 15000,
                         quantity: 1,
                       }),
                     )

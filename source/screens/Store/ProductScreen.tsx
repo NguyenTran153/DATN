@@ -31,15 +31,16 @@ const ProductScreen = ({navigation, route}: any) => {
           source={require('../../asset/7677205.jpg')}
         />
         <View style={{margin: 10}}>
+          <Text variant="titleMedium">{item.tenThuoc}</Text>
           <View style={{flexGrow: 1, flexWrap: 'nowrap'}}>
-            <Text variant="titleMedium">Phân loại: {item.category}</Text>
-            <Text style={{color: theme.colors.primary}} variant="titleMedium">
-              Thương hiệu: {item.brand}
+            <Text variant="titleSmall">Dạng thuốc: {item.dangBaoChe}</Text>
+            <Text variant="titleSmall">
+              Doanh nghiệp sản xuất: {item.doanhNghiepSanXuat}
             </Text>
           </View>
           <View style={styles.paymentContainer}>
             <Text style={{color: theme.colors.tertiary, fontWeight: '800'}}>
-              Giá tiền: {item.price}VNĐ
+              Giá tiền: {item.giaBanBuon} VNĐ
             </Text>
 
             <TouchableOpacity
@@ -48,8 +49,8 @@ const ProductScreen = ({navigation, route}: any) => {
                 dispatch(
                   addToCart({
                     id: item.id,
-                    name: item.name,
-                    category: item.category,
+                    name: item.tenThuoc,
+                    category: item.dangBaoChe,
                     image: item.image,
                     price: item.price,
                     quantity: 1,
@@ -68,50 +69,27 @@ const ProductScreen = ({navigation, route}: any) => {
           </View>
           <View style={styles.inforContainer}>
             <Text style={{fontWeight: 'bold'}} variant="titleLarge">
-              Mô tả sản phẩm
+              Quy cách đóng gói
             </Text>
-            <Text variant="bodyMedium">
-              Bạn muốn cải thiện sức khỏe, tăng cường tuần hoàn máu não thì thực
-              phẩm bảo vệ sức khỏe Pharmacity Hoạt Huyết là lựa chọn tối ưu cho
-              bạn. Sản phẩm được nhiều khách hàng quan tâm vì có nhiều công dụng
-              giúp bạn có sức khỏe tốt hơn.
-            </Text>
+            <Text variant="bodyMedium">{item.quyCachDongGoi}</Text>
           </View>
           <View style={styles.inforContainer}>
             <Text style={{fontWeight: 'bold'}} variant="titleLarge">
-              Công dụng
+              Đơn vị kê khai
             </Text>
-            <Text variant="bodyMedium">
-              Viên uống Pharmacity Hoạt Huyết giúp nuôi dưỡng hệ thần kinh với
-              thành phần được chiết xuất 100% từ thực vật. Công dụng chính của
-              sản phẩm này là giúp lưu thông khí huyết và nuôi dưỡng trí não.
-              Đặc biệt, nguyên liệu sản xuất viên nén bao phim sẽ không chứa
-              thêm đường nên rất phù hợp với những người thực hiện chế độ ăn
-              không đường như người béo phì, người tiểu đường,…
-            </Text>
+            <Text variant="bodyMedium">{item.donViKeKhai}</Text>
           </View>
           <View style={styles.inforContainer}>
             <Text style={{fontWeight: 'bold'}} variant="titleLarge">
-              Thành phần
+              Hoạt chất
             </Text>
-            <Text variant="bodyMedium">
-              Trong 1 viên chứa 680 mg hỗn hợp thuốc tương đương với: Đương quy
-              1500mg; Dịch Mường 1500mg; Ngưu Tất 1500mg; Thúc Địa 1500mg; Thược
-              Dược Đỏ 750mg; Xuyên Khương 750mg; Chiết Xuất Bạch Quả 50mg Thành
-              phần bổ sung: Lactose, tinh bột, talc, magie stearat, PVP K30
-              (polyvinylpyrrolidone K30), HPMC (hydroxypropyl methylcellulose),
-              PEG 6000 (polyethylene glycol 6000), TiO2 vừa đủ 1 viên. Trọng
-              lượng viên 750mg ± 7,5%
-            </Text>
+            <Text variant="bodyMedium">{item.hoatChat}</Text>
           </View>
           <View style={styles.inforContainer}>
             <Text style={{fontWeight: 'bold'}} variant="titleLarge">
-              Cách sử dụng
+              Hàm lượng
             </Text>
-            <Text variant="bodyMedium">
-              Đối với người trưởng thành và trẻ em &gt; 12 tuổi, nên uống từ 2 -
-              3 lần/ngày, mỗi lần 2 - 3 viên.
-            </Text>
+            <Text variant="bodyMedium">{item.hamLuong}</Text>
           </View>
         </View>
       </ScrollView>
