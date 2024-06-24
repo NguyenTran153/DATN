@@ -65,8 +65,6 @@ const NotificationScreen = ({navigation}: any) => {
     try {
       console.log('Notification I: ' + notificationId);
       console.log('FriendId' + friendRequestId);
-      await UserService.acceptFriend(token, friendRequestId);
-      // await NotificationService.markAsRead(token, notificationId);
       await fetch(
         `http://10.0.2.2:8080/notifications/${notificationId}/mark-as-read`,
         {
@@ -78,6 +76,7 @@ const NotificationScreen = ({navigation}: any) => {
           body: '',
         },
       );
+      await UserService.acceptFriend(token, friendRequestId);
       Dialog.show({
         type: ALERT_TYPE.SUCCESS,
         title: 'Kết bạn thành công',
@@ -109,8 +108,6 @@ const NotificationScreen = ({navigation}: any) => {
     try {
       console.log('Notification I: ' + notificationId);
       console.log(appointmentId);
-      await UserService.acceptAppointment(token, appointmentId);
-      // await NotificationService.markAsRead(token, notificationId);
       await fetch(
         `http://10.0.2.2:8080/notifications/${notificationId}/mark-as-read`,
         {
@@ -122,6 +119,7 @@ const NotificationScreen = ({navigation}: any) => {
           body: '',
         },
       );
+      await UserService.acceptAppointment(token, appointmentId);
       Dialog.show({
         type: ALERT_TYPE.SUCCESS,
         title: 'Chấp nhận lịch hẹn thành công',
