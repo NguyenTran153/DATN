@@ -138,14 +138,17 @@ const PhoneNumber = ({ navigation }: any) => {
               autoCorrect={false}
               inputMode='numeric'
               placeholderTextColor={theme.colors.secondary}
-              onChangeText={number => handlePhoneNumber(number)}
+              onChangeText={number => setValue(number)}
             />
           </View>
           <View style={styles.formAction}>
             <TouchableOpacity
               onPress={async () => {
-                if (value.length === 12) {
-                  const pinId = await AuthService.PhoneVerification(value);
+                if (value.length === 10) {
+                 
+                  const formattedPhoneNumber = value.replace(/^0/, '+84');
+                  const pinId = await AuthService.PhoneVerification(formattedPhoneNumber);
+                  console.log(pinId)
                   if (pinId !== 'error') {
                     console.log(pinId)
                     navigation.navigate('OtpScreen',
