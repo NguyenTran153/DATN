@@ -12,13 +12,13 @@ import {
   Searchbar,
   SegmentedButtons,
   IconButton,
+  DataTable,
 } from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
 
 import {addToCart} from '../../redux/slices/medicalOrderSlice';
 import ProductCard from '../../components/ProductCard';
 import PrescriptionService from '../../services/PrescriptionService';
-
 
 const StoreScreen = ({navigation}: {navigation: any}) => {
   const theme = useTheme();
@@ -33,7 +33,7 @@ const StoreScreen = ({navigation}: {navigation: any}) => {
 
   useEffect(() => {
     fetchProducts();
-  }, [searchQuery, selectedCategory]);
+  }, [searchQuery, selectedCategory, page]);
 
   const fetchProducts = async () => {
     try {
@@ -50,7 +50,6 @@ const StoreScreen = ({navigation}: {navigation: any}) => {
       console.error('Error fetching products:', error);
     }
   };
-
 
   return (
     <SafeAreaView
@@ -132,6 +131,12 @@ const StoreScreen = ({navigation}: {navigation: any}) => {
             showsVerticalScrollIndicator={false}
           />
         </View>
+        <DataTable.Pagination
+          numberOfPages={100}
+          page={page}
+          onPageChange={setPage}
+          label={`${page + 1} of ${Math.ceil(100)}`}
+        />
       </View>
     </SafeAreaView>
   );

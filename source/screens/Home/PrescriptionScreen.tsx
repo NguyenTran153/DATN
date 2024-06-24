@@ -244,10 +244,6 @@ const PrescriptionScreen: React.FC<any> = ({route, navigation}) => {
         [],
         route.params.patient.id.toString(),
       );
-      const formData = {
-        files: route.params?.examination || null,
-        problem: pres,
-      };
 
       const createdDiagnosis = await PrescriptionService.postDiagnosis(
         createdPrescription.id.toString(),
@@ -263,7 +259,7 @@ const PrescriptionScreen: React.FC<any> = ({route, navigation}) => {
       navigation.goBack();
       navigation.goBack();
     } catch (error) {
-      console.error('Error posting prescription:', error);
+      console.log('Error posting prescription:', error);
     }
   };
 
