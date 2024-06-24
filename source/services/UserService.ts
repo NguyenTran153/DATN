@@ -144,8 +144,6 @@ class UserService {
   }
   static async registerDoctor(accessToken: string, formData: any) {
     try {
-      console.log(1);
-      console.log(formData);
       const response = await axios.post(
         'http://10.0.2.2:8080/users/doctor-register',
         formData,

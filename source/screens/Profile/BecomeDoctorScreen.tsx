@@ -14,7 +14,7 @@ import {
   Button,
   useTheme,
   Text,
-  Icon,
+  IconButton,
 } from 'react-native-paper';
 import DocumentPicker from 'react-native-document-picker';
 import RNFetchBlob from 'rn-fetch-blob';
@@ -25,6 +25,7 @@ import {useSelector} from 'react-redux';
 import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
 import UserService from '../../services/UserService';
 import CustomAppbar from '../../components/CustomAppbar';
+
 interface FormData {
   image1: string | null;
   image2: string | null;
@@ -48,7 +49,7 @@ const BecomeDoctorScreen = ({navigation, route}: any) => {
     textarea: '',
     specialitites: [],
   };
-  const [form, setForm] = useState<FormData | null>(initialFormState);
+  const [form, setForm] = useState<FormData>(initialFormState);
 
   const handleFilesChange = async () => {
     try {
@@ -57,7 +58,7 @@ const BecomeDoctorScreen = ({navigation, route}: any) => {
       });
       setForm(prevForm => ({
         ...(prevForm ?? initialFormState),
-        files: [...(prevForm?.files ?? []), ...results],
+        files: [...(prevForm.files ?? []), ...results],
       }));
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
@@ -81,26 +82,6 @@ const BecomeDoctorScreen = ({navigation, route}: any) => {
       specialitites: specialities,
     }));
   };
-  async function base64toBlob(
-    base64Data: string,
-    contentType: string = '',
-  ): Promise<Blob> {
-    // Define a file path to save the temporary file
-    const path = `${RNFetchBlob.fs.dirs.CacheDir}/temp_blob`;
-
-    // Write the base64 data to a temporary file
-    await RNFetchBlob.fs.writeFile(path, base64Data, 'base64');
-
-    // Read the file and convert it to a Blob
-    const blobData = await RNFetchBlob.wrap(path);
-
-    // Create a new Blob with the required options
-    const blobOptions: BlobOptions = {
-      type: contentType,
-      lastModified: Date.now(),
-    };
-    return new Blob([blobData], blobOptions);
-  }
 
   const handleRegisterDoctor = async () => {
     if (!form || !form.image1 || !form.image2) {
@@ -116,11 +97,16 @@ const BecomeDoctorScreen = ({navigation, route}: any) => {
       setIsLoading(true);
       const formData = new FormData();
 
-      const idCardFrontBlob = await base64toBlob(form.image1, 'image/jpeg');
-      const idCardBackBlob = await base64toBlob(form.image2, 'image/jpeg');
-
-      formData.append('idCardFront', idCardFrontBlob);
-      formData.append('idCardBack', idCardBackBlob);
+      formData.append('idCardFront', {
+        uri: form.image1,
+        type: 'image/jpeg',
+        name: 'idCardFront.jpg',
+      });
+      formData.append('idCardBack', {
+        uri: form.image2,
+        type: 'image/jpeg',
+        name: 'idCardBack.jpg',
+      });
 
       form.files.forEach(file => {
         formData.append('files', file);
@@ -128,6 +114,7 @@ const BecomeDoctorScreen = ({navigation, route}: any) => {
 
       formData.append('specialties', JSON.stringify(form.specialitites));
       formData.append('metadata', JSON.stringify({textarea: form.textarea}));
+
       const response = await UserService.registerDoctor(token, formData);
       navigation.goBack();
       Dialog.show({
@@ -142,29 +129,31 @@ const BecomeDoctorScreen = ({navigation, route}: any) => {
       console.log(error);
       Dialog.show({
         type: ALERT_TYPE.DANGER,
-        title: 'Đăng ký thành bác sĩ thất bại',
+        title: 'Đăng ký thành bác sĩ thất bại! Bạn đã gửi đơn từ trước rồi',
         button: 'Đóng',
       });
+      navigation.goBack();
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    if (isFront === true) {
-      console.log('Capture Front');
-      setForm(prevForm => ({
-        ...(prevForm ?? initialFormState),
-        image1: route?.params?.base64,
-      }));
-      setIsFront(false);
-    } else if (isFront === false) {
-      setForm(prevForm => ({
-        ...(prevForm ?? initialFormState),
-        image2: route?.params?.base64,
-      }));
+    if (route.params?.filePath) {
+      const filePath = route.params.filePath;
+      if (isFront) {
+        setForm(prevForm => ({
+          ...(prevForm ?? initialFormState),
+          image1: `file://${filePath}`,
+        }));
+      } else {
+        setForm(prevForm => ({
+          ...(prevForm ?? initialFormState),
+          image2: `file://${filePath}`,
+        }));
+      }
     }
-  }, [route]);
+  }, [route.params?.filePath]);
 
   return (
     <KeyboardAvoidingView
@@ -200,7 +189,7 @@ const BecomeDoctorScreen = ({navigation, route}: any) => {
             <TouchableOpacity
               onPress={() => {
                 setIsFront(true);
-                navigation.navigate('CameraScreen', isFront);
+                navigation.navigate('CameraScreen');
               }}
               style={[
                 styles.photoContainer,
@@ -208,18 +197,18 @@ const BecomeDoctorScreen = ({navigation, route}: any) => {
               ]}>
               {form?.image1 ? (
                 <Image
-                  source={{uri: `data:image/jpeg;base64,${form.image1}`}}
+                  source={{uri: form.image1}}
                   resizeMode="cover"
                   style={styles.photoContainer}
                 />
               ) : (
-                <Icon source="camera" size={36} />
+                <IconButton icon="camera" size={36} />
               )}
             </TouchableOpacity>
             <TouchableOpacity
               onPress={() => {
                 setIsFront(false);
-                navigation.navigate('CameraScreen', isFront);
+                navigation.navigate('CameraScreen');
               }}
               style={[
                 styles.photoContainer,
@@ -227,12 +216,12 @@ const BecomeDoctorScreen = ({navigation, route}: any) => {
               ]}>
               {form?.image2 ? (
                 <Image
-                  source={{uri: `data:image/jpeg;base64,${form.image2}`}}
+                  source={{uri: form.image2}}
                   resizeMode="cover"
                   style={styles.photoContainer}
                 />
               ) : (
-                <Icon source="camera" size={36} />
+                <IconButton icon="camera" size={36} />
               )}
             </TouchableOpacity>
           </View>
@@ -249,7 +238,7 @@ const BecomeDoctorScreen = ({navigation, route}: any) => {
             <TouchableOpacity
               style={styles.fileContainer}
               onPress={handleFilesChange}>
-              <Icon source="plus" size={36} />
+              <IconButton icon="plus" size={36} />
             </TouchableOpacity>
           </View>
         </View>
@@ -280,7 +269,7 @@ const BecomeDoctorScreen = ({navigation, route}: any) => {
       </ScrollView>
       <Button
         mode="contained"
-        onPress={async () => await handleRegisterDoctor()}
+        onPress={handleRegisterDoctor}
         style={styles.button}
         disabled={isLoading}>
         <Text variant="titleMedium" style={{color: theme.colors.background}}>

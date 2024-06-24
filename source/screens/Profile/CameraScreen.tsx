@@ -11,6 +11,7 @@ import {useSharedValue} from 'react-native-worklets-core';
 import {CropRegion, crop} from 'vision-camera-cropper';
 import {setImage1, setImage2} from '../../redux/slices/doctorFormSlice';
 import {useDispatch} from 'react-redux';
+import RNFS from 'react-native-fs';
 
 export interface CameraScreenProps {
   route: any;
@@ -65,11 +66,14 @@ export default function CameraScreen(props: CameraScreenProps) {
     return size;
   };
 
-  const onCaptured = (base64: string) => {
+  const onCaptured = async (base64: string) => {
     try {
+      const filePath = `${RNFS.DownloadDirectoryPath}/photo_${Date.now()}.jpg`;
+      console.log(filePath);
+      await RNFS.writeFile(filePath, base64, 'base64');
       props.navigation.navigate('ProfileNavigator', {
         screen: 'BecomeDoctorScreen',
-        params: {base64},
+        params: {filePath},
       });
     } catch (error) {
       console.log(error);
@@ -181,6 +185,3 @@ const styles = StyleSheet.create({
     backgroundColor: 'lightgray',
   },
 });
-function dispatch(arg0: any) {
-  throw new Error('Function not implemented.');
-}
