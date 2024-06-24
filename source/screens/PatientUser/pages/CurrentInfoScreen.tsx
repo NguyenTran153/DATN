@@ -27,7 +27,6 @@ const CurrentInfoScreen = () => {
       const dianoses = await PrescriptionService.getDiagnosis(prescriptions[0].id,token.accessToken)
       if(dianoses)
       {
-          console.log("If condition pass")
           setDiag(dianoses[0].problem)
       }
       
