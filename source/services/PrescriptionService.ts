@@ -14,9 +14,10 @@ class PrescriptionService {
           Authorization: `Bearer ${accessToken}`,
         },
       });
-      console.log(response);
 
-      return response;
+      console.log('Hello' + JSON.stringify(response, null, 2));
+
+      return response.data;
     } catch (error) {
       console.log('Prescription: ' + error);
       throw error;
@@ -34,6 +35,7 @@ class PrescriptionService {
           },
         },
       );
+      console.log('diag' + JSON.stringify(response, null, 2));
 
       return response.data;
     } catch (error) {
@@ -46,7 +48,7 @@ class PrescriptionService {
     accessToken: string,
     data: any,
     files: File[],
-    belongId: string,
+    belongId: number,
   ) {
     try {
       const formData = new FormData();
@@ -57,7 +59,7 @@ class PrescriptionService {
         formData.append('files', file);
       });
 
-      formData.append('belongTo', parseInt(belongId));
+      formData.append('belongTo', belongId);
       const response = await axios.post(
         'http://10.0.2.2:8080/prescriptions',
         formData,

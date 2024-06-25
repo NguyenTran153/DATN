@@ -238,11 +238,12 @@ const PrescriptionScreen: React.FC<any> = ({route, navigation}) => {
     };
 
     try {
+      console.log(route.params.patient.id);
       const createdPrescription = await PrescriptionService.postPrescription(
         token,
         prescription,
         [],
-        route.params.patient.id.toString(),
+        route.params.patient.id,
       );
 
       const createdDiagnosis = await PrescriptionService.postDiagnosis(
