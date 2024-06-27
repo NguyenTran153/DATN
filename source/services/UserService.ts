@@ -59,10 +59,10 @@ class UserService {
       throw error;
     }
   }
-  static async acceptAppointment(token: string, appointmentId: string) {
+  static async acceptAppointment(token: string, appointmentId: string, action: string) {
     try {
       const body = {
-        action: 'accept',
+        action: action,
       };
       const response = await axios.patch(
         `http://10.0.2.2:8080/appointments/response/${appointmentId}`,
@@ -177,10 +177,10 @@ class UserService {
       throw error;
     }
   }
-  static async acceptFriend(token: string, friendRequestId: string) {
+  static async acceptFriend(token: string, friendRequestId: string, status: string) {
     try {
       const body = {
-        status: 'accepted',
+        status: status,
       };
       const response = await axios.put(
         `http://10.0.2.2:8080/users/friend-request/response/${friendRequestId}`,

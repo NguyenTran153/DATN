@@ -63,8 +63,6 @@ const NotificationScreen = ({navigation}: any) => {
     notificationId: string,
   ) => {
     try {
-      console.log('Notification I: ' + notificationId);
-      console.log('FriendId' + friendRequestId);
       await fetch(
         `http://10.0.2.2:8080/notifications/${notificationId}/mark-as-read`,
         {
@@ -76,7 +74,7 @@ const NotificationScreen = ({navigation}: any) => {
           body: '',
         },
       );
-      await UserService.acceptFriend(token, friendRequestId);
+      await UserService.acceptFriend(token, friendRequestId, 'accepted');
       Dialog.show({
         type: ALERT_TYPE.SUCCESS,
         title: 'Kết bạn thành công',
@@ -101,13 +99,12 @@ const NotificationScreen = ({navigation}: any) => {
       });
     }
   };
-  const acceptAppointment = async (
-    appointmentId: string,
+
+  const declineFriend = async (
+    friendRequestId: string,
     notificationId: string,
   ) => {
     try {
-      console.log('Notification I: ' + notificationId);
-      console.log(appointmentId);
       await fetch(
         `http://10.0.2.2:8080/notifications/${notificationId}/mark-as-read`,
         {
@@ -119,7 +116,48 @@ const NotificationScreen = ({navigation}: any) => {
           body: '',
         },
       );
-      await UserService.acceptAppointment(token, appointmentId);
+      await UserService.acceptFriend(token, friendRequestId, 'declined');
+      Dialog.show({
+        type: ALERT_TYPE.SUCCESS,
+        title: 'Từ chối kết bạn thành công',
+        button: 'Đóng',
+      });
+
+      setData(prevData =>
+        prevData.map(notification =>
+          notification.id === notificationId
+            ? {...notification, isRead: true}
+            : notification,
+        ),
+      );
+    } catch (error) {
+      console.log(error);
+      Dialog.show({
+        type: ALERT_TYPE.DANGER,
+        title: 'Lỗi',
+        textBody: 'Bạn đã kết bạn rồi hoặc đối tượng không tồn tại',
+        button: 'Đóng',
+      });
+    }
+  };
+
+  const acceptAppointment = async (
+    appointmentId: string,
+    notificationId: string,
+  ) => {
+    try {
+      await fetch(
+        `http://10.0.2.2:8080/notifications/${notificationId}/mark-as-read`,
+        {
+          method: 'POST',
+          headers: {
+            Accept: '*/*',
+            Authorization: `Bearer ${token}`,
+          },
+          body: '',
+        },
+      );
+      await UserService.acceptAppointment(token, appointmentId, 'accept');
       Dialog.show({
         type: ALERT_TYPE.SUCCESS,
         title: 'Chấp nhận lịch hẹn thành công',
@@ -140,6 +178,47 @@ const NotificationScreen = ({navigation}: any) => {
         type: ALERT_TYPE.DANGER,
         title: 'Lỗi',
         textBody: 'Đã quá thời hạn để chấp nhận lịch hẹn',
+        button: 'Đóng',
+      });
+    }
+  };
+
+  const declineAppointment = async (
+    appointmentId: string,
+    notificationId: string,
+  ) => {
+    try {
+      await fetch(
+        `http://10.0.2.2:8080/notifications/${notificationId}/mark-as-read`,
+        {
+          method: 'POST',
+          headers: {
+            Accept: '*/*',
+            Authorization: `Bearer ${token}`,
+          },
+          body: '',
+        },
+      );
+      await UserService.acceptAppointment(token, appointmentId, 'decline');
+      Dialog.show({
+        type: ALERT_TYPE.SUCCESS,
+        title: 'Từ chối lịch hẹn thành công',
+        button: 'Đóng',
+      });
+
+      setData(prevData =>
+        prevData.map(notification =>
+          notification.id === notificationId
+            ? {...notification, isRead: true}
+            : notification,
+        ),
+      );
+    } catch (error) {
+      console.log(error);
+      Dialog.show({
+        type: ALERT_TYPE.DANGER,
+        title: 'Lỗi',
+        textBody: 'Đã quá thời hạn để từ chối lịch hẹn',
         button: 'Đóng',
       });
     }

@@ -14,7 +14,7 @@ import DoctorListScreen from '../Doctor/DoctorListScreen';
 import ProfileScreen from '../Profile/ProfileScreen';
 import {useSelector} from 'react-redux';
 import {createDrawerNavigator} from '@react-navigation/drawer';
-import BookingScreen from '../Home/BookingScreen';
+import ConnectDoctorScreen from '../Doctor/ConnectDoctorScreen';
 
 const Tab = createMaterialTopTabNavigator();
 const Drawer = createDrawerNavigator();
@@ -96,6 +96,19 @@ const PatientUserScreen = ({navigation}: any) => {
         component={StoreScreen}
         options={{drawerLabel: 'Cửa hàng', title: 'Cửa hàng'}}
       />
+      <Drawer.Screen
+        name="ConnectDoctorScreen"
+        component={ConnectDoctorScreen}
+        initialParams={{drawer: true}}
+        options={{
+          drawerLabel: 'Liên hệ với bác sĩ',
+          title: 'Liên hệ với bác sĩ',
+        }}
+      />
+      {/* <Drawer.Screen
+
+      
+      /> */}
       <Drawer.Screen
         name="DoctorListScreen"
         component={DoctorListScreen}

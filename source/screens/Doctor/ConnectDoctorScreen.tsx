@@ -1,19 +1,17 @@
 import {ScrollView, StyleSheet, View} from 'react-native';
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {List, Text, TextInput, useTheme} from 'react-native-paper';
 import QRLoginID from '../QRLoginID';
 import CustomAppbar from '../../components/CustomAppbar';
 import {useSelector} from 'react-redux';
 import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
 import UserService from '../../services/UserService'; // import UserService
-import PhoneNumber from '../Authorization/PhoneNumberScreen';
 
-const ConnectDoctorScreen = ({navigation}: any) => {
+const ConnectDoctorScreen = ({navigation, route}: any) => {
   const theme = useTheme();
   const user = useSelector((state: any) => state.user);
 
   const [phone, setPhone] = useState('');
-  const [accountModal, setAccountModal] = useState(false);
   const token = useSelector((state: any) => state.token.accessToken);
 
   const sendFriendRequest = async () => {
@@ -46,20 +44,23 @@ const ConnectDoctorScreen = ({navigation}: any) => {
       });
     }
   };
+
   const handlePhoneNumber = (phone: string) => {
     setPhone(phone);
   };
 
   return (
     <>
-      <CustomAppbar
-        title={
-          user.role === 'patient'
-            ? 'Liên hệ với bác sĩ'
-            : 'Liên hệ với bệnh nhân'
-        }
-        goBack={() => navigation.goBack()}
-      />
+      {!route?.params?.drawer && (
+        <CustomAppbar
+          title={
+            user.role === 'patient'
+              ? 'Liên hệ với bác sĩ'
+              : 'Liên hệ với bệnh nhân'
+          }
+          goBack={() => navigation.goBack()}
+        />
+      )}
 
       <ScrollView style={{flex: 1, backgroundColor: theme.colors.background}}>
         <View style={styles.container}>
