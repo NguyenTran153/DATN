@@ -17,7 +17,6 @@ import {
   IconButton,
 } from 'react-native-paper';
 import DocumentPicker from 'react-native-document-picker';
-import RNFetchBlob from 'rn-fetch-blob';
 
 import {specialties} from '../../utils/constant';
 import DropDown from '../../components/DropDown';

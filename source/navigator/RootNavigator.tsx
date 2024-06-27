@@ -15,6 +15,7 @@ import ForgotPasswordScreen from '../screens/Authorization/ForgotPasswordScreen'
 import PatientUserScreen from '../screens/PatientUser/PatientUserScreen';
 import CameraScreen from '../screens/Profile/CameraScreen';
 import UpdatePersonalInfoScreen from '../screens/Profile/UpdatePersonalInfoScreen';
+import ChangePasswordScreen from '../screens/Profile/ChangePasswordScreen';
 
 const Tabs = createNativeStackNavigator();
 
@@ -36,6 +37,10 @@ const RootNavigator = () => {
       <Tabs.Screen name="ResetPasswordScreen" component={ResetPasswordScreen} />
       <Tabs.Screen name="OTPResetPassword" component={OTPResetPassword} />
       <Tabs.Screen name="PatientUserScreen" component={PatientUserScreen} />
+      <Tabs.Screen
+        name="ChangePasswordScreen"
+        component={ChangePasswordScreen}
+      />
       <Tabs.Screen
         name="UpdatePersonalInfoScreen"
         component={UpdatePersonalInfoScreen}

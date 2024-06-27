@@ -70,8 +70,7 @@ const ProfileScreen = ({navigation}: {navigation: any}) => {
       <ScrollView>
         <List.Section>
           <List.Item
-            title="Lịch sử Khám Bệnh"
-            description="Những lần khám bệnh gần đây của bệnh nhân"
+            title="Đổi mật khẩu tài khoản"
             left={() => (
               <List.Icon
                 style={styles.settingCenter}
@@ -79,46 +78,11 @@ const ProfileScreen = ({navigation}: {navigation: any}) => {
               />
             )}
             right={() => <List.Icon icon="chevron-right" />}
-            onPress={() => {}}
-          />
-          <List.Item
-            title="Tiền Sử Bệnh Án"
-            description="Bệnh án của bệnh nhân"
-            left={() => (
-              <List.Icon style={styles.settingCenter} icon="stethoscope" />
-            )}
-            right={() => <List.Icon icon="chevron-right" />}
-            onPress={() => {}}
-          />
-          <List.Item
-            title="Phàn Nàn"
-            description="Triệu chứng hoặc vấn đề sức khỏe của bệnh nhân"
-            left={() => (
-              <List.Icon style={styles.settingCenter} icon="comment-question" />
-            )}
-            right={() => <List.Icon icon="chevron-right" />}
-            onPress={() => {}}
-          />
-          <List.Item
-            title="Khám Lâm Sàng"
-            description="Các đợt khám sức khỏe trong quá khứ"
-            left={() => (
-              <List.Icon style={styles.settingCenter} icon="test-tube" />
-            )}
-            right={() => <List.Icon icon="chevron-right" />}
-            onPress={() => {}}
-          />
-          <List.Item
-            title="Thuốc"
-            description="Thuốc đã được kê đơn cho bệnh nhân"
-            left={() => <List.Icon style={styles.settingCenter} icon="pill" />}
-            right={() => <List.Icon icon="chevron-right" />}
-            onPress={() => {}}
+            onPress={() => navigation.navigate('ChangePasswordScreen')}
           />
           {userData?.role !== 'doctor' && (
             <List.Item
               title="Đăng Ký Bác Sĩ"
-              description="Đăng ký tài khoản bác sĩ"
               left={() => (
                 <List.Icon style={styles.settingCenter} icon="doctor" />
               )}
@@ -130,18 +94,6 @@ const ProfileScreen = ({navigation}: {navigation: any}) => {
               }}
             />
           )}
-          <List.Item
-            title="Chính Sách"
-            description="Điều khoản và chính sách"
-            left={() => (
-              <List.Icon
-                style={styles.settingCenter}
-                icon="file-document-outline"
-              />
-            )}
-            right={() => <List.Icon icon="chevron-right" />}
-            onPress={() => console.log('')}
-          />
           {/* <List.Item
             title="Chế Độ Tối"
             left={() => (
