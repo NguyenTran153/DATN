@@ -22,8 +22,6 @@ interface MyDropdownComponentProps {
 }
 
 const MyDropdownComponent: React.FC<MyDropdownComponentProps> = ({
-  text,
-  setText,
   medicineList,
   onChangeMedicine,
   onChangeQuantity,
@@ -39,7 +37,7 @@ const MyDropdownComponent: React.FC<MyDropdownComponentProps> = ({
   const [afternoon, setAfternoon] = useState('');
   const [evening, setEvening] = useState('');
   const [night, setNight] = useState('');
-
+  const [text, setText] = useState('');
   useEffect(() => {
     onChangeMedicine(medicine);
     onChangeQuantity(quantity);
