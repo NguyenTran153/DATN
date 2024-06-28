@@ -59,7 +59,11 @@ class UserService {
       throw error;
     }
   }
-  static async acceptAppointment(token: string, appointmentId: string, action: string) {
+  static async acceptAppointment(
+    token: string,
+    appointmentId: string,
+    action: string,
+  ) {
     try {
       const body = {
         action: action,
@@ -76,7 +80,7 @@ class UserService {
       );
       return response.data;
     } catch (error) {
-      console.log('Accept appointment: ' + error);
+      console.log('Accept appointment: ' + JSON.stringify(error));
       throw error;
     }
   }
@@ -177,7 +181,11 @@ class UserService {
       throw error;
     }
   }
-  static async acceptFriend(token: string, friendRequestId: string, status: string) {
+  static async acceptFriend(
+    token: string,
+    friendRequestId: string,
+    status: string,
+  ) {
     try {
       const body = {
         status: status,

@@ -1,27 +1,30 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   StyleSheet,
   View,
   FlatList,
   Image,
   ActivityIndicator,
+  Modal,
+  TouchableOpacity,
 } from 'react-native';
-import {Text, useTheme, SegmentedButtons, Button} from 'react-native-paper';
-import {useSelector} from 'react-redux';
+import { Text, useTheme, SegmentedButtons, Button } from 'react-native-paper';
+import { useSelector } from 'react-redux';
 import LottieView from 'lottie-react-native';
 import CustomAppbar from '../../components/CustomAppbar';
-import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
+import { ALERT_TYPE, Dialog } from 'react-native-alert-notification';
 import NotificationService from '../../services/NotificationService';
 import UserService from '../../services/UserService';
-import axios from 'axios';
 
-const NotificationScreen = ({navigation}: any) => {
+const NotificationScreen = ({ navigation }: any) => {
   const theme = useTheme();
   const token = useSelector((state: any) => state.token?.accessToken);
 
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [type, setType] = useState<string>('');
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [selectedNotification, setSelectedNotification] = useState<any>(null);
 
   const getNotifications = async (type: string) => {
     try {
@@ -49,6 +52,10 @@ const NotificationScreen = ({navigation}: any) => {
     if (message === 'You have a new friend request!') {
       return 'Bạn có một lời mời kết bạn mới!';
     }
+    if (message === 'Your friend request has been accepted')
+      return 'Lời mời kết bạn đã được chấp nhận';
+    if (message === 'Your friend request has been declined')
+      return 'Lời mời kết bạn đã bị từ chối';
     if (message.startsWith('You have a new appointment request from')) {
       const name = message
         .replace('You have a new appointment request from', '')
@@ -56,6 +63,32 @@ const NotificationScreen = ({navigation}: any) => {
       return `Bạn có lịch hẹn từ ${name}`;
     }
     return message;
+  };
+
+  const handleAccept = async () => {
+    if (selectedNotification) {
+      const { type, referenceId, id } = selectedNotification;
+      if (type === 'add_friend') {
+        await acceptFriend(referenceId, id);
+      } else if (type === 'appointment') {
+        await acceptAppointment(referenceId, id);
+      }
+    }
+    setModalVisible(false);
+    setSelectedNotification(null);
+  };
+
+  const handleDecline = async () => {
+    if (selectedNotification) {
+      const { type, referenceId, id } = selectedNotification;
+      if (type === 'add_friend') {
+        await declineFriend(referenceId, id);
+      } else if (type === 'appointment') {
+        await declineAppointment(referenceId, id);
+      }
+    }
+    setModalVisible(false);
+    setSelectedNotification(null);
   };
 
   const acceptFriend = async (
@@ -81,11 +114,10 @@ const NotificationScreen = ({navigation}: any) => {
         button: 'Đóng',
       });
 
-      // Cập nhật trạng thái của thông báo trong danh sách
       setData(prevData =>
         prevData.map(notification =>
           notification.id === notificationId
-            ? {...notification, isRead: true}
+            ? { ...notification, isRead: true }
             : notification,
         ),
       );
@@ -126,7 +158,7 @@ const NotificationScreen = ({navigation}: any) => {
       setData(prevData =>
         prevData.map(notification =>
           notification.id === notificationId
-            ? {...notification, isRead: true}
+            ? { ...notification, isRead: true }
             : notification,
         ),
       );
@@ -164,11 +196,10 @@ const NotificationScreen = ({navigation}: any) => {
         button: 'Đóng',
       });
 
-      // Cập nhật trạng thái của thông báo trong danh sách
       setData(prevData =>
         prevData.map(notification =>
           notification.id === notificationId
-            ? {...notification, isRead: true}
+            ? { ...notification, isRead: true }
             : notification,
         ),
       );
@@ -209,7 +240,7 @@ const NotificationScreen = ({navigation}: any) => {
       setData(prevData =>
         prevData.map(notification =>
           notification.id === notificationId
-            ? {...notification, isRead: true}
+            ? { ...notification, isRead: true }
             : notification,
         ),
       );
@@ -223,10 +254,11 @@ const NotificationScreen = ({navigation}: any) => {
       });
     }
   };
+
   return (
     <View
       style={[
-        {backgroundColor: theme.colors.background},
+        { backgroundColor: theme.colors.background },
         styles.notificationContainer,
       ]}>
       <CustomAppbar title="Thông báo" goBack={() => navigation.goBack()} />
@@ -238,14 +270,14 @@ const NotificationScreen = ({navigation}: any) => {
             {
               value: '',
               label: 'Tất cả',
-              style: type === '' ? {backgroundColor: theme.colors.primary} : {},
+              style: type === '' ? { backgroundColor: theme.colors.primary } : {},
             },
             {
               value: 'add_friend',
               label: 'Kết bạn',
               style:
                 type === 'add_friend'
-                  ? {backgroundColor: theme.colors.primary}
+                  ? { backgroundColor: theme.colors.primary }
                   : {},
             },
             {
@@ -253,7 +285,7 @@ const NotificationScreen = ({navigation}: any) => {
               label: 'Lịch hẹn',
               style:
                 type === 'appointment'
-                  ? {backgroundColor: theme.colors.primary}
+                  ? { backgroundColor: theme.colors.primary }
                   : {},
             },
           ]}
@@ -269,7 +301,7 @@ const NotificationScreen = ({navigation}: any) => {
             source={require('../../asset/lottie/nonotification.json')}
             autoPlay
             loop
-            style={{width: 200, height: 200}}
+            style={{ width: 200, height: 200 }}
           />
           <Text variant="titleLarge">Chưa có thông báo</Text>
         </View>
@@ -277,7 +309,7 @@ const NotificationScreen = ({navigation}: any) => {
         <FlatList
           data={data}
           keyExtractor={(item, index) => index.toString()}
-          renderItem={({item}) => {
+          renderItem={({ item }) => {
             const {
               createdBy,
               createdAt,
@@ -293,16 +325,16 @@ const NotificationScreen = ({navigation}: any) => {
 
             const formattedDate = createdAt
               ? new Date(createdAt).toLocaleDateString('vi-VN', {
-                  day: '2-digit',
-                  month: '2-digit',
-                  year: 'numeric',
-                })
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric',
+              })
               : '';
             const formattedTime = createdAt
               ? new Date(createdAt).toLocaleTimeString('vi-VN', {
-                  hour: '2-digit',
-                  minute: '2-digit',
-                })
+                hour: '2-digit',
+                minute: '2-digit',
+              })
               : '';
 
             return (
@@ -314,36 +346,29 @@ const NotificationScreen = ({navigation}: any) => {
                   />
                 </View>
 
-                <View style={{flexDirection: 'row', marginLeft: 10, flex: 1}}>
-                  <View style={{flex: 1}}>
+                <View style={{ flexDirection: 'row', marginLeft: 10, flex: 1 }}>
+                  <View style={{ flex: 1 }}>
                     <Text
                       variant="labelLarge"
-                      style={{color: theme.colors.primary}}>
+                      style={{ color: theme.colors.primary }}>
                       {firstName} {lastName}
                     </Text>
-                    <Text style={{fontWeight: 'bold'}}>
+                    <Text style={{ fontWeight: 'bold' }}>
                       {formattedDate} {formattedTime}
                     </Text>
                     <Text>{messageText}</Text>
                   </View>
-                  {type === 'add_friend' && (
+                  {(type === 'add_friend' || type === 'appointment') && !["Your friend request has been accepted", "Your friend request has been declined"].includes(message) && (
                     <Button
                       icon="account-check"
                       mode="contained"
-                      onPress={() => acceptFriend(referenceId, id)}
+                      onPress={() => {
+                        setSelectedNotification(item);
+                        setModalVisible(true);
+                      }}
                       disabled={isRead}
-                      style={{alignSelf: 'flex-end', marginTop: 10}}>
-                      {isRead ? 'Đã kết bạn' : 'Kết bạn'}
-                    </Button>
-                  )}
-                  {type === 'appointment' && (
-                    <Button
-                      icon="account-check"
-                      mode="contained"
-                      onPress={() => acceptAppointment(referenceId, id)}
-                      disabled={isRead}
-                      style={{alignSelf: 'flex-end', marginTop: 10}}>
-                      {isRead ? 'Đã hẹn' : 'Đồng ý'}
+                      style={{ alignSelf: 'flex-end', marginTop: 10 }}>
+                      {isRead ? 'Đã xử lý' : 'Xử lý'}
                     </Button>
                   )}
                 </View>
@@ -352,6 +377,34 @@ const NotificationScreen = ({navigation}: any) => {
           }}
         />
       )}
+      <Modal
+        animationType="slide"
+        transparent={true}
+        visible={modalVisible}
+        onRequestClose={() => {
+          setModalVisible(!modalVisible);
+          setSelectedNotification(null);
+        }}>
+        <View style={styles.modalContainer}>
+          <View style={styles.modalView}>
+            <Text style={styles.modalText}>
+              Bạn có muốn xử lý thông báo này không?
+            </Text>
+            <View style={styles.modalButtonContainer}>
+              <TouchableOpacity
+                style={[styles.button, styles.buttonAccept]}
+                onPress={handleAccept}>
+                <Text style={styles.textStyle}>Đồng ý</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                style={[styles.button, styles.buttonDecline]}
+                onPress={handleDecline}>
+                <Text style={styles.textStyle}>Từ chối</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -398,5 +451,54 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+  },
+  modalView: {
+    margin: 20,
+    backgroundColor: 'white',
+    borderRadius: 20,
+    padding: 35,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+  },
+  modalText: {
+    marginBottom: 15,
+    textAlign: 'center',
+    fontSize: 18,
+  },
+  modalButtonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+  button: {
+    borderRadius: 10,
+    padding: 10,
+    elevation: 2,
+    flex: 1,
+    marginHorizontal: 5,
+  },
+  buttonAccept: {
+    backgroundColor: '#2196F3',
+  },
+  buttonDecline: {
+    backgroundColor: '#F44336',
+  },
+  textStyle: {
+    color: 'white',
+    fontWeight: 'bold',
+    textAlign: 'center',
   },
 });
