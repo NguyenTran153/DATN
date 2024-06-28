@@ -47,7 +47,11 @@ const ProfileScreen = ({navigation}: {navigation: any}) => {
       style={[styles.container, {backgroundColor: theme.colors.background}]}>
       <View style={styles.profile}>
         <Image
-          source={{uri: userData?.avatar || 'default_avatar_url'}}
+          source={
+            userData?.avatar
+              ? {uri: userData.avatar}
+              : require('../../asset/7677205.jpg')
+          }
           style={styles.img}
         />
         <View style={styles.patientInfo}>
