@@ -372,7 +372,7 @@ const NotificationScreen = ({navigation}: any) => {
                         }}
                         disabled={isRead}
                         style={{alignSelf: 'flex-end', marginTop: 10}}>
-                        {isRead ? 'Đã xử lý' : 'Xử lý'}
+                        {isRead ? 'Đã phản hồi' : 'phản hồi'}
                       </Button>
                     )}
                 </View>
@@ -392,7 +392,7 @@ const NotificationScreen = ({navigation}: any) => {
         <View style={styles.modalContainer}>
           <View style={styles.modalView}>
             <Text style={styles.modalText}>
-              Bạn có muốn xử lý thông báo này không?
+              Bạn có muốn phản hồi thông báo này không?
             </Text>
             <View style={styles.modalButtonContainer}>
               <TouchableOpacity

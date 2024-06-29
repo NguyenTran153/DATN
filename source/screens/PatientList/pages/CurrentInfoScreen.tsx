@@ -56,8 +56,8 @@ const CurrentInfoScreen = ({ route }: any) => {
       setApp(appointments)
       setPres(prescriptions);
       SetDiary(diaries)
-      const medicineStrings = prescriptions[0].data.medicines.map((medicine: { name: any; schedule: { morning: any; afternoon: any; evening: any; night: any; }; }) => (
-        `${medicine.name}: Sáng: ${medicine.schedule.morning}, Trưa: ${medicine.schedule.afternoon}, Chiều: ${medicine.schedule.evening}, Tối: ${medicine.schedule.night}`))
+      const medicineStrings = prescriptions[0].data.medicines.map((medicine: { name: any; schedule: { morning: any; afternoon: any; evening: any; night: any; }; dosage : any }) => (
+        `${medicine.name}: Sáng: ${medicine.schedule.morning}, Trưa: ${medicine.schedule.afternoon}, Chiều: ${medicine.schedule.evening}, Tối: ${medicine.schedule.night}\nSố lượng: ${medicine.dosage} viên`))
       setMed(medicineStrings)
     };
     fetchAPI()
