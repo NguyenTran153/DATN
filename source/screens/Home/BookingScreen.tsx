@@ -1,13 +1,14 @@
 import React, {useState, useEffect} from 'react';
-import {NativeStackScreenProps} from '@react-navigation/native-stack';
+import {StyleSheet, View, ScrollView, TouchableOpacity} from 'react-native';
 import {
-  StyleSheet,
-  View,
-  ScrollView,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
-import {useTheme, Button, Text, Icon, Searchbar} from 'react-native-paper';
+  useTheme,
+  Button,
+  Text,
+  Icon,
+  Searchbar,
+  DataTable,
+  Avatar,
+} from 'react-native-paper';
 import {Calendar, LocaleConfig} from 'react-native-calendars';
 
 import Horizon from '../../components/Horizon';
@@ -70,6 +71,7 @@ const BookingScreen = ({route, navigation}: any) => {
 
   const [data, setData] = useState<UserData>();
   const [doctorList, setDoctorList] = useState<any[]>();
+
   useEffect(() => {
     fetchData();
   }, []);
@@ -90,19 +92,22 @@ const BookingScreen = ({route, navigation}: any) => {
 
   const theme = useTheme();
 
-  const [selectedSpecialty, setSelectedSpecialty] = useState<string | null>(
-    null,
-  );
   const [selectedDoctor, setSelectedDoctor] = useState<any>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedHour, setSelectedHour] = useState<string | null>(null);
+  const [page, setPage] = useState(1);
+  const itemsPerPage = 3; // Maximum items per page
 
   const [searchDoctor, setSearchDoctor] = useState<string>('');
   const [doctorID, setDocID] = useState('');
-  const [isSpecialtySearch, setIsSpecialtySearch] = useState(false);
   const [isDoctorSearch, setIsDoctorSearch] = useState(false);
   const [isCalendarVisible, setIsCalendarVisible] = useState(false);
   const [isTimePickerVisible, setIsTimePickerVisible] = useState(false);
+
+  const startIndex = (page - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+
+  const paginatedDoctors = doctorList?.slice(startIndex, endIndex);
 
   const timeSlots = [
     '07:00-08:00',
@@ -114,46 +119,23 @@ const BookingScreen = ({route, navigation}: any) => {
     '15:00-16:00',
     '16:00-17:00',
   ];
-  const doctors = [
-    {name: 'Huy Bình', specialty: 'Tai Mũi Họng'},
-    {name: 'Phương Thảo', specialty: 'Nhi Khoa'},
-  ];
-
-  const specialties = [
-    {index: 0, name: 'Khám chức năng hô hấp', iconName: 'Respirology'},
-    {index: 1, name: 'Khám da liễu', iconName: 'Measles'},
-    {index: 2, name: 'Khám điều trị vết thương', iconName: 'Bandaged'},
-    {index: 3, name: 'Khám hậu môn-trực tràng', iconName: 'Intestine'},
-    {index: 4, name: 'Khám mắt', iconName: 'Eye'},
-    {index: 5, name: 'Khám tai mũi họng', iconName: 'Ear'},
-    {index: 6, name: 'Khám nội tiết', iconName: 'Endocrinology'},
-    {index: 7, name: 'Khám phụ khoa', iconName: 'Gynecology'},
-    {index: 8, name: 'Khám thai', iconName: 'Fetus'},
-    {index: 9, name: 'Khám thần kinh', iconName: 'Psychology'},
-    {index: 10, name: 'Khám tiết niệu', iconName: 'Kidneys'},
-    {index: 11, name: 'Khám tiêu hoá-gan mật', iconName: 'Stomach'},
-    {index: 12, name: 'Khám tim mạch', iconName: 'Heart'},
-    {index: 13, name: 'Khám tổng quát', iconName: 'Tac'},
-    {index: 14, name: 'Khám viêm gan', iconName: 'Liver'},
-    {index: 15, name: 'Khám xương khớp', iconName: 'Joints'},
-    {
-      index: 16,
-      name: 'Lồng ngực - Mạch máu - Bướu cổ',
-      iconName: 'BloodVessel',
-    },
-    {index: 17, name: 'Thẩm mỹ - chăm sóc da', iconName: 'Allergies'},
-  ];
 
   const resetBooking = () => {
     setSelectedDate(null);
     setSelectedHour(null);
     setSelectedDoctor(null);
-    setSelectedSpecialty(null);
   };
 
-  const toggleSpecialtiesVisibility = () => {
-    setIsSpecialtySearch(!isSpecialtySearch);
+  const nextPage = () => {
+    setPage(prevPage => prevPage + 1);
   };
+
+  const prevPage = () => {
+    setPage(prevPage => prevPage - 1);
+  };
+
+  const canNext = doctorList && endIndex < doctorList.length;
+  const canPrev = page > 1;
 
   const toggleDoctorVisibility = () => {
     setIsDoctorSearch(!isDoctorSearch);
@@ -168,36 +150,72 @@ const BookingScreen = ({route, navigation}: any) => {
   };
 
   const renderDoctorContainer = () => {
-    const filteredDoctors = doctors.filter(doctor =>
+    const filteredDoctors = doctorList?.filter(doctor =>
       doctor.name.toLowerCase().includes(searchDoctor.toLowerCase()),
     );
+
+    const defaultAvatar = require('../../asset/7677205.jpg');
 
     return (
       <View style={styles.doctorContainer}>
         <Searchbar
           style={styles.searchBar}
-          placeholder="Tìm nhanh bác sĩ"
+          placeholder={`Tìm nhanh ${
+            user.role === 'patient' ? 'bác sĩ' : 'bệnh nhân'
+          }`}
           onChangeText={setSearchDoctor}
           value={searchDoctor}
         />
-        {doctorList
-          ? doctorList.map((doctor, index) => (
-              <TouchableOpacity
+        {filteredDoctors && filteredDoctors.length > 0 ? (
+          <DataTable>
+            {paginatedDoctors?.map((doctor, index) => (
+              <DataTable.Row
                 key={index}
-                style={{width: '100%'}}
                 onPress={() => {
                   setSelectedDoctor(doctor.name);
                   setDocID(doctor.id);
                   setIsDoctorSearch(false);
                 }}>
-                <DoctorCard doctor={doctor} />
-              </TouchableOpacity>
-            ))
-          : 'Không có bác sĩ nào'}
+                <View
+                  style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    paddingHorizontal: 16,
+                    paddingVertical: 10,
+                  }}>
+                  <Avatar.Image
+                    source={
+                      doctor.avatar ? {uri: doctor.avatar} : defaultAvatar
+                    }
+                    size={40}
+                    style={{marginRight: 10}}
+                  />
+                  <Text style={{fontSize: 16, fontWeight: 'bold'}}>
+                    {doctor.name}
+                  </Text>
+                </View>
+                {/* Thêm các ô cho các cột khác nếu cần */}
+              </DataTable.Row>
+            ))}
+            {filteredDoctors && filteredDoctors.length > itemsPerPage && (
+              <DataTable.Pagination
+                page={page}
+                numberOfPages={Math.ceil(filteredDoctors.length / itemsPerPage)}
+                onPageChange={page => setPage(page)}
+                label={`Page ${page} of ${Math.ceil(
+                  filteredDoctors.length / itemsPerPage,
+                )}`}
+              />
+            )}
+          </DataTable>
+        ) : (
+          <Text>{`Không có ${
+            user.role === 'patient' ? 'bác sĩ' : 'bệnh nhân'
+          } nào`}</Text>
+        )}
       </View>
     );
   };
-
   const renderTimeSlots = () => {
     return (
       <View style={{marginTop: 10}}>
@@ -291,59 +309,10 @@ const BookingScreen = ({route, navigation}: any) => {
             <Text style={{fontWeight: '400', fontSize: 18}}>Đặt lại</Text>
           </TouchableOpacity>
         </View>
-        {/*<View style={styles.informationContainer}>
-          <Text style={{fontSize: 20, fontWeight: 'bold'}}>Chuyên khoa</Text>
-          <TouchableOpacity
-            style={[
-              styles.textField,
-              {backgroundColor: theme.colors.onPrimary},
-            ]}
-            onPress={toggleSpecialtiesVisibility}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Icon source="hospital" size={24} />
-              <Text style={{marginLeft: 10, fontSize: 18}}>
-                {selectedSpecialty ? selectedSpecialty : 'Chọn chuyên khoa'}
-              </Text>
-            </View>
-            <Icon source="hockey-sticks" size={24} />
-          </TouchableOpacity>
-          {isSpecialtySearch && (
-            <View
-              style={{
-                flexDirection: 'column',
-                width: '90%',
-                alignSelf: 'center',
-                gap: 5,
-              }}>
-              {specialties.map(specialty => {
-                return (
-                  <TouchableOpacity
-                    key={specialty.index}
-                    style={{
-                      height: 50,
-                      width: '100%',
-                      flexDirection: 'row',
-                      justifyContent: 'space-around',
-                      borderWidth: 1,
-                      borderColor: theme.colors.primary,
-                      borderRadius: 16,
-                      alignContent: 'center',
-                      alignItems: 'center',
-                    }}
-                    onPress={() => {
-                      setSelectedSpecialty(specialty.name);
-                      setIsSpecialtySearch(false);
-                    }}>
-                    <Text variant="titleLarge">{specialty.name}</Text>
-                  </TouchableOpacity>
-                );
-              })}
-            </View>
-          )}
-          <Horizon />
-        </View>*/}
         <View style={styles.informationContainer}>
-          <Text style={{fontSize: 20, fontWeight: 'bold'}}>Bác sĩ</Text>
+          <Text style={{fontSize: 20, fontWeight: 'bold'}}>
+            {user.role === 'patient' ? 'Bác sĩ' : 'Bệnh nhân'}
+          </Text>
           <TouchableOpacity
             style={[
               styles.textField,
@@ -353,7 +322,9 @@ const BookingScreen = ({route, navigation}: any) => {
             <View style={{flexDirection: 'row', alignItems: 'center'}}>
               <Icon source="doctor" size={24} />
               <Text style={{marginLeft: 10, fontSize: 18}}>
-                {selectedDoctor ? selectedDoctor : 'Chọn bác sĩ'}
+                {selectedDoctor
+                  ? selectedDoctor
+                  : `Chọn ${user.role === 'patient' ? 'bác sĩ' : 'bệnh nhân'}`}
               </Text>
             </View>
             <Icon source="hockey-sticks" size={24} />
@@ -361,23 +332,6 @@ const BookingScreen = ({route, navigation}: any) => {
           {isDoctorSearch && renderDoctorContainer()}
           <Horizon />
         </View>
-
-        {/*<View style={styles.informationContainer}>
-          <Text style={{fontSize: 20, fontWeight: 'bold'}}>Dịch vụ</Text>
-          <TouchableOpacity
-            style={[
-              styles.serviceField,
-              {backgroundColor: theme.colors.onPrimary},
-            ]}>
-            <View style={{flexDirection: 'row', alignItems: 'center'}}>
-              <Text style={{marginLeft: 10, fontSize: 18}}>Khám dịch vụ</Text>
-            </View>
-            <Text style={{fontSize: 20, color: theme.colors.primary}}>
-              150.000 VND
-            </Text>
-          </TouchableOpacity>
-          <Horizon />
-        </View>*/}
         <View style={styles.informationContainer}>
           <Text style={{fontSize: 20, fontWeight: 'bold'}}>Ngày khám</Text>
           <TouchableOpacity
@@ -424,18 +378,6 @@ const BookingScreen = ({route, navigation}: any) => {
 
           <Horizon />
         </View>
-        {/*<View style={{marginHorizontal: 10}}>
-          <Text style={{color: theme.colors.primary}}>
-            Vui lòng kiểm tra lại thông tin trước khi đặt lịch
-          </Text>
-          <View style={{flexDirection: 'column'}}>
-            <View
-              style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-              <Text>Phí khám bệnh</Text>
-              <Text> 150.000 VNĐ</Text>
-            </View>
-          </View>
-        </View>*/}
       </ScrollView>
       <Button
         style={styles.confirmButton}

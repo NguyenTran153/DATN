@@ -13,6 +13,7 @@ import {
   SegmentedButtons,
   IconButton,
   DataTable,
+  ActivityIndicator,
 } from 'react-native-paper';
 import {useDispatch, useSelector} from 'react-redux';
 
@@ -30,12 +31,14 @@ const StoreScreen = ({navigation}: {navigation: any}) => {
   const [page, setPage] = useState<number>(1);
   const [selectedCategory, setSelectedCategory] = useState<string>('');
   const [filteredData, setFilteredData] = useState<any>([]);
+  const [loading, setLoading] = useState<boolean>(false);
 
   useEffect(() => {
     fetchProducts();
   }, [searchQuery, selectedCategory, page]);
 
   const fetchProducts = async () => {
+    setLoading(true);
     try {
       const response = await PrescriptionService.getDrug(
         token,
@@ -49,6 +52,16 @@ const StoreScreen = ({navigation}: {navigation: any}) => {
     } catch (error) {
       console.error('Error fetching products:', error);
     }
+    setLoading(false);
+  };
+
+  const renderFooter = () => {
+    if (!loading) return null;
+    return (
+      <View style={styles.loading}>
+        <ActivityIndicator animating={true} size="large" />
+      </View>
+    );
   };
 
   return (
@@ -69,7 +82,7 @@ const StoreScreen = ({navigation}: {navigation: any}) => {
           }
         />
       </View>
-      <View style={{flex: 1, padding: 10}}>
+      <View style={{flex: 1, padding: 10, width: '100%'}}>
         <View style={styles.listContainer}>
           <View style={styles.title}>
             <Text variant="titleLarge">Danh sách sản phẩm</Text>
@@ -77,6 +90,7 @@ const StoreScreen = ({navigation}: {navigation: any}) => {
           </View>
 
           <SegmentedButtons
+            style={{width: '100%'}}
             value={value}
             onValueChange={setValue}
             buttons={[
@@ -129,6 +143,7 @@ const StoreScreen = ({navigation}: {navigation: any}) => {
             keyExtractor={item => item.id.toString()}
             numColumns={2}
             showsVerticalScrollIndicator={false}
+            ListFooterComponent={renderFooter}
           />
         </View>
         <DataTable.Pagination
@@ -173,4 +188,7 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   productList: {},
+  loading: {
+    paddingVertical: 20,
+  },
 });

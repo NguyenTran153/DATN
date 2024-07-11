@@ -46,10 +46,6 @@ const DiaryRecordScreen = ({route}: any) => {
     try {
       // const savedData = await AsyncStorage.getItem('patientActivities');
       // const savedData = await DiaryService.getDiary(token.accessToken);
-      const savedData = await DiaryService.getDiaryByID(token.accessToken, patientId)
-      if (savedData) {
-        setEntries(savedData);
-      }
     } catch (error) {
       console.error('Error loading data', error);
     }

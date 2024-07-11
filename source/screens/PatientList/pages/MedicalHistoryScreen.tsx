@@ -58,42 +58,43 @@ const MedicalHistoryScreen = ({navigation, route}: any) => {
     }
     return inputString.replace(/\\"/g, '"');
   };
+  
+  const getMedicalData = async () => {
+    const patientId = route.params.patient.id;
+    setLoading(true);
+    try {
+      const prescriptions = await PrescriptionService.getPrescription(
+        patientId,
+        accessToken,
+      );
+
+      const medicalDataPromises = prescriptions.map(
+        async (prescription: any) => {
+          const diagnoses = await PrescriptionService.getDiagnosis(
+            prescription.id,
+            accessToken,
+          );
+          return diagnoses.map((diagnosis: any) => ({
+            id: diagnosis.id,
+            date: format(new Date(diagnosis.createdAt), 'yyyy-MM-dd'),
+            symptoms: convertString(diagnosis.problem),
+            prescription,
+            diagnosis,
+          }));
+        },
+      );
+
+      const medicalData = await Promise.all(medicalDataPromises);
+      const flatMedicalData = medicalData.flat();
+      setMedicalHistoryData(flatMedicalData);
+    } catch (error) {
+      console.error('Error getting medical data:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const getMedicalData = async () => {
-      const patientId = route.params.patient.id;
-      setLoading(true);
-      try {
-        const prescriptions = await PrescriptionService.getPrescription(
-          patientId,
-          accessToken,
-        );
-
-        const medicalDataPromises = prescriptions.map(
-          async (prescription: any) => {
-            const diagnoses = await PrescriptionService.getDiagnosis(
-              prescription.id,
-              accessToken,
-            );
-            return diagnoses.map((diagnosis: any) => ({
-              id: diagnosis.id,
-              date: format(new Date(diagnosis.createdAt), 'yyyy-MM-dd'),
-              symptoms: convertString(diagnosis.problem),
-              prescription,
-              diagnosis,
-            }));
-          },
-        );
-
-        const medicalData = await Promise.all(medicalDataPromises);
-        const flatMedicalData = medicalData.flat();
-        setMedicalHistoryData(flatMedicalData);
-      } catch (error) {
-        console.error('Error getting medical data:', error);
-      } finally {
-        setLoading(false);
-      }
-    };
     getMedicalData();
   }, []);
 

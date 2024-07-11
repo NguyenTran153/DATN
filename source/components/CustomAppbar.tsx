@@ -17,13 +17,13 @@ const CustomAppbar: React.FC<AppbarProps> = ({title, goBack, iconButton}) => {
       <Appbar.Header
         style={{backgroundColor: theme.colors.primary}}
         mode="center-aligned">
-        <Appbar.BackAction onPress={goBack} color={theme.colors.background} />
-        <Appbar.Content title={title} color={theme.colors.background} />
+        <Appbar.BackAction onPress={goBack} color={'white'} />
+        <Appbar.Content title={title} color={'white'} />
         {iconButton && (
           <Appbar.Action
             icon={iconButton.icon}
             onPress={iconButton.onPress}
-            color={theme.colors.background}
+            color={'white'}
           />
         )}
       </Appbar.Header>

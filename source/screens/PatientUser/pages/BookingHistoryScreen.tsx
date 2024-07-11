@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, {useEffect, useState, useCallback} from 'react';
 import {View, ScrollView, StyleSheet, Dimensions} from 'react-native';
 import {
   useTheme,
@@ -36,48 +36,48 @@ const BookingHistoryScreen = ({navigation}: any) => {
   const token = useSelector((state: any) => state.token);
   const [appointments, setAppointments] = useState<any[]>([]);
 
+  const fetchAppointments = async () => {
+    try {
+      const appointments = await AppointmentService.getAppointment(
+        token.accessToken,
+      );
+
+      // Lọc và chuyển đổi danh sách lịch hẹn
+      const convertedList = appointments.map(item => {
+        const beginTimestamp = item.beginTimestamp;
+        const date = new Date(beginTimestamp * 1000); // Chuyển đổi thành mili giây
+        const formattedDate = moment(date).format('DD/MM/YYYY HH:mm');
+
+        // Xác định thông tin của bác sĩ từ requestUser hoặc confirmUser
+        const doctorUser =
+          item.requestUser.role === 'doctor'
+            ? item.requestUser
+            : item.confirmUser;
+
+        // Lấy thông tin từ doctorUser nếu tồn tại
+        const doctorFirstName = doctorUser ? doctorUser.firstName : '';
+        const doctorLastName = doctorUser ? doctorUser.lastName : '';
+        const doctorAvatar = doctorUser ? doctorUser.avatar : '';
+
+        return {
+          id: item.id,
+          date: formattedDate,
+          doctorFirstName: doctorFirstName,
+          doctorLastName: doctorLastName,
+          doctorAvatar: doctorAvatar,
+        };
+      });
+
+      setAppointments(convertedList);
+    } catch (error) {
+      console.error('Error fetching appointments:', error);
+      // Xử lý lỗi khi fetch dữ liệu nếu cần
+    }
+  };
+
   useEffect(() => {
-    const fetchAppointments = async () => {
-      try {
-        const appointments = await AppointmentService.getAppointment(
-          token.accessToken,
-        );
-
-        // Lọc và chuyển đổi danh sách lịch hẹn
-        const convertedList = appointments.map(item => {
-          const beginTimestamp = item.beginTimestamp;
-          const date = new Date(beginTimestamp * 1000); // Chuyển đổi thành mili giây
-          const formattedDate = moment(date).format('DD/MM/YYYY HH:mm');
-
-          // Xác định thông tin của bác sĩ từ requestUser hoặc confirmUser
-          const doctorUser =
-            item.requestUser.role === 'doctor'
-              ? item.requestUser
-              : item.confirmUser;
-
-          // Lấy thông tin từ doctorUser nếu tồn tại
-          const doctorFirstName = doctorUser ? doctorUser.firstName : '';
-          const doctorLastName = doctorUser ? doctorUser.lastName : '';
-          const doctorAvatar = doctorUser ? doctorUser.avatar : '';
-
-          return {
-            id: item.id,
-            date: formattedDate,
-            doctorFirstName: doctorFirstName,
-            doctorLastName: doctorLastName,
-            doctorAvatar: doctorAvatar,
-          };
-        });
-
-        setAppointments(convertedList);
-      } catch (error) {
-        console.error('Error fetching appointments:', error);
-        // Xử lý lỗi khi fetch dữ liệu nếu cần
-      }
-    };
-
     fetchAppointments();
-  }, []);
+  },[]);
 
   const filteredAppointments = appointments.filter(item => {
     const matchesName = item.doctorFirstName

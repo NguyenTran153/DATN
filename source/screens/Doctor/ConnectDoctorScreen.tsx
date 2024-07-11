@@ -73,7 +73,7 @@ const ConnectDoctorScreen = ({navigation, route}: any) => {
               <Text
                 style={{
                   fontSize: 20,
-                  color: theme.colors.background,
+                  color: 'white',
                   fontWeight: '500',
                   marginBottom: 10,
                 }}>
@@ -82,7 +82,7 @@ const ConnectDoctorScreen = ({navigation, route}: any) => {
               <View style={{marginBottom: 10}}>
                 <QRLoginID />
               </View>
-              <Text style={{color: theme.colors.background, marginBottom: 10}}>
+              <Text style={{color: 'white', marginBottom: 10}}>
                 Quét mã để thêm bạn với tôi
               </Text>
             </View>

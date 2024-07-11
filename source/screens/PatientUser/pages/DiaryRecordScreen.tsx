@@ -11,6 +11,7 @@ import {
 } from 'react-native-paper';
 import moment from 'moment';
 import LottieView from 'lottie-react-native';
+import {useFocusEffect} from '@react-navigation/native';
 
 import EntryItem from '../../../components/EntryItem';
 import DiaryService from '../../../services/DiaryService';

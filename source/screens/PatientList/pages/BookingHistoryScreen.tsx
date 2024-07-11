@@ -62,7 +62,7 @@ const BookingHistoryScreen = ({route}: any) => {
       }
     };
     fetchAPI();
-  }, [selectedSegment, patient.id, token.accessToken]);
+  }, []);
 
   const filterAppointments = (appointments: any[], query: string) => {
     if (!query.trim()) return appointments;

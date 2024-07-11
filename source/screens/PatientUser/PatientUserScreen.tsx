@@ -69,14 +69,26 @@ const TabNavigator = ({navigation}: any) => {
 
 const PatientUserScreen = ({navigation}: any) => {
   const user = useSelector((state: any) => state.user);
-
+  const theme = useTheme();
   return (
     <Drawer.Navigator
       initialRouteName="Home"
       screenOptions={{
+        headerStyle: {
+          backgroundColor: theme.colors.background,
+        },
+
+        headerTintColor: theme.colors.onBackground,
+        drawerStyle: {
+          backgroundColor: theme.colors.background, // Background color of the drawer
+        },
+        drawerLabelStyle: {
+          color: theme.colors.onBackground, // Text color in the drawer
+        },
         headerRight: () => (
           <IconButton
             icon="bell"
+            iconColor={theme.colors.onBackground}
             size={24}
             onPress={() =>
               navigation.navigate('HomeNavigator', {
