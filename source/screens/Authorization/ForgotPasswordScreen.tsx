@@ -119,7 +119,7 @@ import OTPScreen from './OtpScreen';
               style={styles.img}
               alt="Logo"
             />
-            <Text style={styles.title}>Sign up to MediConnect</Text>
+            <Text style={styles.title}>Đăng ký Medical</Text>
           </View>
           <View style={styles.form}>
             <View style={styles.input}>

@@ -111,7 +111,7 @@ import { ALERT_TYPE, Dialog } from 'react-native-alert-notification';
               style={styles.img}
               alt="Logo"
             />
-            <Text style={styles.title}>Sign up to MediConnect</Text>
+            <Text style={styles.title}>Quên mật khẩu Medical</Text>
           </View>
           <View style={styles.form}>
            

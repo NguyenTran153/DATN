@@ -97,10 +97,10 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
             alt="Logo"
           />
           <Text style={[styles.title, {color: theme.colors.primary}]}>
-            Sign in to MediConnect
+            Đăng nhập Medical
           </Text>
           <Text style={[styles.subtitle, {color: theme.colors.secondary}]}>
-            Welcome to the Medic App!
+            Chào mừng đăng nhập Medical
           </Text>
         </View>
         <View style={styles.form}>
@@ -128,9 +128,11 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
             />
           </View>
           <View style={styles.input}>
-            <Text style={styles.inputLabel}>Mật khẩu</Text>
+            <Text style={[styles.inputLabel, {color: theme.colors.primary}]}>
+              Mật khẩu
+            </Text>
             <TextInput
-              id="password"
+              id="password" 
               style={[
                 styles.inputControl,
                 {
@@ -164,7 +166,7 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
               <View
                 style={[styles.btn, {backgroundColor: theme.colors.primary}]}>
                 <Text
-                  style={[styles.btnText, {color: theme.colors.background}]}>
+                  style={[styles.btnText, {color: 'white'}]}>
                   Đăng nhập
                 </Text>
               </View>

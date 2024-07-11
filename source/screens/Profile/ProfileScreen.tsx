@@ -4,15 +4,15 @@ import {StyleSheet, View, Image, ScrollView} from 'react-native';
 import {useSelector, useDispatch} from 'react-redux';
 import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
 import AuthService from '../../services/AuthService';
-import {toggleDarkMode} from '../../redux/slices/themeSlice';
 import dayjs from 'dayjs';
+import { useThemeContext } from '../../context/ThemeContext';
 
 const ProfileScreen = ({navigation}: {navigation: any}) => {
   const theme = useTheme();
   const dispatch = useDispatch();
   const userData = useSelector((state: any) => state.user);
   const token = useSelector((state: any) => state.token);
-  const isDarkMode = useSelector((state: any) => state.theme.isDarkMode);
+  const { isDarkMode, toggleDarkMode } = useThemeContext();
 
   const handleLogout = async () => {
     try {
@@ -28,9 +28,6 @@ const ProfileScreen = ({navigation}: {navigation: any}) => {
     }
   };
 
-  const handleToggleDarkMode = () => {
-    dispatch(toggleDarkMode());
-  };
 
   const formatGender = (gender: string) => {
     if (gender === 'male') return 'Nam';
@@ -98,15 +95,15 @@ const ProfileScreen = ({navigation}: {navigation: any}) => {
               }}
             />
           )}
-          {/* <List.Item
+          <List.Item
             title="Chế Độ Tối"
             left={() => (
               <List.Icon style={styles.settingCenter} icon="theme-light-dark" />
             )}
             right={() => (
-              <Switch value={isDarkMode} onValueChange={handleToggleDarkMode} />
+              <Switch value={isDarkMode} onValueChange={toggleDarkMode} />
             )}
-          /> */}
+          />
         </List.Section>
       </ScrollView>
       <Button

@@ -16,11 +16,6 @@ class AuthService {
           },
         },
       );
-      const data = response.data;
-      const accessToken = data.accessToken;
-      const refreshToken = data.refreshToken;
-      console.log('accessToken:', accessToken);
-      console.log('refreshToken:', refreshToken);
       return response.data;
     } catch (error) {
       console.log('Error log in:', error);
@@ -47,7 +42,7 @@ class AuthService {
       });
       const data = response.data;
       console.log('Reponse:', data);
-      return response.data
+      return response.data;
       // return response.data;
     } catch (error) {
       console.log('Signup:', error);
@@ -72,7 +67,7 @@ class AuthService {
       return data.pinId;
     } catch (error) {
       console.log('PhoneVerification:', error);
-      return 'error'
+      return 'error';
     }
   }
   static async ForgotPassword(phoneNumber: string) {
@@ -108,7 +103,6 @@ class AuthService {
         {
           headers: {
             'content-type': 'application/json',
-            
           },
         },
       );
@@ -140,6 +134,34 @@ class AuthService {
     } catch (error) {
       console.log('OTPVerification: ' + error);
       return 'error';
+    }
+  }
+
+  static async changePassword(
+    accessToken: string,
+    oldPassword: string,
+    newPassword: string,
+  ) {
+    try {
+      const params = JSON.stringify({
+        password: oldPassword,
+        newPassword: newPassword,
+      });
+      const response = await axios.post(
+        'http://10.0.2.2:8080/auth/change-password',
+        params,
+        {
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+          },
+        },
+      );
+
+      return response.data;
+    } catch (error) {
+      console.log(error);
+      throw error;
     }
   }
 

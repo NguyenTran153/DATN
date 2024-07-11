@@ -1,27 +1,40 @@
 import React, {useState} from 'react';
 import {StyleSheet, View} from 'react-native';
-import {useTheme, Text, TextInput, Button} from 'react-native-paper';
+import {useTheme, TextInput, Button, IconButton} from 'react-native-paper';
 import CustomAppbar from '../../components/CustomAppbar';
 import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
-import axios from 'axios';
 import {useSelector} from 'react-redux';
 import AuthService from '../../services/AuthService';
 
 const ChangePasswordScreen = ({navigation}: any) => {
-  const [password, setPassword] = useState('');
+  const theme = useTheme();
+
+  const [oldPassword, setOldPassword] = useState('');
+  const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [showOldPassword, setShowOldPassword] = useState(false);
+  const [showNewPassword, setShowNewPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const token = useSelector((state: any) => state.token.accessToken);
 
   const handleResetPassword = async () => {
-    if (password.length < 6) {
+    if (newPassword.length < 6) {
       Dialog.show({
         type: ALERT_TYPE.WARNING,
         title: 'Lỗi',
-        textBody: 'Mật khẩu phải lớn hơn 6 ký tự!',
+        textBody: 'Mật khẩu mới phải lớn hơn 6 ký tự!',
       });
       return;
     }
-    if (password !== confirmPassword) {
+    if(oldPassword === newPassword) {
+      Dialog.show({
+        type: ALERT_TYPE.WARNING,
+        title: 'Lỗi',
+        textBody: 'Mật khẩu mới trùng mật khẩu cũ!',
+      });
+      return;
+    }
+    if (newPassword !== confirmPassword) {
       Dialog.show({
         type: ALERT_TYPE.WARNING,
         title: 'Lỗi',
@@ -31,7 +44,7 @@ const ChangePasswordScreen = ({navigation}: any) => {
     }
 
     try {
-      await AuthService.ResetPassword(token, password);
+      await AuthService.changePassword(token, oldPassword, newPassword);
 
       Dialog.show({
         type: ALERT_TYPE.SUCCESS,
@@ -52,26 +65,56 @@ const ChangePasswordScreen = ({navigation}: any) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View
+      style={[styles.container, {backgroundColor: theme.colors.background}]}>
       <CustomAppbar title="Đổi mật khẩu" goBack={() => navigation.goBack()} />
       <View style={styles.form}>
         <TextInput
           mode="outlined"
-          secureTextEntry
-          placeholder="Mật khẩu mới"
-          value={password}
-          onChangeText={setPassword}
+          secureTextEntry={!showOldPassword}
+          label="Mật khẩu cũ"
+          value={oldPassword}
+          onChangeText={setOldPassword}
           style={styles.input}
+          right={
+            <TextInput.Icon
+              icon={showOldPassword ? 'eye-off' : 'eye'}
+              onPress={() => setShowOldPassword(!showOldPassword)}
+            />
+          }
         />
         <TextInput
           mode="outlined"
-          secureTextEntry
-          placeholder="Xác nhận mật khẩu"
+          secureTextEntry={!showNewPassword}
+          label="Mật khẩu mới"
+          value={newPassword}
+          onChangeText={setNewPassword}
+          style={styles.input}
+          right={
+            <TextInput.Icon
+              icon={showNewPassword ? 'eye-off' : 'eye'}
+              onPress={() => setShowNewPassword(!showNewPassword)}
+            />
+          }
+        />
+        <TextInput
+          mode="outlined"
+          secureTextEntry={!showConfirmPassword}
+          label="Xác nhận mật khẩu"
           value={confirmPassword}
           onChangeText={setConfirmPassword}
           style={styles.input}
+          right={
+            <TextInput.Icon
+              icon={showConfirmPassword ? 'eye-off' : 'eye'}
+              onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+            />
+          }
         />
-        <Button mode="outlined" onPress={handleResetPassword}>
+        <Button
+          mode="contained"
+          onPress={handleResetPassword}
+          style={styles.button}>
           Xác nhận
         </Button>
       </View>
@@ -87,13 +130,12 @@ const styles = StyleSheet.create({
   },
   form: {
     marginTop: 16,
-    alignItems: 'center',
-    justifyContent: 'center',
+    paddingHorizontal: 16,
   },
   input: {
-    height: 60,
-    marginBottom: 12,
-    paddingHorizontal: 8,
-    width: '80%',
+    marginBottom: 16,
+  },
+  button: {
+    marginTop: 16,
   },
 });
