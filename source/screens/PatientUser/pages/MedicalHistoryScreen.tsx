@@ -12,6 +12,7 @@ import {
   Appbar,
 } from 'react-native-paper';
 import {useSelector} from 'react-redux';
+import {useIsFocused} from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
 import {format} from 'date-fns';
 import PrescriptionService from '../../../services/PrescriptionService';
@@ -22,6 +23,7 @@ const ITEMS_PER_PAGE = 7;
 
 const MedicalHistoryScreen = ({navigation}: any) => {
   const theme = useTheme();
+  const isFocused = useIsFocused();
   const [currentPage, setCurrentPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
   const [medicalHistoryData, setMedicalHistoryData] = useState<any[]>([]);
@@ -98,7 +100,7 @@ const MedicalHistoryScreen = ({navigation}: any) => {
       }
     };
     getMedicalData();
-  }, []);
+  }, [isFocused]);
 
   useEffect(() => {
     setCurrentPage(0);

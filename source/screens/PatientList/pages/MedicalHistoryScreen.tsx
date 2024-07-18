@@ -15,6 +15,7 @@ import {useSelector} from 'react-redux';
 import LottieView from 'lottie-react-native';
 import {format} from 'date-fns';
 import PrescriptionService from '../../../services/PrescriptionService';
+import { useIsFocused } from '@react-navigation/native';
 
 const {height} = Dimensions.get('window');
 
@@ -23,6 +24,7 @@ const ITEMS_PER_PAGE = 7;
 const MedicalHistoryScreen = ({navigation, route}: any) => {
   const theme = useTheme();
   const [currentPage, setCurrentPage] = useState(0);
+  const isFocused = useIsFocused();
   const [searchQuery, setSearchQuery] = useState('');
   const [medicalHistoryData, setMedicalHistoryData] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
@@ -96,7 +98,7 @@ const MedicalHistoryScreen = ({navigation, route}: any) => {
 
   useEffect(() => {
     getMedicalData();
-  }, []);
+  }, [isFocused]);
 
   useEffect(() => {
     setCurrentPage(0);

@@ -13,6 +13,7 @@ import {
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import AppointmentService from '../../../services/AppointmentService';
 import {useSelector} from 'react-redux';
+import { useIsFocused } from '@react-navigation/native';
 import moment from 'moment';
 import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
 import LottieView from 'lottie-react-native';
@@ -23,6 +24,8 @@ const ITEMS_PER_PAGE = 7;
 
 const BookingHistoryScreen = ({navigation}: any) => {
   const theme = useTheme();
+  const isFocused = useIsFocused()
+
   const [currentPage, setCurrentPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
@@ -77,7 +80,7 @@ const BookingHistoryScreen = ({navigation}: any) => {
 
   useEffect(() => {
     fetchAppointments();
-  },[]);
+  },[isFocused]);
 
   const filteredAppointments = appointments.filter(item => {
     const matchesName = item.doctorFirstName

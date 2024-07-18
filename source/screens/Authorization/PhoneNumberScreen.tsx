@@ -9,24 +9,24 @@ import {
   Alert,
   ScrollView,
 } from 'react-native';
-import React, { useState } from 'react';
-import { useTheme } from 'react-native-paper';
+import React, {useState} from 'react';
+import {ActivityIndicator, useTheme} from 'react-native-paper';
 import AuthService from '../../services/AuthService';
 import UserService from '../../services/UserService';
 import OTPScreen from './OtpScreen';
-import { ALERT_TYPE, Dialog } from 'react-native-alert-notification';
-const PhoneNumber = ({ navigation }: any) => {
+import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
+const PhoneNumber = ({navigation}: any) => {
   const theme = useTheme();
   const [value, setValue] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
 
   const handlePhoneNumber = (phone: string) => {
     if (phone.startsWith('0')) {
       // Replace the first '0' with '+84'
       const formattedPhoneNumber = phone.replace(/^0/, '+84');
-      setValue(formattedPhoneNumber)
-      console.log(formattedPhoneNumber)
-    }
-    else {
+      setValue(formattedPhoneNumber);
+      console.log(formattedPhoneNumber);
+    } else {
       Dialog.show({
         type: ALERT_TYPE.DANGER,
         title: 'Thất bại',
@@ -34,7 +34,7 @@ const PhoneNumber = ({ navigation }: any) => {
         button: 'Đóng',
       });
     }
-  }
+  };
   const styles = StyleSheet.create({
     container: {
       padding: 24,
@@ -118,7 +118,23 @@ const PhoneNumber = ({ navigation }: any) => {
     },
   });
   return (
-    <ScrollView style={{ flex: 1, backgroundColor: theme.colors.background }}>
+    <ScrollView style={{flex: 1, backgroundColor: theme.colors.background}}>
+      {isLoading && (
+        <View
+          style={{
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 9,
+            elevation: 9,
+          }}>
+          <ActivityIndicator size={64} />
+        </View>
+      )}
       <View style={styles.container}>
         <View style={styles.header}>
           <Image
@@ -136,7 +152,7 @@ const PhoneNumber = ({ navigation }: any) => {
               style={styles.inputControl}
               autoCapitalize="none"
               autoCorrect={false}
-              inputMode='numeric'
+              inputMode="numeric"
               placeholderTextColor={theme.colors.secondary}
               onChangeText={number => setValue(number)}
             />
@@ -144,32 +160,36 @@ const PhoneNumber = ({ navigation }: any) => {
           <View style={styles.formAction}>
             <TouchableOpacity
               onPress={async () => {
-                if (value.length === 10) {
-                 
-                  const formattedPhoneNumber = value.replace(/^0/, '+84');
-                  const pinId = await AuthService.PhoneVerification(formattedPhoneNumber);
-                  console.log(pinId)
-                  if (pinId !== 'error') {
-                    console.log(pinId)
-                    navigation.navigate('OtpScreen',
-                      { pinId: pinId },
-                    )
-                  }
-                  else{
+                try {
+                  setIsLoading(true);
+                  if (value.length === 10) {
+                    const formattedPhoneNumber = value.replace(/^0/, '+84');
+                    const pinId = await AuthService.PhoneVerification(
+                      formattedPhoneNumber,
+                    );
+                    console.log(pinId);
+                    if (pinId !== 'error') {
+                      console.log(pinId);
+                      navigation.navigate('OtpScreen', {pinId: pinId});
+                    } else {
+                      Dialog.show({
+                        type: ALERT_TYPE.DANGER,
+                        title: 'Số điện thoại',
+                        textBody: 'Số điện thoại đã được đăng ký',
+                        button: 'Đóng',
+                      });
+                    }
+                  } else {
                     Dialog.show({
                       type: ALERT_TYPE.DANGER,
                       title: 'Số điện thoại',
-                      textBody: 'Số điện thoại đã được đăng ký',
+                      textBody: 'Số điện thoại không hợp lệ',
                       button: 'Đóng',
                     });
                   }
-                } else {
-                  Dialog.show({
-                    type: ALERT_TYPE.DANGER,
-                    title: 'Số điện thoại',
-                    textBody: 'Số điện thoại không hợp lệ',
-                    button: 'Đóng',
-                  });
+                } catch (error) {
+                } finally {
+                  setIsLoading(false);
                 }
               }}>
               <View style={styles.btn}>
@@ -177,10 +197,10 @@ const PhoneNumber = ({ navigation }: any) => {
               </View>
             </TouchableOpacity>
             <TouchableOpacity
-              style={{ marginTop: 'auto' }}
+              style={{marginTop: 'auto'}}
               onPress={() => navigation.goBack()}>
               <Text
-                style={[styles.formFooter, { color: theme.colors.secondary }]}>
+                style={[styles.formFooter, {color: theme.colors.secondary}]}>
                 Đã có tài khoản?
                 <Text
                   style={{

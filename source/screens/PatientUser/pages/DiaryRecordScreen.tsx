@@ -11,7 +11,7 @@ import {
 } from 'react-native-paper';
 import moment from 'moment';
 import LottieView from 'lottie-react-native';
-import {useFocusEffect} from '@react-navigation/native';
+import {useIsFocused} from '@react-navigation/native';
 
 import EntryItem from '../../../components/EntryItem';
 import DiaryService from '../../../services/DiaryService';
@@ -34,7 +34,7 @@ const DiaryRecordScreen = ({navigation}: any) => {
   const theme = useTheme();
   const token = useSelector((state: any) => state.token);
   const user = useSelector((state: any) => state.user);
-
+  const isFocused = useIsFocused();
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [entries, setEntries] = useState<Entry[]>([]);
   const [filteredEntries, setFilteredEntries] = useState<Entry[]>([]);
@@ -63,7 +63,7 @@ const DiaryRecordScreen = ({navigation}: any) => {
     };
 
     fetchEntries();
-  }, []);
+  }, [isFocused]);
 
   // Filter entries based on the search query
   useEffect(() => {

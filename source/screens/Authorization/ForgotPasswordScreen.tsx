@@ -11,7 +11,7 @@ import {
   } from 'react-native';
   import React, { useState } from 'react';
   import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
-  import { useTheme } from 'react-native-paper';
+  import { ActivityIndicator, useTheme } from 'react-native-paper';
   import AuthService from '../../services/AuthService';
 import UserService from '../../services/UserService';
 import OTPScreen from './OtpScreen';
@@ -19,6 +19,7 @@ import OTPScreen from './OtpScreen';
     const theme = useTheme();
     const prefix = '+84';
     const [value, setValue] = useState(prefix);
+    const [isLoading, setIsLoading] = useState(false);
   
     const handleChange = (text: string) => {
       // If the user tries to delete the prefix, reset the input to the prefix
@@ -112,6 +113,22 @@ import OTPScreen from './OtpScreen';
     });
     return (
       <ScrollView style={{ flex: 1, backgroundColor: theme.colors.background }}>
+         {isLoading && (
+        <View
+          style={{
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 9,
+            elevation: 9,
+          }}>
+          <ActivityIndicator size={64} />
+        </View>
+      )}
         <View style={styles.container}>
           <View style={styles.header}>
             <Image
@@ -138,19 +155,26 @@ import OTPScreen from './OtpScreen';
             <View style={styles.formAction}>
               <TouchableOpacity
                 onPress={async () => {
-                  if (value.length === 12) {
-                     const pinId = await AuthService.ForgotPassword(value);
-                     console.log(pinId)
-                     navigation.navigate('OTPResetPassword',
-                      {pinId: pinId},
-                    )
-                  } else {
-                    Dialog.show({
-                      type: ALERT_TYPE.DANGER,
-                      title: 'Số điện thoại',
-                      textBody: 'Số điện thoại không hợp lệ',
-                      button: 'Đóng',
-                    });
+                  try {
+    setIsLoading(true);                 
+                    if (value.length === 12) {
+                       const pinId = await AuthService.ForgotPassword(value);
+                       console.log(pinId)
+                       navigation.navigate('OTPResetPassword',
+                        {pinId: pinId},
+                      )
+                    } else {
+                      Dialog.show({
+                        type: ALERT_TYPE.DANGER,
+                        title: 'Số điện thoại',
+                        textBody: 'Số điện thoại không hợp lệ',
+                        button: 'Đóng',
+                      });
+                    }
+                  } catch (error) {
+                    
+                  } finally {
+                    setIsLoading(false);
                   }
                 }}>
                 <View style={styles.btn}>

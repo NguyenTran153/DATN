@@ -14,6 +14,7 @@ import {
 } from 'react-native-paper';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import AppointmentService from '../../../services/AppointmentService';
+import { useIsFocused } from '@react-navigation/native';
 import {useSelector} from 'react-redux';
 import moment from 'moment';
 import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
@@ -24,6 +25,7 @@ const ITEMS_PER_PAGE = 7;
 
 const BookingHistoryScreen = ({route}: any) => {
   const theme = useTheme();
+  const isFocused = useIsFocused();
   const [currentPage, setCurrentPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
   const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
@@ -62,7 +64,7 @@ const BookingHistoryScreen = ({route}: any) => {
       }
     };
     fetchAPI();
-  }, []);
+  }, [isFocused]);
 
   const filterAppointments = (appointments: any[], query: string) => {
     if (!query.trim()) return appointments;

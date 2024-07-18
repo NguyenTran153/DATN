@@ -10,12 +10,13 @@ import {
     ScrollView,
   } from 'react-native';
   import React, { useState } from 'react';
-  import { useTheme } from 'react-native-paper';
+  import { ActivityIndicator, useTheme } from 'react-native-paper';
   import AuthService from '../../services/AuthService';
 import { ALERT_TYPE, Dialog } from 'react-native-alert-notification';
   const ResetPasswordScreen = ({ route,navigation }: any) => {
     const theme = useTheme();
     const token = route.params.token
+    const [isLoading, setIsLoading] = useState(false);
     const [form, setForm] = useState({
       password: '',
       confirmpassword: '',
@@ -104,6 +105,22 @@ import { ALERT_TYPE, Dialog } from 'react-native-alert-notification';
     });
     return (
       <ScrollView style={{ flex: 1, backgroundColor: theme.colors.background }}>
+         {isLoading && (
+        <View
+          style={{
+            position: 'absolute',
+            top: 0,
+            bottom: 0,
+            left: 0,
+            right: 0,
+            justifyContent: 'center',
+            alignItems: 'center',
+            zIndex: 9,
+            elevation: 9,
+          }}>
+          <ActivityIndicator size={64} />
+        </View>
+      )}
         <View style={styles.container}>
           <View style={styles.header}>
             <Image
@@ -146,6 +163,8 @@ import { ALERT_TYPE, Dialog } from 'react-native-alert-notification';
             <View style={styles.formAction}>
               <TouchableOpacity
                 onPress={async () => {
+                  try {
+                    setIsLoading(true);
                     if (form.password === form.confirmpassword) {
                     await AuthService.ResetPassword(token, form.password)
                     Dialog.show({
@@ -162,6 +181,11 @@ import { ALERT_TYPE, Dialog } from 'react-native-alert-notification';
                         button: 'Đóng',
                       });
                     }      
+                  } catch (error) {
+                    
+                  } finally {
+                    setIsLoading(false);
+                  }
                 }}>
                 <View style={styles.btn}>
                   <Text style={styles.btnText}>Đăng ký</Text>

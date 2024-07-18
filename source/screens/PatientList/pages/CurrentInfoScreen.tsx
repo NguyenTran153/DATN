@@ -6,10 +6,12 @@ import PrescriptionService from '../../../services/PrescriptionService';
 import DiaryService from '../../../services/DiaryService';
 import AppointmentService from '../../../services/AppointmentService';
 import moment from 'moment';
+import { useIsFocused } from '@react-navigation/native';
 
 const CurrentInfoScreen = ({ route }: any) => {
   const theme = useTheme();
   const token = useSelector((state: any) => state.token);
+  const isFocused = useIsFocused();
   const patient = route.params.patient;
   const [pres, setPres] = useState<any[]>([]);
   const [diary, SetDiary] = useState<any[]>([]);
@@ -61,7 +63,7 @@ const CurrentInfoScreen = ({ route }: any) => {
       setMed(medicineStrings)
     };
     fetchAPI()
-  }, [])
+  }, [isFocused])
   // Sample data
   const nextAppointment = date;
   const recentDietLog = diary.length !== 0 ? diary[0].data.mockKey : "Không tìm thấy nhật ký gần nhất";

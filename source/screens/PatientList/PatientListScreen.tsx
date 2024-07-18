@@ -8,6 +8,7 @@ import {
   useTheme,
   Button,
 } from 'react-native-paper';
+import { useIsFocused } from '@react-navigation/native';
 import PatientCard from '../../components/PatientCard';
 import {useSelector} from 'react-redux';
 import UserService from '../../services/UserService';
@@ -24,10 +25,11 @@ const PatientListScreen = ({navigation}: any) => {
   const [totalPatients, setTotalPatients] = useState(0);
   const itemsPerPage = 10;
   const token = useSelector((state: any) => state.token);
+  const isFocused = useIsFocused();
 
   useEffect(() => {
     fetchPatients(token.accessToken);
-  }, []);
+  }, [isFocused]);
 
   const fetchPatients = async (token: string) => {
     if (loading) return;

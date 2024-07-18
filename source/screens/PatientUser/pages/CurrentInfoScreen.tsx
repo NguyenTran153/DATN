@@ -1,8 +1,8 @@
-import { StyleSheet, SafeAreaView, ScrollView, View } from 'react-native';
-import React, { useEffect, useState, useCallback } from 'react';
-import { useFocusEffect } from '@react-navigation/native';
-import { Text, useTheme, Card, IconButton } from 'react-native-paper';
-import { useSelector } from 'react-redux';
+import {StyleSheet, SafeAreaView, ScrollView, View} from 'react-native';
+import React, {useEffect, useState, useCallback} from 'react';
+import {useIsFocused} from '@react-navigation/native';
+import {Text, useTheme, Card, IconButton} from 'react-native-paper';
+import {useSelector} from 'react-redux';
 import PrescriptionService from '../../../services/PrescriptionService';
 import DiaryService from '../../../services/DiaryService';
 import AppointmentService from '../../../services/AppointmentService';
@@ -18,53 +18,82 @@ const CurrentInfoScreen = () => {
   const [app, setApp] = useState<any[]>([]);
   const [diagnosis, setDiag] = useState('');
   const [date, setDate] = useState('');
-  
+  const isFocused = useIsFocused();
+
   const fetchAPI = async () => {
-    const prescriptions = await PrescriptionService.getPrescription(patient.id, token.accessToken)
-    const diaries = await DiaryService.getDiaries(token.accessToken, 1, 100, patient.id)
-    const appointments = await AppointmentService.getAppointment(token.accessToken)
-    const beginTimestamp = appointments.filter(item => (item.status === 'ongoing'));
-    const dates = beginTimestamp.map(item => new Date(item.beginTimestamp * 1000));
-    const dianoses = await PrescriptionService.getDiagnosis(prescriptions[0].id,token.accessToken)
-    if(dianoses)
-    {
-        setDiag(dianoses[0].problem)
+    const prescriptions = await PrescriptionService.getPrescription(
+      patient.id,
+      token.accessToken,
+    );
+    const diaries = await DiaryService.getDiaries(
+      token.accessToken,
+      1,
+      100,
+      patient.id,
+    );
+    const appointments = await AppointmentService.getAppointment(
+      token.accessToken,
+    );
+    const beginTimestamp = appointments.filter(
+      item => item.status === 'ongoing',
+    );
+    const dates = beginTimestamp.map(
+      item => new Date(item.beginTimestamp * 1000),
+    );
+    const dianoses = await PrescriptionService.getDiagnosis(
+      prescriptions[0].id,
+      token.accessToken,
+    );
+
+    if (dianoses) {
+      setDiag(dianoses[0].problem);
     }
-    
+
     const now = new Date();
-    dates.sort((a, b) => Math.abs(now.getTime() - a.getTime()) - Math.abs(now.getTime() - b.getTime()));
-    console.log("Dates array" + dates)
+    dates.sort(
+      (a, b) =>
+        Math.abs(now.getTime() - a.getTime()) -
+        Math.abs(now.getTime() - b.getTime()),
+    );
+    console.log('Dates array' + dates);
     const thresholdDate = new Date(now.getTime() + 24 * 60 * 60 * 1000);
-    for(let i = 0; i < dates.length; i++)
-    {
-     
-      if(dates[i].getTime() - thresholdDate.getTime() > 24 * 60 * 60 * 1000)
-        {
-            const formattedDate = moment(dates[i]).format('DD/MM/YYYY HH:mm:ss');
-            setDate(formattedDate);
-            break
-        }
+    for (let i = 0; i < dates.length; i++) {
+      if (dates[i].getTime() - thresholdDate.getTime() > 24 * 60 * 60 * 1000) {
+        const formattedDate = moment(dates[i]).format('DD/MM/YYYY HH:mm:ss');
+        setDate(formattedDate);
+        break;
+      }
     }
-    setApp(appointments)
+    setApp(appointments);
     setPres(prescriptions);
-    SetDiary(diaries)
-    const medicineStrings = prescriptions[0].data.medicines.map((medicine: { name: any; schedule: { morning: any; afternoon: any; evening: any; night: any; }; dosage : any }) => (
-      `${medicine.name}: Sáng: ${medicine.schedule.morning}, Trưa: ${medicine.schedule.afternoon}, Chiều: ${medicine.schedule.evening}, Tối: ${medicine.schedule.night}\nSố lượng: ${medicine.dosage} viên`))
-    setMed(medicineStrings)
+    SetDiary(diaries);
+    const medicineStrings = prescriptions[0].data.medicines.map(
+      (medicine: {
+        name: any;
+        schedule: {morning: any; afternoon: any; evening: any; night: any};
+        dosage: any;
+      }) =>
+        `${medicine.name}: Sáng: ${medicine.schedule.morning}, Trưa: ${medicine.schedule.afternoon}, Chiều: ${medicine.schedule.evening}, Tối: ${medicine.schedule.night}\nSố lượng: ${medicine.dosage} viên`,
+    );
+    setMed(medicineStrings);
   };
-  
+
   useEffect(() => {
-    fetchAPI()
-  }, [])
+    fetchAPI();
+  }, [isFocused]);
   // Sample data
   const nextAppointment = date;
-  const recentDietLog = diary.length !== 0 ? diary[0].data.mockKey : "Không tìm thấy nhật ký gần nhất";
-  const recentDiagnosis = diagnosis !== '' ? diagnosis:"Không tìm thấy chẩn đoán gần nhất";
-  const recentPrescription = med
+  const recentDietLog =
+    diary.length !== 0
+      ? diary[0].data.mockKey
+      : 'Không tìm thấy nhật ký gần nhất';
+  const recentDiagnosis =
+    diagnosis !== '' ? diagnosis : 'Không tìm thấy chẩn đoán gần nhất';
+  const recentPrescription = med;
 
   return (
     <SafeAreaView
-      style={[styles.container, { backgroundColor: theme.colors.background }]}>
+      style={[styles.container, {backgroundColor: theme.colors.background}]}>
       <ScrollView contentContainerStyle={styles.scrollView}>
         <Card style={styles.card}>
           <Card.Title
@@ -109,14 +138,17 @@ const CurrentInfoScreen = () => {
             left={props => <IconButton {...props} icon="pill" />}
             titleStyle={styles.cardTitle}
           />
-          {recentPrescription.length !== 0 ? recentPrescription.map(item =>
+          {recentPrescription.length !== 0 ? (
+            recentPrescription.map(item => (
+              <Card.Content>
+                <Text style={styles.cardContent}>{item}</Text>
+              </Card.Content>
+            ))
+          ) : (
             <Card.Content>
-              <Text style={styles.cardContent}>{item}</Text>
+              <Text style={styles.cardContent}>Không tìm thấy đơn thuốc</Text>
             </Card.Content>
-          ) : <Card.Content>
-            <Text style={styles.cardContent}>Không tìm thấy đơn thuốc</Text>
-          </Card.Content>}
-
+          )}
         </Card>
       </ScrollView>
     </SafeAreaView>

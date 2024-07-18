@@ -15,10 +15,12 @@ import CustomAppbar from '../../components/CustomAppbar';
 import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
 import NotificationService from '../../services/NotificationService';
 import UserService from '../../services/UserService';
+import { useIsFocused } from '@react-navigation/native';
 
 const NotificationScreen = ({navigation}: any) => {
   const theme = useTheme();
   const token = useSelector((state: any) => state.token?.accessToken);
+  const isFocused = useIsFocused();
 
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
@@ -46,7 +48,7 @@ const NotificationScreen = ({navigation}: any) => {
     };
 
     fetchNotifications();
-  }, [token, type]);
+  }, [token, type, isFocused]);
 
   const translateMessage = (message: string): string => {
     if (message === 'You have a new friend request!') {

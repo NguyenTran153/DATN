@@ -16,6 +16,7 @@ import LottieView from 'lottie-react-native';
 import EntryItem from '../../../components/EntryItem';
 import DiaryService from '../../../services/DiaryService';
 import {useSelector} from 'react-redux';
+import { useIsFocused } from '@react-navigation/native';
 
 interface Entry {
   id: string;
@@ -34,6 +35,7 @@ const DiaryRecordScreen = ({route}: any) => {
   const theme = useTheme();
   const token = useSelector((state: any) => state.token);
   const patientId = route.params.patient.id;
+  const isFocused = useIsFocused();
 
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [entries, setEntries] = useState<Entry[]>([]);
@@ -62,7 +64,7 @@ const DiaryRecordScreen = ({route}: any) => {
     };
 
     fetchEntries();
-  }, []);
+  }, [isFocused]);
 
   useEffect(() => {
     const filtered = entries.filter(entry => {

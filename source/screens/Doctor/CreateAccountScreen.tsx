@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { View, StyleSheet, Dimensions } from 'react-native';
+import {useState} from 'react';
+import {View, StyleSheet, Dimensions} from 'react-native';
 import {
   TextInput,
   Button,
@@ -7,14 +7,15 @@ import {
   useTheme,
   Modal,
   Text,
+  ActivityIndicator,
 } from 'react-native-paper';
 import CustomAppbar from '../../components/CustomAppbar';
-import { ALERT_TYPE, Dialog } from 'react-native-alert-notification';
+import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
 import AuthService from '../../services/AuthService';
 
-const { width, height } = Dimensions.get('screen');
+const {width, height} = Dimensions.get('screen');
 
-const SignupScreen = ({ navigation }: any) => {
+const SignupScreen = ({navigation}: any) => {
   const [form, setForm] = useState({
     firstName: '',
     lastName: '',
@@ -25,6 +26,7 @@ const SignupScreen = ({ navigation }: any) => {
 
   const [otpModal, setOTPModal] = useState(false);
   const [otpValue, setOtpValue] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
   const [pinId, setPinId] = useState('');
   const theme = useTheme();
 
@@ -37,8 +39,7 @@ const SignupScreen = ({ navigation }: any) => {
           ...form,
           [name]: formattedPhoneNumber,
         });
-      }
-      else {
+      } else {
         Dialog.show({
           type: ALERT_TYPE.DANGER,
           title: 'Thất bại',
@@ -46,8 +47,7 @@ const SignupScreen = ({ navigation }: any) => {
           button: 'Đóng',
         });
       }
-    }
-    else {
+    } else {
       setForm({
         ...form,
         [name]: value,
@@ -56,49 +56,65 @@ const SignupScreen = ({ navigation }: any) => {
   };
 
   const handleSignup = async () => {
-    // Xử lý logic đăng ký tại đây
-    if (form.confirmPassword === form.password && (form.phone.length !== 0 
-      && form.firstName.length !== 0 && form.lastName.length !== 0))
-    {
-      console.log('First Name:', form.firstName);
-      console.log('Last Name:', form.lastName);
-      console.log('Phone:', form.phone);
-      console.log('Password:', form.password);
-      console.log('Confirm Password:', form.confirmPassword);
-      const result = await AuthService.PhoneVerification(form.phone);
-      setPinId(result)
-      setOTPModal(true);
-      console.log(pinId)
-    }
-    else
-    {
-      Dialog.show({
-        type: ALERT_TYPE.DANGER,
-        title: 'Thất bại',
-        textBody: 'Số điện thoại hoặc mật khẩu chưa hợp lệ',
-        button: 'Đóng',
-      });
+    try {
+      setIsLoading(true);
+      if (
+        form.confirmPassword === form.password &&
+        form.phone.length !== 0 &&
+        form.firstName.length !== 0 &&
+        form.lastName.length !== 0
+      ) {
+        const result = await AuthService.PhoneVerification(form.phone);
+        setPinId(result);
+        setOTPModal(true);
+        console.log(pinId);
+      } else {
+        Dialog.show({
+          type: ALERT_TYPE.DANGER,
+          title: 'Thất bại',
+          textBody: 'Số điện thoại hoặc mật khẩu chưa hợp lệ',
+          button: 'Đóng',
+        });
+      }
+      // Xử lý logic đăng ký tại đây
+    } catch (error) {
+    } finally {
+      setIsLoading(false);
     }
   };
 
   const handleOtpSubmit = async () => {
-
-    if (otpValue.length === 6) {
-
-      const result = await AuthService.OTPVerification(pinId, otpValue);
-      console.log(result)
-      if (result !== 'error') {
-        // navigation.navigate('RegisterScreen', {token: result});
-        await AuthService.signUp(result, '', form.password, form.firstName, form.lastName)
-        Dialog.show({
-          type: ALERT_TYPE.SUCCESS,
-          title: 'Đăng ký',
-          textBody: 'Đăng ký thành công',
-          button: 'Đóng',
-        });
-        navigation.navigate('DoctorNavigator', {
-          screen: 'ConnectDoctorScreen',
-        });
+    try {
+      setIsLoading(true);
+      if (otpValue.length === 6) {
+        const result = await AuthService.OTPVerification(pinId, otpValue);
+        console.log(result);
+        if (result !== 'error') {
+          // navigation.navigate('RegisterScreen', {token: result});
+          await AuthService.signUp(
+            result,
+            '',
+            form.password,
+            form.firstName,
+            form.lastName,
+          );
+          Dialog.show({
+            type: ALERT_TYPE.SUCCESS,
+            title: 'Đăng ký',
+            textBody: 'Đăng ký thành công',
+            button: 'Đóng',
+          });
+          navigation.navigate('DoctorNavigator', {
+            screen: 'ConnectDoctorScreen',
+          });
+        } else {
+          Dialog.show({
+            type: ALERT_TYPE.DANGER,
+            title: 'Thất bại',
+            textBody: 'Số điện thoại chưa đăng ký hoặc không cho phép tìm kiếm',
+            button: 'Đóng',
+          });
+        }
       } else {
         Dialog.show({
           type: ALERT_TYPE.DANGER,
@@ -107,13 +123,9 @@ const SignupScreen = ({ navigation }: any) => {
           button: 'Đóng',
         });
       }
-    } else {
-      Dialog.show({
-        type: ALERT_TYPE.DANGER,
-        title: 'Thất bại',
-        textBody: 'Số điện thoại chưa đăng ký hoặc không cho phép tìm kiếm',
-        button: 'Đóng',
-      });
+    } catch (error) {
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -121,10 +133,26 @@ const SignupScreen = ({ navigation }: any) => {
     <>
       <CustomAppbar title="Tạo tài khoản" goBack={() => navigation.goBack()} />
       <View
-        style={[styles.container, { backgroundColor: theme.colors.background }]}>
-        <View style={{ marginTop: 50 }}>
+        style={[styles.container, {backgroundColor: theme.colors.background}]}>
+        {isLoading && (
+          <View
+            style={{
+              position: 'absolute',
+              top: 0,
+              bottom: 0,
+              left: 0,
+              right: 0,
+              justifyContent: 'center',
+              alignItems: 'center',
+              zIndex: 9,
+              elevation: 9,
+            }}>
+            <ActivityIndicator size={64} />
+          </View>
+        )}
+        <View style={{marginTop: 50}}>
           <TextInput
-            style={[styles.input, { backgroundColor: theme.colors.surface }]}
+            style={[styles.input, {backgroundColor: theme.colors.surface}]}
             label="Số điện thoại"
             mode="outlined"
             value={form.phone}
@@ -148,7 +176,7 @@ const SignupScreen = ({ navigation }: any) => {
               style={[
                 styles.input,
                 styles.halfInput,
-                { backgroundColor: theme.colors.surface },
+                {backgroundColor: theme.colors.surface},
               ]}
               label="Họ"
               mode="outlined"
@@ -162,7 +190,7 @@ const SignupScreen = ({ navigation }: any) => {
               style={[
                 styles.input,
                 styles.halfInput,
-                { backgroundColor: theme.colors.surface },
+                {backgroundColor: theme.colors.surface},
               ]}
               label="Tên"
               mode="outlined"
@@ -175,7 +203,7 @@ const SignupScreen = ({ navigation }: any) => {
           </View>
 
           <TextInput
-            style={[styles.input, { backgroundColor: theme.colors.surface }]}
+            style={[styles.input, {backgroundColor: theme.colors.surface}]}
             label="Mật khẩu"
             mode="outlined"
             secureTextEntry
@@ -184,7 +212,7 @@ const SignupScreen = ({ navigation }: any) => {
             left={<TextInput.Icon icon="lock" color={theme.colors.primary} />}
           />
           <TextInput
-            style={[styles.input, { backgroundColor: theme.colors.surface }]}
+            style={[styles.input, {backgroundColor: theme.colors.surface}]}
             label="Nhập lại mật khẩu"
             mode="outlined"
             secureTextEntry
@@ -216,18 +244,18 @@ const SignupScreen = ({ navigation }: any) => {
           borderRadius: 8,
           borderWidth: 1,
         }}>
-        <Text style={[styles.modalTitle, { color: theme.colors.onBackground }]}>
+        <Text style={[styles.modalTitle, {color: theme.colors.onBackground}]}>
           Nhập mã OTP
         </Text>
         <TextInput
           style={[
             styles.input,
-            { backgroundColor: theme.colors.surface, width: '80%' },
+            {backgroundColor: theme.colors.surface, width: '80%'},
           ]}
           label="Mã OTP"
           mode="outlined"
           value={otpValue}
-          onChangeText={(text) => setOtpValue(text)}
+          onChangeText={text => setOtpValue(text)}
           inputMode="numeric"
         />
         <View style={styles.row}>
