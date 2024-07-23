@@ -1,14 +1,8 @@
 import {ActivityIndicator, FlatList, StyleSheet, View} from 'react-native';
 import React, {useEffect, useState} from 'react';
 import {SafeAreaView} from 'react-native-safe-area-context';
-import {
-  IconButton,
-  DataTable,
-  Searchbar,
-  useTheme,
-  Button,
-} from 'react-native-paper';
-import { useIsFocused } from '@react-navigation/native';
+import {IconButton, Searchbar, useTheme, Button} from 'react-native-paper';
+import {useIsFocused} from '@react-navigation/native';
 import PatientCard from '../../components/PatientCard';
 import {useSelector} from 'react-redux';
 import UserService from '../../services/UserService';
@@ -19,11 +13,8 @@ const PatientListScreen = ({navigation}: any) => {
   const [searchPatient, setSearchPatient] = useState<string>('');
   const [patients, setPatients] = useState<Patient[]>([]);
   const [filteredPatients, setFilteredPatients] = useState<Patient[]>([]);
-  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
-  const [totalPatients, setTotalPatients] = useState(0);
-  const itemsPerPage = 10;
   const token = useSelector((state: any) => state.token);
   const isFocused = useIsFocused();
 
@@ -38,7 +29,6 @@ const PatientListScreen = ({navigation}: any) => {
       const response = await UserService.getFriendList(token);
       if (response && response.data) {
         setPatients(response.data);
-        setTotalPatients(response.data.length);
         setFilteredPatients(response.data);
       }
     } catch (error) {
@@ -51,7 +41,6 @@ const PatientListScreen = ({navigation}: any) => {
     setRefreshing(true);
     try {
       await fetchPatients(token.accessToken);
-      setPage(1);
     } catch (error) {
       console.error(error);
     }
@@ -77,14 +66,7 @@ const PatientListScreen = ({navigation}: any) => {
         })
       : patients;
     setFilteredPatients(filtered);
-    setPage(1);
   }, [searchPatient, patients]);
-
-  const startIndex = (page - 1) * itemsPerPage;
-  const paginatedPatients = filteredPatients.slice(
-    startIndex,
-    startIndex + itemsPerPage,
-  );
 
   const renderFooter = () => {
     if (!loading) return null;
@@ -127,34 +109,8 @@ const PatientListScreen = ({navigation}: any) => {
         </View>
       </View>
       <View style={{flex: 1, padding: 10, width: '100%'}}>
-        <View
-          style={{
-            justifyContent: 'center',
-            alignItems: 'center',
-            flexDirection: 'row',
-          }}>
-          <View
-            style={[styles.line, {backgroundColor: theme.colors.primary}]}
-          />
-          <Button
-            mode="contained"
-            icon="calendar"
-            style={styles.button}
-            contentStyle={styles.buttonContent}
-            labelStyle={styles.buttonLabel}
-            onPress={() => {
-              navigation.navigate('HomeNavigator', {
-                screen: 'BookingScreen',
-              });
-            }}>
-            Đặt Lịch khám bệnh
-          </Button>
-          <View
-            style={[styles.line, {backgroundColor: theme.colors.primary}]}
-          />
-        </View>
         <FlatList
-          data={paginatedPatients}
+          data={filteredPatients}
           renderItem={({item, index}) => (
             <PatientCard key={index} patient={item} navigation={navigation} />
           )}
@@ -166,17 +122,6 @@ const PatientListScreen = ({navigation}: any) => {
           contentContainerStyle={{padding: 10}}
         />
       </View>
-      <DataTable.Pagination
-        style={{bottom: 0, alignSelf: 'flex-end'}}
-        page={page - 1}
-        numberOfPages={Math.ceil(filteredPatients.length / itemsPerPage)}
-        onPageChange={page => setPage(page + 1)}
-        label={`${(page - 1) * itemsPerPage + 1}-${Math.min(
-          page * itemsPerPage,
-          filteredPatients.length,
-        )} của ${filteredPatients.length}`}
-        showFastPaginationControls
-      />
     </SafeAreaView>
   );
 };

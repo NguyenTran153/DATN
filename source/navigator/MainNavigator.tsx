@@ -33,20 +33,6 @@ const BottomTabNavigator = () => {
         }}
       />
       <BottomTabs.Screen
-        name="StoreScreen"
-        component={StoreScreen}
-        options={{
-          tabBarLabel: 'Cửa hàng',
-          tabBarIcon: ({focused}: any) => (
-            <Icon
-              source="store"
-              color={focused ? theme.colors.primary : theme.colors.onBackground}
-              size={24}
-            />
-          ),
-        }}
-      />
-      <BottomTabs.Screen
         name="DoctorProfileScreen"
         component={DoctorProfileScreen}
         options={{
