@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { baseURL } from '../utils/constant';
 class DiaryService {
   static async postDiary(accessToken: string, data: any, files: File[]) {
     try {
@@ -11,7 +12,7 @@ class DiaryService {
       });
 
       const response = await axios.post(
-        'http://10.0.2.2:8080/diaries',
+        `${baseURL}diaries`,
         formData,
         {
           headers: {
@@ -30,7 +31,7 @@ class DiaryService {
 
   static async getDiary(accessToken: string) {
     try {
-      const response = await axios.get('http://10.0.2.2:8080/diaries', {
+      const response = await axios.get(`${baseURL}diaries`, {
         headers: {
           'content-type': 'application/json',
           Authorization: `Bearer ${accessToken}`,
@@ -50,7 +51,7 @@ class DiaryService {
     userId: number,
   ) {
     try {
-      const response = await axios.get('http://10.0.2.2:8080/diaries', {
+      const response = await axios.get(`${baseURL}diaries`, {
         params: {
           page: page,
           pageSize: pageSize,

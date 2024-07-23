@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { baseURL } from '../utils/constant';
 
 class AuthService {
   static async login(phoneNumber: string, password: string) {
@@ -8,7 +9,7 @@ class AuthService {
         password: password,
       });
       const response = await axios.post<Token>(
-        'http://10.0.2.2:8080/auth/login',
+        `${baseURL}auth/login`,
         params,
         {
           headers: {
@@ -35,7 +36,7 @@ class AuthService {
         firstName: firstName,
         lastName: lastName,
       });
-      const response = await axios.post('http://10.0.2.2:8080/users', params, {
+      const response = await axios.post(`${baseURL}users`, params, {
         headers: {
           'content-type': 'application/json',
         },
@@ -55,7 +56,7 @@ class AuthService {
         phoneNumber: phoneNumber,
       });
       const response = await axios.post(
-        'http://10.0.2.2:8080/sms/phone-verification',
+        `${baseURL}sms/phone-verification`,
         params,
         {
           headers: {
@@ -76,7 +77,7 @@ class AuthService {
         phoneNumber: phoneNumber,
       });
       const response = await axios.post(
-        'http://10.0.2.2:8080/auth/forgot-password',
+        `${baseURL}auth/forgot-password`,
         params,
         {
           headers: {
@@ -98,7 +99,7 @@ class AuthService {
         newPassword: password,
       });
       const response = await axios.post(
-        'http://10.0.2.2:8080/auth/reset-password',
+        `${baseURL}auth/reset-password`,
         params,
         {
           headers: {
@@ -120,7 +121,7 @@ class AuthService {
         code: code,
       });
       const response = await axios.post(
-        'http://10.0.2.2:8080/sms/check-verification-code',
+        `${baseURL}sms/check-verification-code`,
         params,
         {
           headers: {
@@ -148,7 +149,7 @@ class AuthService {
         newPassword: newPassword,
       });
       const response = await axios.post(
-        'http://10.0.2.2:8080/auth/change-password',
+        `${baseURL}auth/change-password`,
         params,
         {
           headers: {
@@ -167,7 +168,7 @@ class AuthService {
 
   static async logout(accessToken: string) {
     try {
-      const response = await axios.get('http://10.0.2.2:8080/auth/logout', {
+      const response = await axios.get(`${baseURL}auth/logout`, {
         headers: {
           'content-type': 'application/json',
           Authorization: `Bearer ${accessToken}`,

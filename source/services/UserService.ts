@@ -1,10 +1,10 @@
 import axios from 'axios';
-
+import { baseURL } from '../utils/constant';
 class UserService {
   static async getUserInfo(accessToken: string) {
     try {
       const response = await axios.get<UserData>(
-        'http://10.0.2.2:8080/auth/me',
+        `${baseURL}auth/me`,
         {
           headers: {
             'content-type': 'application/json',
@@ -21,7 +21,7 @@ class UserService {
   static async getUserInfoByID(userID: string, accessToken: string) {
     try {
       const response = await axios.get<UserData>(
-        `http://10.0.2.2:8080/users/${userID}`,
+        `${baseURL}users/${userID}`,
         {
           headers: {
             'content-type': 'application/json',
@@ -40,7 +40,7 @@ class UserService {
     try {
       const params = JSON.stringify(userData);
 
-      const response = await axios.patch('http://10.0.2.2:8080/users', params, {
+      const response = await axios.patch(`${baseURL}users`, params, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${accessToken}`,
@@ -69,7 +69,7 @@ class UserService {
         action: action,
       };
       const response = await axios.patch(
-        `http://10.0.2.2:8080/appointments/response/${appointmentId}`,
+        `${baseURL}appointments/response/${appointmentId}`,
         JSON.stringify(body),
         {
           headers: {
@@ -93,7 +93,7 @@ class UserService {
         name: 'avatar.jpg',
       });
       const response = await axios.post(
-        `http://10.0.2.2:8080/users/upload-avatar`,
+        `${baseURL}users/upload-avatar`,
         formData,
         {
           headers: {
@@ -111,7 +111,7 @@ class UserService {
 
   static async findUserByPhone(phone: string, accessToken: string) {
     try {
-      const response = await axios.get(`http://10.0.2.2:8080/users/search`, {
+      const response = await axios.get(`${baseURL}users/search`, {
         headers: {
           'Content-Type': 'application/json',
           Authorization: `Bearer ${accessToken}`,
@@ -130,7 +130,7 @@ class UserService {
   static async sendFriendRequest(receiverId: string, accessToken: string) {
     try {
       const response = await axios.post(
-        `http://10.0.2.2:8080/users/friend-request/send/${receiverId}`,
+        `${baseURL}users/friend-request/send/${receiverId}`,
         {},
         {
           headers: {
@@ -149,7 +149,7 @@ class UserService {
   static async registerDoctor(accessToken: string, formData: any) {
     try {
       const response = await axios.post(
-        'http://10.0.2.2:8080/users/doctor-register',
+        `${baseURL}users/doctor-register`,
         formData,
         {
           headers: {
@@ -167,7 +167,7 @@ class UserService {
   static async getFriendList(token: string) {
     try {
       const response = await axios.get<Patient[]>(
-        `http://10.0.2.2:8080/users/friends/my`,
+        `${baseURL}users/friends/my`,
         {
           headers: {
             'content-type': 'application/json',
@@ -191,7 +191,7 @@ class UserService {
         status: status,
       };
       const response = await axios.put(
-        `http://10.0.2.2:8080/users/friend-request/response/${friendRequestId}`,
+        `${baseURL}users/friend-request/response/${friendRequestId}`,
         JSON.stringify(body),
         {
           headers: {

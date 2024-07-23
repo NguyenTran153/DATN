@@ -1,9 +1,9 @@
 import axios from 'axios';
-
+import { baseURL } from '../utils/constant';
 class PrescriptionService {
   static async getPrescription(patientId: string, accessToken: string) {
     try {
-      const response = await axios.get(`http://10.0.2.2:8080/prescriptions`, {
+      const response = await axios.get(`${baseURL}prescriptions`, {
         params: {
           page: 1,
           pageSize: 100,
@@ -27,7 +27,7 @@ class PrescriptionService {
   static async getDiagnosis(presId: string, accessToken: string) {
     try {
       const response = await axios.get(
-        `http://10.0.2.2:8080/prescriptions/${presId}/diagnoses`,
+        `${baseURL}prescriptions/${presId}/diagnoses`,
         {
           headers: {
             'content-type': 'application/json',
@@ -61,7 +61,7 @@ class PrescriptionService {
 
       formData.append('belongTo', belongId);
       const response = await axios.post(
-        'http://10.0.2.2:8080/prescriptions',
+        `${baseURL}prescriptions`,
         formData,
         {
           headers: {
@@ -93,7 +93,7 @@ class PrescriptionService {
         formData.append('files', file);
       });
       const response = await axios.post(
-        `http://10.0.2.2:8080/prescriptions/${prescriptionId}/diagnoses`,
+        `${baseURL}prescriptions/${prescriptionId}/diagnoses`,
         formData,
         {
           headers: {
@@ -119,7 +119,7 @@ class PrescriptionService {
   ) {
     try {
       const response = await axios.get(
-        `http://10.0.2.2:8080/drugs?page=${page}&pageSize=${pageSize}&filterAll=${query}`,
+        `${baseURL}drugs?page=${page}&pageSize=${pageSize}&filterAll=${query}`,
         {
           headers: {
             'Content-Type': 'application/json',

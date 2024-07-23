@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { baseURL } from '../utils/constant';
 
 interface CreateAppointmentRequestDto {
   beginTimestamp: number;
@@ -12,7 +13,7 @@ class AppointmentService {
   ) {
     try {
       const response = await axios.post<any>(
-        `http://10.0.2.2:8080/appointments/send/${userId}`,
+        `${baseURL}appointments/send/${userId}`,
         JSON.stringify(appointmentData),
         {
           headers: {
@@ -33,7 +34,7 @@ class AppointmentService {
   static async getAppointment(accessToken: string) {
     try {
       const response = await axios.get<any[]>(
-        `http://10.0.2.2:8080/appointments/me`,
+        `${baseURL}appointments/me`,
         {
           headers: {
             'content-type': 'application/json',
@@ -51,7 +52,7 @@ class AppointmentService {
   static async getAppointmentHistory(userId: string, accessToken: string) {
     try {
       const response = await axios.get<any[]>(
-        `http://10.0.2.2:8080/appointments/history/${userId}`,
+        `${baseURL}appointments/history/${userId}`,
         {
           headers: {
             'content-type': 'application/json',
