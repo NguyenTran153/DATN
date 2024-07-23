@@ -1,14 +1,14 @@
-import {StyleSheet, SafeAreaView, ScrollView, View} from 'react-native';
-import React, {useEffect, useState, useCallback} from 'react';
-import {useIsFocused} from '@react-navigation/native';
-import {Text, useTheme, Card, IconButton} from 'react-native-paper';
-import {useSelector} from 'react-redux';
+import { StyleSheet, SafeAreaView, ScrollView, View, TouchableOpacity } from 'react-native';
+import React, { useEffect, useState, useCallback } from 'react';
+import { useIsFocused } from '@react-navigation/native';
+import { Text, useTheme, Card, IconButton } from 'react-native-paper';
+import { useSelector } from 'react-redux';
 import PrescriptionService from '../../../services/PrescriptionService';
 import DiaryService from '../../../services/DiaryService';
 import AppointmentService from '../../../services/AppointmentService';
 import moment from 'moment';
 
-const CurrentInfoScreen = () => {
+const CurrentInfoScreen = ({ navigation }: any) => {
   const theme = useTheme();
   const token = useSelector((state: any) => state.token);
   const patient = useSelector((state: any) => state.user);
@@ -70,7 +70,7 @@ const CurrentInfoScreen = () => {
     const medicineStrings = prescriptions[0].data.medicines.map(
       (medicine: {
         name: any;
-        schedule: {morning: any; afternoon: any; evening: any; night: any};
+        schedule: { morning: any; afternoon: any; evening: any; night: any };
         dosage: any;
       }) =>
         `${medicine.name}: Sáng: ${medicine.schedule.morning}, Trưa: ${medicine.schedule.afternoon}, Chiều: ${medicine.schedule.evening}, Tối: ${medicine.schedule.night}\nSố lượng: ${medicine.dosage} viên`,
@@ -93,63 +93,72 @@ const CurrentInfoScreen = () => {
 
   return (
     <SafeAreaView
-      style={[styles.container, {backgroundColor: theme.colors.background}]}>
+      style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <ScrollView contentContainerStyle={styles.scrollView}>
-        <Card style={styles.card}>
-          <Card.Title
-            title="Lịch khám tiếp theo"
-            left={props => <IconButton {...props} icon="calendar" />}
-            titleStyle={styles.cardTitle}
-          />
-          <Card.Content>
-            <Text style={styles.cardContent}>
-              {nextAppointment !== ''
-                ? nextAppointment
-                : 'Không có lịch khám tiếp theo'}
-            </Text>
-          </Card.Content>
-        </Card>
-
-        <Card style={styles.card}>
-          <Card.Title
-            title="Nhật ký ăn uống gần nhất"
-            left={props => <IconButton {...props} icon="food" />}
-            titleStyle={styles.cardTitle}
-          />
-          <Card.Content>
-            <Text style={styles.cardContent}>{recentDietLog}</Text>
-          </Card.Content>
-        </Card>
-
-        <Card style={styles.card}>
-          <Card.Title
-            title="Chẩn đoán và kết quả gần nhất"
-            left={props => <IconButton {...props} icon="file-find" />}
-            titleStyle={styles.cardTitle}
-          />
-          <Card.Content>
-            <Text style={styles.cardContent}>{recentDiagnosis}</Text>
-          </Card.Content>
-        </Card>
-
-        <Card style={styles.card}>
-          <Card.Title
-            title="Đơn thuốc gần nhất"
-            left={props => <IconButton {...props} icon="pill" />}
-            titleStyle={styles.cardTitle}
-          />
-          {recentPrescription.length !== 0 ? (
-            recentPrescription.map(item => (
-              <Card.Content>
-                <Text style={styles.cardContent}>{item}</Text>
-              </Card.Content>
-            ))
-          ) : (
+        <TouchableOpacity onPress={() => navigation.navigate('BookingHistoryScreen'
+        )}>
+          <Card style={styles.card}>
+            <Card.Title
+              title="Lịch khám tiếp theo"
+              left={props => <IconButton {...props} icon="calendar" />}
+              titleStyle={styles.cardTitle}
+            />
             <Card.Content>
-              <Text style={styles.cardContent}>Không tìm thấy đơn thuốc</Text>
+              <Text style={styles.cardContent}>
+                {nextAppointment !== ''
+                  ? nextAppointment
+                  : 'Không có lịch khám tiếp theo'}
+              </Text>
             </Card.Content>
-          )}
-        </Card>
+          </Card>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('DiaryRecordScreen'
+        )}>
+          <Card style={styles.card}>
+            <Card.Title
+              title="Nhật ký ăn uống gần nhất"
+              left={props => <IconButton {...props} icon="food" />}
+              titleStyle={styles.cardTitle}
+            />
+            <Card.Content>
+              <Text style={styles.cardContent}>{recentDietLog}</Text>
+            </Card.Content>
+          </Card>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('MedicalHistoryScreen'
+        )}>
+          <Card style={styles.card}>
+            <Card.Title
+              title="Chẩn đoán và kết quả gần nhất"
+              left={props => <IconButton {...props} icon="file-find" />}
+              titleStyle={styles.cardTitle}
+            />
+            <Card.Content>
+              <Text style={styles.cardContent}>{recentDiagnosis}</Text>
+            </Card.Content>
+          </Card>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => navigation.navigate('MedicalHistoryScreen'
+        )}>
+          <Card style={styles.card}>
+            <Card.Title
+              title="Đơn thuốc gần nhất"
+              left={props => <IconButton {...props} icon="pill" />}
+              titleStyle={styles.cardTitle}
+            />
+            {recentPrescription.length !== 0 ? (
+              recentPrescription.map(item => (
+                <Card.Content>
+                  <Text style={styles.cardContent}>{item}</Text>
+                </Card.Content>
+              ))
+            ) : (
+              <Card.Content>
+                <Text style={styles.cardContent}>Không tìm thấy đơn thuốc</Text>
+              </Card.Content>
+            )}
+          </Card>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
