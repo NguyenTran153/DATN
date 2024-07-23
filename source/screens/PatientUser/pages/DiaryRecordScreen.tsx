@@ -131,8 +131,8 @@ const DiaryRecordScreen = ({navigation}: any) => {
         <ScrollView
           contentContainerStyle={styles.listContainer}
           showsVerticalScrollIndicator={false}>
-          {filteredEntries.length ? (
-            paginatedEntries.map(entry => (
+          {entries.length ? (
+            entries.map(entry => (
               <EntryItem key={entry.id} entry={entry} />
             ))
           ) : (
@@ -148,7 +148,7 @@ const DiaryRecordScreen = ({navigation}: any) => {
           )}
         </ScrollView>
       )}
-      <DataTable.Pagination
+      {/* <DataTable.Pagination
         style={{alignSelf: 'center'}}
         page={currentPage}
         numberOfPages={Math.ceil(filteredEntries.length / entriesPerPage)}
@@ -156,7 +156,7 @@ const DiaryRecordScreen = ({navigation}: any) => {
         label={`Trang ${currentPage + 1} trên ${Math.ceil(
           filteredEntries.length / entriesPerPage,
         )}`}
-      />
+      /> */}
     </View>
   );
 };

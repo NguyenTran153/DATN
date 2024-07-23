@@ -13,7 +13,7 @@ import {
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import AppointmentService from '../../../services/AppointmentService';
 import {useSelector} from 'react-redux';
-import { useIsFocused } from '@react-navigation/native';
+import {useIsFocused} from '@react-navigation/native';
 import moment from 'moment';
 import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
 import LottieView from 'lottie-react-native';
@@ -24,7 +24,7 @@ const ITEMS_PER_PAGE = 7;
 
 const BookingHistoryScreen = ({navigation}: any) => {
   const theme = useTheme();
-  const isFocused = useIsFocused()
+  const isFocused = useIsFocused();
 
   const [currentPage, setCurrentPage] = useState(0);
   const [searchQuery, setSearchQuery] = useState('');
@@ -80,7 +80,7 @@ const BookingHistoryScreen = ({navigation}: any) => {
 
   useEffect(() => {
     fetchAppointments();
-  },[isFocused]);
+  }, [isFocused]);
 
   const filteredAppointments = appointments.filter(item => {
     const matchesName = item.doctorFirstName
@@ -105,12 +105,6 @@ const BookingHistoryScreen = ({navigation}: any) => {
 
     return matchesName && matchesDate;
   });
-
-  const totalPages = Math.ceil(filteredAppointments.length / ITEMS_PER_PAGE);
-
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-  };
 
   const handleSearchDateConfirm = (date: Date) => {
     setSearchDate(date);
@@ -212,8 +206,8 @@ const BookingHistoryScreen = ({navigation}: any) => {
         />
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {currentItems.length !== 0 ? (
-          currentItems.map((item, index) => (
+        {appointments.length !== 0 ? (
+          appointments.map((item, index) => (
             <List.Section key={index} style={{height: itemHeight}}>
               <List.Item
                 title={`${item.doctorFirstName} ${item.doctorLastName}`}
@@ -259,13 +253,6 @@ const BookingHistoryScreen = ({navigation}: any) => {
           </View>
         )}
       </ScrollView>
-      <DataTable.Pagination
-        page={currentPage}
-        numberOfPages={totalPages}
-        onPageChange={handlePageChange}
-        label={`${currentPage + 1} of ${totalPages}`}
-        style={styles.pagination}
-      />
       <DateTimePickerModal
         isVisible={isSearchDatePickerVisible}
         style={{zIndex: 9, elevation: 9}}

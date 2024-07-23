@@ -8,11 +8,11 @@ import {
   Searchbar,
   DataTable,
   Avatar,
+  TextInput,
 } from 'react-native-paper';
 import {Calendar, LocaleConfig} from 'react-native-calendars';
 
 import Horizon from '../../components/Horizon';
-import DoctorCard from '../../components/DoctorCard';
 import CustomAppbar from '../../components/CustomAppbar';
 import AppointmentService from '../../services/AppointmentService';
 import moment from 'moment';
@@ -95,8 +95,9 @@ const BookingScreen = ({route, navigation}: any) => {
   const [selectedDoctor, setSelectedDoctor] = useState<any>(null);
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [selectedHour, setSelectedHour] = useState<string | null>(null);
+  const [note, setNote] = useState<string>('');
   const [page, setPage] = useState(1);
-  const itemsPerPage = 3; // Maximum items per page
+  const itemsPerPage = 3;
 
   const [searchDoctor, setSearchDoctor] = useState<string>('');
   const [doctorID, setDocID] = useState('');
@@ -125,17 +126,6 @@ const BookingScreen = ({route, navigation}: any) => {
     setSelectedHour(null);
     setSelectedDoctor(null);
   };
-
-  const nextPage = () => {
-    setPage(prevPage => prevPage + 1);
-  };
-
-  const prevPage = () => {
-    setPage(prevPage => prevPage - 1);
-  };
-
-  const canNext = doctorList && endIndex < doctorList.length;
-  const canPrev = page > 1;
 
   const toggleDoctorVisibility = () => {
     setIsDoctorSearch(!isDoctorSearch);
@@ -267,7 +257,6 @@ const BookingScreen = ({route, navigation}: any) => {
     const nowTimestamp = Math.floor(now.getTime() / 1000);
     const oneDayInSeconds = 24 * 60 * 60;
     if (beginTimestamp && beginTimestamp - nowTimestamp >= oneDayInSeconds) {
-      console.log(doctorID);
       AppointmentService.sendAppointment(
         token.accessToken,
         Number.parseInt(doctorID),
@@ -378,6 +367,18 @@ const BookingScreen = ({route, navigation}: any) => {
 
           <Horizon />
         </View>
+        <View style={styles.informationContainer}>
+          <Text style={{fontSize: 20, fontWeight: 'bold'}}>Ghi chú</Text>
+          <TextInput
+            style={[
+              styles.textArea,
+              {backgroundColor: theme.colors.onPrimary},
+            ]}
+            label=""
+            value={note}
+            onChangeText={text => setNote(text)}
+          />
+        </View>
       </ScrollView>
       <Button
         style={styles.confirmButton}
@@ -421,6 +422,17 @@ const styles = StyleSheet.create({
   },
   searchBar: {
     width: '100%',
+  },
+  textArea: {
+    marginVertical: 10,
+    height: 64,
+    width: '100%',
+    borderWidth: 1,
+    borderRadius: 8,
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 10,
+    justifyContent: 'space-between',
   },
   textField: {
     marginVertical: 10,
