@@ -18,3 +18,5 @@ export const specialties = [
     {value: 16, label: 'Lồng ngực - Mạch máu - Bướu cổ'},
     {value: 17, label: 'Thẩm mỹ - chăm sóc da'}, 
   ];
+
+export const baseURL = "http://10.0.2.2:8080/";

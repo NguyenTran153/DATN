@@ -1,4 +1,5 @@
 import axios from 'axios';
+import { baseURL } from '../utils/constant';
 
 class NotificationService {
   static async getNotifications(accessToken: string, type: string) {
@@ -10,7 +11,7 @@ class NotificationService {
       };
 
       const response = await axios.get(
-        'http://10.0.2.2:8080/notifications/my',
+        `${baseURL}notifications/my`,
         {
           params,
           headers: {
@@ -30,7 +31,7 @@ class NotificationService {
   static async markAsRead(token: string, notificationId: string) {
     try {
       const response = await axios.post(
-        `http://10.0.2.2:8080/notifications/${notificationId}/mark-as-read`,
+        `${baseURL}notifications/${notificationId}/mark-as-read`,
         {
           headers: {
             'content-type': 'application/json',

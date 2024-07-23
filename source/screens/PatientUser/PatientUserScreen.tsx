@@ -1,23 +1,21 @@
-// PatientUserScreen.tsx
 import React from 'react';
-import {View, StyleSheet} from 'react-native';
-import {Appbar, IconButton, useTheme} from 'react-native-paper';
+import {StyleSheet} from 'react-native';
+import {IconButton, useTheme} from 'react-native-paper';
 import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import DiaryRecordScreen from './pages/DiaryRecordScreen';
 import BookingHistoryScreen from './pages/BookingHistoryScreen';
 import MedicalHistoryScreen from './pages/MedicalHistoryScreen';
 import CurrentInfoScreen from './pages/CurrentInfoScreen';
 import PersonalInfoScreen from './pages/PersonalInfoScreen';
-import StoreScreen from '../Store/StoreScreen';
 import DoctorListScreen from '../Doctor/DoctorListScreen';
 import ProfileScreen from '../Profile/ProfileScreen';
 import {useSelector} from 'react-redux';
-import {createDrawerNavigator} from '@react-navigation/drawer';
 import ConnectDoctorScreen from '../Doctor/ConnectDoctorScreen';
 
 const Tab = createMaterialTopTabNavigator();
-const Drawer = createDrawerNavigator();
+const BottomTab = createBottomTabNavigator();
 
 const TabNavigator = ({navigation}: any) => {
   const theme = useTheme();
@@ -26,7 +24,11 @@ const TabNavigator = ({navigation}: any) => {
     <Tab.Navigator
       screenOptions={({route}) => ({
         tabBarActiveTintColor: theme.colors.primary,
+        tabBarInactiveTintColor: theme.colors.onSurface,
         tabBarIndicatorStyle: {backgroundColor: theme.colors.primary},
+        tabBarStyle: {
+          backgroundColor: theme.colors.surface,
+        },
         tabBarShowLabel: false,
         tabBarIcon: ({color}) => {
           let iconName;
@@ -71,19 +73,38 @@ const PatientUserScreen = ({navigation}: any) => {
   const user = useSelector((state: any) => state.user);
   const theme = useTheme();
   return (
-    <Drawer.Navigator
+    <BottomTab.Navigator
       initialRouteName="Home"
-      screenOptions={{
+      screenOptions={({route}) => ({
+        tabBarActiveTintColor: theme.colors.primary,
+        tabBarInactiveTintColor: theme.colors.onBackground,
+        tabBarStyle: {backgroundColor: theme.colors.background},
         headerStyle: {
           backgroundColor: theme.colors.background,
         },
-
         headerTintColor: theme.colors.onBackground,
-        drawerStyle: {
-          backgroundColor: theme.colors.background, // Background color of the drawer
-        },
-        drawerLabelStyle: {
-          color: theme.colors.onBackground, // Text color in the drawer
+        tabBarIcon: ({color, size}) => {
+          let iconName;
+          switch (route.name) {
+            case 'Home':
+              iconName = 'home-outline';
+              break;
+            case 'ConnectDoctorScreen':
+              iconName = 'phone-outline';
+              break;
+            case 'DoctorListScreen':
+              iconName = 'doctor';
+              break;
+            case 'ProfileScreen':
+              iconName = 'cog-outline';
+              break;
+            default:
+              iconName = 'circle-outline';
+              break;
+          }
+          return (
+            <MaterialCommunityIcons name={iconName} size={size} color={color} />
+          );
         },
         headerRight: () => (
           <IconButton
@@ -97,44 +118,35 @@ const PatientUserScreen = ({navigation}: any) => {
             }
           />
         ),
-      }}>
-      <Drawer.Screen
+      })}>
+      <BottomTab.Screen
         name="Home"
         component={TabNavigator}
-        options={{drawerLabel: 'Trang chủ', title: 'Trang chủ'}}
+        options={{tabBarLabel: 'Trang chủ', title: 'Trang chủ'}}
       />
-      <Drawer.Screen
-        name="StoreScreen"
-        component={StoreScreen}
-        options={{drawerLabel: 'Cửa hàng', title: 'Cửa hàng'}}
-      />
-      <Drawer.Screen
+      <BottomTab.Screen
         name="ConnectDoctorScreen"
         component={ConnectDoctorScreen}
         initialParams={{drawer: true}}
         options={{
-          drawerLabel: 'Liên hệ với bác sĩ',
+          tabBarLabel: 'Liên hệ với bác sĩ',
           title: 'Liên hệ với bác sĩ',
         }}
       />
-      {/* <Drawer.Screen
-
-      
-      /> */}
-      <Drawer.Screen
+      <BottomTab.Screen
         name="DoctorListScreen"
         component={DoctorListScreen}
         options={{
-          drawerLabel: 'Danh sách bác sĩ',
+          tabBarLabel: 'Danh sách bác sĩ',
           title: 'Danh sách bác sĩ',
         }}
       />
-      <Drawer.Screen
+      <BottomTab.Screen
         name="ProfileScreen"
         component={ProfileScreen}
-        options={{drawerLabel: 'Cài đặt', title: 'Cài đặt'}}
+        options={{tabBarLabel: 'Cài đặt', title: 'Cài đặt'}}
       />
-    </Drawer.Navigator>
+    </BottomTab.Navigator>
   );
 };
 
