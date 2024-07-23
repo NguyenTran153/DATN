@@ -31,7 +31,9 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
     setIsLoading(true);
     try {
       if (form.phone.length !== 0) {
-        const token = await AuthService.login(form.phone, form.password);
+        const formattedPhoneNumber = form.phone.replace(/^0/, '+84');
+        console.log(formattedPhoneNumber)
+        const token = await AuthService.login(formattedPhoneNumber, form.password);
         if (token && token?.accessToken !== '' && token?.refreshToken !== '') {
           dispatch(setToken(token!));
 
@@ -110,6 +112,7 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
             </Text>
             <TextInput
               id="phone"
+              inputMode='numeric'
               style={[
                 styles.inputControl,
                 {
