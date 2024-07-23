@@ -149,7 +149,7 @@ const MedicalHistoryScreen = ({navigation, route}: any) => {
         </View>
       ) : (
         <ScrollView showsVerticalScrollIndicator={false}>
-          {getCurrentPageData().map((item, index) => (
+          {medicalHistoryData?.map((item, index) => (
             <List.Section key={index} style={{height: itemHeight}}>
               <List.Item
                 title={item.date}
@@ -183,13 +183,13 @@ const MedicalHistoryScreen = ({navigation, route}: any) => {
           ))}
         </ScrollView>
       )}
-      <DataTable.Pagination
+      {/* <DataTable.Pagination
         page={currentPage}
         numberOfPages={totalPages}
         onPageChange={handlePageChange}
         label={`${currentPage + 1} of ${totalPages}`}
         style={styles.pagination}
-      />
+      /> */}
     </View>
   );
 };

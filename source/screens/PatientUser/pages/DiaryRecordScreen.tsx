@@ -71,7 +71,7 @@ const DiaryRecordScreen = ({navigation}: any) => {
       ? entries.filter(entry => {
           const searchDate = moment(
             searchQuery,
-            ['DD/MM/YYYY', 'DD-MM-YYYY', 'DD', 'MM'],
+            ['DD/MM/YYYY', 'DD-MM-YYYY', 'DD', 'MM', 'DD/MM'],
             true,
           );
           const createdAtMatch = searchDate.isValid()
@@ -131,8 +131,8 @@ const DiaryRecordScreen = ({navigation}: any) => {
         <ScrollView
           contentContainerStyle={styles.listContainer}
           showsVerticalScrollIndicator={false}>
-          {entries.length ? (
-            entries.map(entry => (
+          {filteredEntries.length ? (
+            filteredEntries.map(entry => (
               <EntryItem key={entry.id} entry={entry} />
             ))
           ) : (

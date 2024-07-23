@@ -4,17 +4,16 @@ import {
   useTheme,
   List,
   IconButton,
-  DataTable,
-  Searchbar,
   Button,
   ActivityIndicator,
   Text,
   Appbar,
+  Searchbar,
 } from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import {useIsFocused} from '@react-navigation/native';
 import LottieView from 'lottie-react-native';
-import {format} from 'date-fns';
+import {format, isValid, parse} from 'date-fns';
 import PrescriptionService from '../../../services/PrescriptionService';
 
 const {height} = Dimensions.get('window');
@@ -36,11 +35,20 @@ const MedicalHistoryScreen = ({navigation}: any) => {
 
   const getCurrentPageData = () => {
     const filteredData = searchQuery
-      ? medicalHistoryData.filter(
-          item =>
-            item.date.includes(searchQuery) ||
-            convertString(item.symptoms).includes(searchQuery),
-        )
+      ? medicalHistoryData.filter(item => {
+          const dateMatch =
+            isValid(parse(searchQuery, 'yyyy-MM-dd', new Date())) &&
+            item.date ===
+              format(
+                parse(searchQuery, 'yyyy-MM-dd', new Date()),
+                'yyyy-MM-dd',
+              );
+          const symptomMatch = convertString(item.symptoms).includes(
+            searchQuery,
+          );
+
+          return dateMatch || symptomMatch;
+        })
       : medicalHistoryData;
 
     const startIndex = currentPage * ITEMS_PER_PAGE;
@@ -115,7 +123,6 @@ const MedicalHistoryScreen = ({navigation}: any) => {
       </Appbar.Header>
       <View style={styles.filterContainer}>
         <Searchbar
-          placeholder="Tìm kiếm"
           onChangeText={setSearchQuery}
           value={searchQuery}
           style={styles.searchbar}
@@ -175,13 +182,13 @@ const MedicalHistoryScreen = ({navigation}: any) => {
           ))}
         </ScrollView>
       )}
-      <DataTable.Pagination
+      {/* <DataTable.Pagination
         page={currentPage}
         numberOfPages={totalPages}
         onPageChange={handlePageChange}
         label={`${currentPage + 1} of ${totalPages}`}
         style={styles.pagination}
-      />
+      /> */}
     </View>
   );
 };

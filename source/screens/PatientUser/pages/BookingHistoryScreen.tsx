@@ -82,29 +82,33 @@ const BookingHistoryScreen = ({navigation}: any) => {
     fetchAppointments();
   }, [isFocused]);
 
-  const filteredAppointments = appointments.filter(item => {
-    const matchesName = item.doctorFirstName
-      .toLowerCase()
-      .includes(searchQuery.toLowerCase());
+  const filteredAppointments = searchQuery
+    ? appointments.filter(item => {
+        // Chuyển đổi chuỗi tìm kiếm thành đối tượng moment
+        const searchDateMoment = moment(
+          searchQuery,
+          ['DD/MM/YYYY', 'DD-MM-YYYY', 'DD', 'MM', 'DD/MM'],
+          true,
+        );
 
-    const dateFormats = [
-      'DD/MM/YYYY',
-      'MM/DD/YYYY',
-      'YYYY/MM/DD',
-      'DD-MM-YYYY',
-      'DD',
-    ];
+        // Chuyển đổi ngày của cuộc hẹn thành đối tượng moment
+        const itemDateMoment = moment(item.beginTimestamp * 1000); // Từ giây sang mili giây
+        const itemDateFormatted = itemDateMoment.format('DD/MM/YYYY');
 
-    const matchesDate =
-      !searchDate ||
-      dateFormats.some(format =>
-        moment(item.date, 'DD/MM/YYYY HH:mm')
-          .format(format)
-          .includes(moment(searchDate).format(format)),
-      );
+        // So sánh ngày tìm kiếm với ngày của cuộc hẹn
+        const createdAtMatch = searchDateMoment.isValid()
+          ? itemDateMoment.isSame(searchDateMoment, 'day')
+          : false;
 
-    return matchesName && matchesDate;
-  });
+        // So sánh tên bác sĩ
+        const matchesName = item.doctorFirstName
+          .toLowerCase()
+          .includes(searchQuery.toLowerCase());
+
+        // So sánh theo tên hoặc ngày
+        return createdAtMatch || matchesName;
+      })
+    : appointments;
 
   const handleSearchDateConfirm = (date: Date) => {
     setSearchDate(date);
@@ -206,8 +210,8 @@ const BookingHistoryScreen = ({navigation}: any) => {
         />
       </View>
       <ScrollView showsVerticalScrollIndicator={false}>
-        {appointments.length !== 0 ? (
-          appointments.map((item, index) => (
+        {filteredAppointments.length !== 0 ? (
+          filteredAppointments.map((item, index) => (
             <List.Section key={index} style={{height: itemHeight}}>
               <List.Item
                 title={`${item.doctorFirstName} ${item.doctorLastName}`}

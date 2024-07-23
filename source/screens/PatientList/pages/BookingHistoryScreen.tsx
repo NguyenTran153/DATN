@@ -206,8 +206,8 @@ const BookingHistoryScreen = ({route}: any) => {
         </View>
       ) : (
         <ScrollView showsVerticalScrollIndicator={false}>
-          {convertedList.length ? (
-            convertedList
+          {appointments.length ? (
+            appointments
               .slice(
                 currentPage * ITEMS_PER_PAGE,
                 (currentPage + 1) * ITEMS_PER_PAGE,
@@ -264,13 +264,13 @@ const BookingHistoryScreen = ({route}: any) => {
           )}
         </ScrollView>
       )}
-      <DataTable.Pagination
+      {/* <DataTable.Pagination
         page={currentPage}
         numberOfPages={totalPages}
         onPageChange={handlePageChange}
         label={`${currentPage + 1} of ${totalPages}`}
         style={styles.pagination}
-      />
+      /> */}
       <DateTimePickerModal
         isVisible={isDatePickerVisible}
         style={{zIndex: 9, elevation: 9}}
