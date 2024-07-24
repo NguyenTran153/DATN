@@ -3,7 +3,7 @@ import type {PayloadAction} from '@reduxjs/toolkit';
 
 // Define the initial state using that type
 const initialState: UserData = {
-  address: null,
+  address: '',
   avatar: null,
   birthdate: null,
   createdAt: '',

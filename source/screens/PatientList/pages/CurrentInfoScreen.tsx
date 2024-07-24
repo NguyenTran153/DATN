@@ -1,14 +1,22 @@
-import { StyleSheet, SafeAreaView, ScrollView, View } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { Text, useTheme, Card, IconButton } from 'react-native-paper';
-import { useSelector } from 'react-redux';
+import {
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
+  View,
+  ViewStyle,
+  TextStyle,
+  ImageStyle,
+} from 'react-native';
+import React, {useEffect, useState} from 'react';
+import {Text, useTheme, Card, IconButton, Avatar} from 'react-native-paper';
+import {useSelector} from 'react-redux';
 import PrescriptionService from '../../../services/PrescriptionService';
 import DiaryService from '../../../services/DiaryService';
 import AppointmentService from '../../../services/AppointmentService';
 import moment from 'moment';
-import { useIsFocused } from '@react-navigation/native';
+import {useIsFocused} from '@react-navigation/native';
 
-const CurrentInfoScreen = ({ route }: any) => {
+const CurrentInfoScreen = ({route, navigation}: any) => {
   const theme = useTheme();
   const token = useSelector((state: any) => state.token);
   const isFocused = useIsFocused();
@@ -17,79 +25,124 @@ const CurrentInfoScreen = ({ route }: any) => {
   const [diary, SetDiary] = useState<any[]>([]);
   const [med, setMed] = useState<any[]>([]);
   const [app, setApp] = useState<any[]>([]);
-  const [date, setDate] = useState('');
   const [diagnosis, setDiag] = useState('');
-  const beginTimestamps = [
-    { confirmUser: { createdAt: '2024-06-18T18:59:03.333Z' } },
-    { confirmUser: { createdAt: '2024-06-17T14:30:00.000Z' } },
-    { confirmUser: { createdAt: '2024-06-19T08:45:15.000Z' } },
-    // Add more objects as needed
-  ];
+  const user = route.params.patient;
+
+  const personalInfo = {
+    firstName: user.firstName || 'Chưa cập nhật',
+    lastName: user.lastName || 'Chưa cập nhật',
+    birthdate: user.birthdate
+      ? new Date(user.birthdate).toLocaleDateString()
+      : 'Chưa cập nhật',
+    gender:
+      user.gender === 'male'
+        ? 'Nam'
+        : user.gender === 'female'
+        ? 'Nữ'
+        : 'Chưa cập nhật',
+    address: user.address || 'Chưa cập nhật',
+    height: user.height ? `${user.height} cm` : 'Chưa cập nhật',
+    weight: user.weight ? `${user.weight} kg` : 'Chưa cập nhật',
+    avatar: user.avatar,
+  };
+
   useEffect(() => {
     const fetchAPI = async () => {
-      const prescriptions = await PrescriptionService.getPrescription(patient.id, token.accessToken)
-      const diaries = await DiaryService.getDiaries(token.accessToken, 1, 100, patient.id)
-      const appointments = await AppointmentService.getAppointment(token.accessToken)
-      const beginTimestamp = appointments.filter(item => (item.status === 'ongoing'));
-      const dates = beginTimestamp.map(item => new Date(item.beginTimestamp * 1000));
-      const dianoses = await PrescriptionService.getDiagnosis(prescriptions[0].id,token.accessToken)
-      console.log(dianoses)
-      if(dianoses)
-        {
-            setDiag(dianoses[0].problem)
-        }
-      const now = new Date();
-      dates.sort((a, b) => Math.abs(now.getTime() - a.getTime()) - Math.abs(now.getTime() - b.getTime()));
-      console.log("Dates array" + dates)
-      const thresholdDate = new Date(now.getTime() + 24 * 60 * 60 * 1000);
-      for(let i = 0; i < dates.length; i++)
-      {
-       
-        if(dates[i].getTime() - thresholdDate.getTime() > 24 * 60 * 60 * 1000)
-          {
-              console.log(dates[i])
-              console.log(dates[i].getTime() - thresholdDate.getTime() > 24 * 60 * 60 * 1000)
-              const formattedDate = moment(dates[i]).format('DD/MM/YYYY HH:mm:ss');
-              console.log(formattedDate)
-              setDate(formattedDate);
-              break
-          }
+      const prescriptions = await PrescriptionService.getPrescription(
+        patient.id,
+        token.accessToken,
+      );
+      const diaries = await DiaryService.getDiaries(
+        token.accessToken,
+        1,
+        100,
+        patient.id,
+      );
+      const appointments = await AppointmentService.getAppointment(
+        token.accessToken,
+      );
+      const beginTimestamp = appointments.filter(
+        item => item.status === 'ongoing',
+      );
+      const dates = beginTimestamp.map(
+        item => new Date(item.beginTimestamp * 1000),
+      );
+      const dianoses = await PrescriptionService.getDiagnosis(
+        prescriptions[0].id,
+        token.accessToken,
+      );
+      console.log(dianoses);
+      if (dianoses) {
+        setDiag(dianoses[0].problem);
       }
-      setApp(appointments)
+      const now = new Date();
+      dates.sort(
+        (a, b) =>
+          Math.abs(now.getTime() - a.getTime()) -
+          Math.abs(now.getTime() - b.getTime()),
+      );
+      console.log('Dates array' + dates);
+      setApp(appointments);
       setPres(prescriptions);
-      SetDiary(diaries)
-      const medicineStrings = prescriptions[0].data.medicines.map((medicine: { name: any; schedule: { morning: any; afternoon: any; evening: any; night: any; }; dosage : any }) => (
-        `${medicine.name}: Sáng: ${medicine.schedule.morning}, Trưa: ${medicine.schedule.afternoon}, Chiều: ${medicine.schedule.evening}, Tối: ${medicine.schedule.night}\nSố lượng: ${medicine.dosage} viên`))
-      setMed(medicineStrings)
+      SetDiary(diaries);
+      const medicineStrings = prescriptions[0].data.medicines.map(
+        (medicine: {
+          name: any;
+          schedule: {morning: any; afternoon: any; evening: any; night: any};
+          dosage: any;
+        }) =>
+          `${medicine.name}: Sáng: ${medicine.schedule.morning}, Trưa: ${medicine.schedule.afternoon}, Chiều: ${medicine.schedule.evening}, Tối: ${medicine.schedule.night}\nSố lượng: ${medicine.dosage} viên`,
+      );
+      setMed(medicineStrings);
     };
-    fetchAPI()
-  }, [isFocused])
+    fetchAPI();
+  }, [isFocused]);
+
   // Sample data
-  const nextAppointment = date;
-  const recentDietLog = diary.length !== 0 ? diary[0].data.mockKey : "Không tìm thấy nhật ký gần nhất";
-  const recentDiagnosis = diagnosis !== '' ? diagnosis:"Không tìm thấy chẩn đoán gần nhất";
-  const recentPrescription = med
+  const recentDietLog =
+    diary.length !== 0
+      ? diary[0].data.mockKey
+      : 'Không tìm thấy nhật ký gần nhất';
+  const recentDiagnosis =
+    diagnosis !== '' ? diagnosis : 'Không tìm thấy chẩn đoán gần nhất';
+  const recentPrescription = med;
 
   return (
     <SafeAreaView
-      style={[styles.container, { backgroundColor: theme.colors.background }]}>
+      style={[styles.container, {backgroundColor: theme.colors.background}]}>
       <ScrollView contentContainerStyle={styles.scrollView}>
-        <Card style={styles.card}>
-          <Card.Title
-            title="Lịch khám tiếp theo"
-            left={props => <IconButton {...props} icon="calendar" />}
-            titleStyle={styles.cardTitle}
+        <View style={styles.header}>
+          <Avatar.Image
+            size={100}
+            source={
+              personalInfo.avatar
+                ? {uri: personalInfo.avatar}
+                : require('../../../asset/7677205.jpg')
+            }
+            style={styles.avatar}
           />
-          <Card.Content>
-            <Text style={styles.cardContent}>
-              {nextAppointment !== ''
-                ? nextAppointment
-                : 'Không có lịch khám tiếp theo'}
+          <View style={styles.info}>
+            <Text style={styles.name}>
+              {personalInfo.lastName} {personalInfo.firstName}
             </Text>
-          </Card.Content>
-        </Card>
+            <Text style={styles.gender}>{personalInfo.gender}</Text>
+          </View>
+        </View>
 
-        <Card style={styles.card}>
+        <View style={styles.personalDetails}>
+          <Text style={styles.detailText}>
+            Ngày sinh: {personalInfo.birthdate}
+          </Text>
+          <Text style={styles.detailText}>Địa chỉ: {personalInfo.address}</Text>
+          <Text style={styles.detailText}>
+            Chiều cao: {personalInfo.height}
+          </Text>
+          <Text style={styles.detailText}>Cân nặng: {personalInfo.weight}</Text>
+        </View>
+
+        <Card
+          style={styles.card}
+          onPress={() => navigation.navigate('FoodDiary')}>
           <Card.Title
             title="Nhật ký ăn uống gần nhất"
             left={props => <IconButton {...props} icon="food" />}
@@ -100,7 +153,9 @@ const CurrentInfoScreen = ({ route }: any) => {
           </Card.Content>
         </Card>
 
-        <Card style={styles.card}>
+        <Card
+          style={styles.card}
+          onPress={() => navigation.navigate('MedicalHistoryScreen')}>
           <Card.Title
             title="Chẩn đoán và kết quả gần nhất"
             left={props => <IconButton {...props} icon="file-find" />}
@@ -111,20 +166,25 @@ const CurrentInfoScreen = ({ route }: any) => {
           </Card.Content>
         </Card>
 
-        <Card style={styles.card}>
+        <Card
+          style={styles.card}
+          onPress={() => navigation.navigate('MedicalHistoryScreen')}>
           <Card.Title
             title="Đơn thuốc gần nhất"
             left={props => <IconButton {...props} icon="pill" />}
             titleStyle={styles.cardTitle}
           />
-          {recentPrescription.length !== 0 ? recentPrescription.map(item =>
+          {recentPrescription.length !== 0 ? (
+            recentPrescription.map((item, index) => (
+              <Card.Content key={index}>
+                <Text style={styles.cardContent}>{item}</Text>
+              </Card.Content>
+            ))
+          ) : (
             <Card.Content>
-              <Text style={styles.cardContent}>{item}</Text>
+              <Text style={styles.cardContent}>Không tìm thấy đơn thuốc</Text>
             </Card.Content>
-          ) : <Card.Content>
-            <Text style={styles.cardContent}>Không tìm thấy đơn thuốc</Text>
-          </Card.Content>}
-
+          )}
         </Card>
       </ScrollView>
     </SafeAreaView>
@@ -136,6 +196,32 @@ export default CurrentInfoScreen;
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  header: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginVertical: 20,
+  },
+  avatar: {
+    marginRight: 16,
+  },
+  info: {
+    flex: 1,
+  },
+  name: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  gender: {
+    fontSize: 16,
+  },
+  personalDetails: {
+    marginBottom: 16,
+    paddingHorizontal: 16,
+  },
+  detailText: {
+    fontSize: 16,
+    marginVertical: 4,
   },
   scrollView: {
     flexGrow: 1,

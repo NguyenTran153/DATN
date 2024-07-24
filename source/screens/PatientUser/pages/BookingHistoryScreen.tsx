@@ -148,6 +148,7 @@ const BookingHistoryScreen = ({navigation}: any) => {
             token.accessToken,
             patient.id,
             {
+              note: '',
               beginTimestamp: beginTimestamp,
             },
           );

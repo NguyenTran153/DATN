@@ -6,10 +6,8 @@ import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs
 import CustomAppbar from '../../components/CustomAppbar';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import DiaryRecordScreen from './pages/DiaryRecordScreen';
-import BookingHistoryScreen from './pages/BookingHistoryScreen';
 import MedicalHistoryScreen from './pages/MedicalHistoryScreen';
 import CurrentInfoScreen from './pages/CurrentInfoScreen';
-import PersonalInfoScreen from './pages/PersonalInfoScreen';
 import {useSelector} from 'react-redux';
 
 const Tab = createMaterialTopTabNavigator();
@@ -22,13 +20,15 @@ const PatientDetailScreen = ({navigation, route}: any) => {
   useEffect(() => {
     console.log(patientId);
   });
-  const FoodDiaryScreen = () => <DiaryRecordScreen route={route} />;
-  const PersonalInfo = () => <PersonalInfoScreen route={route} />;
+  const FoodDiaryScreen = () => (
+    <DiaryRecordScreen route={route} navigation={navigation} />
+  );
   const MedicalHistory = () => (
     <MedicalHistoryScreen route={route} navigation={navigation} />
   );
-  const BookingHistory = () => <BookingHistoryScreen route={route} />;
-  const CurrentInfo = () => <CurrentInfoScreen route={route} />;
+  const CurrentInfo = () => (
+    <CurrentInfoScreen route={route} navigation={navigation} />
+  );
   return (
     <View style={styles.container}>
       <CustomAppbar title="Bệnh nhân" goBack={() => navigation.goBack()} />
@@ -47,14 +47,8 @@ const PatientDetailScreen = ({navigation, route}: any) => {
                 case 'FoodDiary':
                   iconName = 'food-apple-outline';
                   break;
-                case 'BookingHistoryScreen':
-                  iconName = 'file-document-outline';
-                  break;
                 case 'MedicalHistoryScreen':
                   iconName = 'history';
-                  break;
-                case 'PersonalInfoScreen':
-                  iconName = 'account-outline';
                   break;
                 default:
                   iconName = 'circle-outline';

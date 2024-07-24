@@ -158,7 +158,7 @@ const BookingScreen = ({route, navigation}: any) => {
         />
         {filteredDoctors && filteredDoctors.length > 0 ? (
           <DataTable>
-            {paginatedDoctors?.map((doctor, index) => (
+            {filteredDoctors.map((doctor, index) => (
               <DataTable.Row
                 key={index}
                 onPress={() => {
@@ -184,19 +184,8 @@ const BookingScreen = ({route, navigation}: any) => {
                     {doctor.name}
                   </Text>
                 </View>
-                {/* Thêm các ô cho các cột khác nếu cần */}
               </DataTable.Row>
             ))}
-            {filteredDoctors && filteredDoctors.length > itemsPerPage && (
-              <DataTable.Pagination
-                page={page}
-                numberOfPages={Math.ceil(filteredDoctors.length / itemsPerPage)}
-                onPageChange={page => setPage(page)}
-                label={`Page ${page} of ${Math.ceil(
-                  filteredDoctors.length / itemsPerPage,
-                )}`}
-              />
-            )}
           </DataTable>
         ) : (
           <Text>{`Không có ${
@@ -371,13 +360,16 @@ const BookingScreen = ({route, navigation}: any) => {
         <View style={styles.informationContainer}>
           <Text style={{fontSize: 20, fontWeight: 'bold'}}>Ghi chú</Text>
           <TextInput
-            style={[
-              styles.textArea,
-              {backgroundColor: theme.colors.onPrimary},
-            ]}
+            style={[styles.textArea, {backgroundColor: theme.colors.onPrimary}]}
             label=""
+            multiline
+            mode="outlined"
+            numberOfLines={4}
             value={note}
-            onChangeText={text => setNote(text)}
+            onChangeText={setNote}
+            editable
+            disabled={false}
+            theme={{roundness: 8}}
           />
         </View>
       </ScrollView>
@@ -426,13 +418,10 @@ const styles = StyleSheet.create({
   },
   textArea: {
     marginVertical: 10,
-    height: 64,
+    height: 80,
     width: '100%',
-    borderWidth: 1,
-    borderRadius: 8,
     flexDirection: 'row',
     alignItems: 'center',
-    padding: 10,
     justifyContent: 'space-between',
   },
   textField: {
