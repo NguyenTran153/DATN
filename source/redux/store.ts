@@ -5,6 +5,7 @@ import tokenSlice from './slices/tokenSlice';
 import userSlice from './slices/userSlice';
 import doctorFormSlice from './slices/doctorFormSlice';
 import themeSlice from './slices/themeSlice';
+import guestSlice from './slices/guestSlice';
 
 export const store = configureStore({
   reducer: {
@@ -14,5 +15,6 @@ export const store = configureStore({
     user: userSlice,
     doctorForm: doctorFormSlice,
     theme: themeSlice,
+    guest: guestSlice,
   },
 });

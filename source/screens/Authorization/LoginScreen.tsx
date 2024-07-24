@@ -32,14 +32,17 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
     try {
       if (form.phone.length !== 0) {
         const formattedPhoneNumber = form.phone.replace(/^0/, '+84');
-        console.log(formattedPhoneNumber)
-        const token = await AuthService.login(formattedPhoneNumber, form.password);
+        console.log(formattedPhoneNumber);
+        const token = await AuthService.login(
+          formattedPhoneNumber,
+          form.password,
+        );
         if (token && token?.accessToken !== '' && token?.refreshToken !== '') {
           dispatch(setToken(token!));
+          console.log(JSON.stringify(token));
 
           const userData = await UserService.getUserInfo(token.accessToken);
 
-          console.log('USERDATA' + userData);
           setData(userData);
           dispatch(setUser(userData!));
           navigation.navigate('MainNavigator');
@@ -112,7 +115,7 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
             </Text>
             <TextInput
               id="phone"
-              inputMode='numeric'
+              inputMode="numeric"
               style={[
                 styles.inputControl,
                 {
@@ -135,7 +138,7 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
               Mật khẩu
             </Text>
             <TextInput
-              id="password" 
+              id="password"
               style={[
                 styles.inputControl,
                 {
@@ -168,8 +171,7 @@ const LoginScreen = ({navigation}: {navigation: any}) => {
             <TouchableOpacity onPress={async () => await handleLogin()}>
               <View
                 style={[styles.btn, {backgroundColor: theme.colors.primary}]}>
-                <Text
-                  style={[styles.btnText, {color: 'white'}]}>
+                <Text style={[styles.btnText, {color: 'white'}]}>
                   Đăng nhập
                 </Text>
               </View>

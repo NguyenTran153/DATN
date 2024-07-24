@@ -1,36 +1,38 @@
 import axios from 'axios';
-import { baseURL } from '../utils/constant';
+import {baseURL} from '../utils/constant';
 class UserService {
   static async getUserInfo(accessToken: string) {
     try {
-      const response = await axios.get<UserData>(
-        `${baseURL}auth/me`,
-        {
-          headers: {
-            'content-type': 'application/json',
-            Authorization: `Bearer ${accessToken}`,
-          },
+      const response = await axios.get<UserData>(`${baseURL}auth/me`, {
+        headers: {
+          'content-type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
         },
-      );
+      });
       console.log(response.data);
       return response.data;
     } catch (error) {
       console.log('getUserInfo:', error);
     }
   }
-  static async getUserInfoByID(userID: string, accessToken: string) {
+  static async getUserInfoByID(userID: number, accessToken: string) {
     try {
-      const response = await axios.get<UserData>(
-        `${baseURL}users/${userID}`,
-        {
-          headers: {
-            'content-type': 'application/json',
-            Authorization: `Bearer ${accessToken}`,
-          },
+      console.log(JSON.stringify(userID));
+      const response = await fetch(`${baseURL}users/${userID}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
         },
-      );
-      console.log(response.data);
-      return response.data;
+      });
+
+      if (!response.ok) {
+        throw new Error('Network response was not ok');
+      }
+
+      const data: UserData = await response.json();
+      console.log(data);
+      return data;
     } catch (error) {
       console.log('Error logging in getUserInfoByID:', error);
     }

@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Image, StyleSheet, View} from 'react-native';
 import {
   useTheme,
@@ -10,6 +10,9 @@ import {
   Avatar,
   Icon,
 } from 'react-native-paper';
+import {setGuest} from '../redux/slices/guestSlice';
+import {useDispatch, useSelector} from 'react-redux';
+import UserService from '../services/UserService';
 
 const defaultAvatar = require('../asset/7677205.jpg');
 
@@ -26,20 +29,30 @@ interface PatientCardProps {
 
 const PatientCard: React.FC<PatientCardProps> = ({patient, navigation}) => {
   const theme = useTheme();
+  const dispatch = useDispatch();
+  const token = useSelector((state: any) => state.token.accessToken);
+
   const renderGender = (gender: string | undefined | null) => {
     if (gender === 'male') return 'Nam';
     if (gender === 'female') return 'Nữ';
     return gender ? gender : 'Chưa cập nhật';
   };
 
+  const getInfoById = async () => {
+    console.log(JSON.stringify(patient.id));
+    const data = await UserService.getUserInfoByID(patient.id, token);
+    dispatch(setGuest(data!));
+  };
+
   return (
     <TouchableRipple
-      onPress={() =>
+      onPress={async () => {
+        await getInfoById();
         navigation.navigate('DoctorNavigator', {
           screen: 'PatientDetailScreen',
           params: {patient},
-        })
-      }
+        });
+      }}
       style={[styles.card, {borderBlockColor: theme.colors.primaryContainer}]}>
       <View style={styles.cardContainer}>
         <Avatar.Image

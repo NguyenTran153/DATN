@@ -15,7 +15,7 @@ import {useSelector} from 'react-redux';
 import LottieView from 'lottie-react-native';
 import {format} from 'date-fns';
 import PrescriptionService from '../../../services/PrescriptionService';
-import { useIsFocused } from '@react-navigation/native';
+import {useIsFocused} from '@react-navigation/native';
 
 const {height} = Dimensions.get('window');
 
@@ -60,7 +60,7 @@ const MedicalHistoryScreen = ({navigation, route}: any) => {
     }
     return inputString.replace(/\\"/g, '"');
   };
-  
+
   const getMedicalData = async () => {
     const patientId = route.params.patient.id;
     setLoading(true);

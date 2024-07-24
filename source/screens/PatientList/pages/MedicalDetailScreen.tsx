@@ -1,20 +1,27 @@
-import React from 'react';
-import {View, ScrollView, StyleSheet, Linking} from 'react-native';
-import {
-  useTheme,
-  Text,
-  TextInput,
-  List,
-  Provider as PaperProvider,
-  DataTable,
-  Button,
-} from 'react-native-paper';
+import React, {useEffect, useState} from 'react';
+import {View, ScrollView, StyleSheet, Image} from 'react-native';
+import {useTheme, Text, Provider as PaperProvider} from 'react-native-paper';
 import CustomAppbar from '../../../components/CustomAppbar';
+import {useSelector} from 'react-redux';
 
 const MedicalDetailScreen = ({navigation, route}: any) => {
   const theme = useTheme();
   const {item} = route.params;
   const {prescription, diagnosis} = item;
+  const user = useSelector((state: any) => state.user);
+  const guest = useSelector((state: any) => state.guest);
+  const [doctor, setDoctor] = useState<UserData>();
+  const [patient, setPatient] = useState<UserData>();
+
+  useEffect(() => {
+    if (user.role === 'patient') {
+      setDoctor(guest);
+      setPatient(user);
+    } else {
+      setDoctor(user);
+      setPatient(guest);
+    }
+  }, []);
 
   const convertString = (inputString: string): string => {
     if (inputString.startsWith('"') && inputString.endsWith('"')) {
@@ -23,15 +30,11 @@ const MedicalDetailScreen = ({navigation, route}: any) => {
     return inputString.replace(/\\"/g, '"');
   };
 
-  const handleDownload = (url: string) => {
-    Linking.openURL(url);
-  };
-
   return (
     <PaperProvider
       theme={{
         ...theme,
-        roundness: 10, // Set the roundness value for all Paper components
+        roundness: 10,
       }}>
       <View style={[styles.screen, {backgroundColor: theme.colors.background}]}>
         <CustomAppbar
@@ -42,92 +45,77 @@ const MedicalDetailScreen = ({navigation, route}: any) => {
           style={{padding: 16}}
           contentContainerStyle={styles.contentContainer}>
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Chi tiết khám bệnh</Text>
-            <TextInput
-              label="Ngày khám bệnh"
-              mode="outlined"
-              value={item.date}
-              style={styles.input}
-              editable={false}
-              theme={{roundness: 10}}
-            />
-            <TextInput
-              label="Kết quả"
-              mode="outlined"
-              value={convertString(diagnosis.problem)}
-              multiline
-              numberOfLines={4}
-              style={styles.input}
-              editable={false}
-              theme={{roundness: 10}}
-            />
+            <Text style={styles.headerText}>
+              Bác sĩ: {doctor?.firstName} {doctor?.lastName}
+            </Text>
+            <Text style={styles.subHeaderText}>
+              Số điện thoại: {doctor?.phoneNumber}
+            </Text>
+            <Text style={styles.subHeaderText}>Địa chỉ phòng khám: {doctor?.address}</Text>
+            <Text style={styles.subHeaderText}>Ngày khám: {item.date}</Text>
+          </View>
+
+          <View style={styles.section}>
+            <Text style={styles.headerText}>
+              Bệnh nhân: {patient?.firstName} {patient?.lastName}
+            </Text>
+            <Text style={styles.subHeaderText}>
+              Số điện thoại: {patient?.phoneNumber}
+            </Text>
+            <Text style={styles.subHeaderText}>
+              Giới tính: {patient?.gender === 'male' ? 'Nam' : 'Nữ'}
+            </Text>
+            <Text style={styles.subHeaderText}>
+              Địa chỉ: {patient?.address}
+            </Text>
+            <Text style={styles.subHeaderText}>
+              Cân nặng: {patient?.weight}
+            </Text>
+            <Text style={styles.subHeaderText}>
+              Chiều cao: {patient?.height}
+            </Text>
+            <Text style={styles.subHeaderText}>Số phiếu: {item.id}</Text>
+            <Text style={styles.subHeaderText}>
+              Ngày sinh: {item.birthdate}
+            </Text>
           </View>
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Xét nghiệm</Text>
-            {diagnosis.images.map((image: string, index: number) => (
-              <List.Item
-                key={index}
-                title={`File ${index + 1}`}
-                description={image}
-                right={props => (
-                  <Button
-                    {...props}
-                    onPress={() => handleDownload(image)}
-                    mode="outlined"
-                    style={styles.downloadButton}>
-                    Tải xuống
-                  </Button>
-                )}
-              />
-            ))}
+            <Text style={styles.sectionTitle}>Chi tiết khám bệnh</Text>
+            <Text style={styles.detailText}>Ngày khám bệnh: {item.date}</Text>
+            <Text style={styles.detailText}>
+              Kết quả: {convertString(diagnosis.problem)}
+            </Text>
           </View>
+
+          {diagnosis.images && diagnosis.images.length > 0 && (
+            <View style={styles.section}>
+              <Text style={styles.sectionTitle}>Xét nghiệm</Text>
+              {diagnosis.images.map((image: string, index: number) => (
+                <Image key={index} source={{uri: image}} style={styles.image} />
+              ))}
+            </View>
+          )}
+
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Đơn thuốc</Text>
-            <DataTable>
-              <DataTable.Header>
-                <DataTable.Title style={{flex: 3}}>Thuốc</DataTable.Title>
-                <DataTable.Title style={{flex: 1}}>Buổi</DataTable.Title>
-                <DataTable.Title numeric style={{flex: 1}}>
-                  Số viên
-                </DataTable.Title>
-              </DataTable.Header>
-              {prescription.data.medicines.map(
-                (medicine: any, index: number) => (
-                  <React.Fragment key={index}>
-                    <DataTable.Row>
-                      <DataTable.Cell style={{flex: 3}}>
-                        {medicine.name}
-                      </DataTable.Cell>
-                      <DataTable.Cell style={{flex: 1}}>Sáng</DataTable.Cell>
-                      <DataTable.Cell numeric style={{flex: 1}}>
-                        {medicine.schedule.morning}
-                      </DataTable.Cell>
-                    </DataTable.Row>
-                    <DataTable.Row>
-                      <DataTable.Cell style={{flex: 3}}>.</DataTable.Cell>
-                      <DataTable.Cell style={{flex: 1}}>Trưa</DataTable.Cell>
-                      <DataTable.Cell numeric style={{flex: 1}}>
-                        {medicine.schedule.afternoon}
-                      </DataTable.Cell>
-                    </DataTable.Row>
-                    <DataTable.Row>
-                      <DataTable.Cell style={{flex: 3}}>.</DataTable.Cell>
-                      <DataTable.Cell style={{flex: 1}}>Chiều</DataTable.Cell>
-                      <DataTable.Cell numeric style={{flex: 1}}>
-                        {medicine.schedule.evening}
-                      </DataTable.Cell>
-                    </DataTable.Row>
-                    <DataTable.Row>
-                      <DataTable.Cell style={{flex: 3}}>.</DataTable.Cell>
-                      <DataTable.Cell style={{flex: 1}}>Tối</DataTable.Cell>
-                      <DataTable.Cell numeric style={{flex: 1}}>
-                        {medicine.schedule.night}
-                      </DataTable.Cell>
-                    </DataTable.Row>
-                  </React.Fragment>
-                ),
-              )}
-            </DataTable>
+            {prescription.data.medicines.map((medicine: any, index: number) => (
+              <View key={index} style={styles.medicineContainer}>
+                <Text style={styles.medicineText}>
+                  {medicine.name} SL: {medicine.dosage} viên
+                </Text>
+                <Text style={styles.medicineSchedule}>
+                  Sáng: {medicine.schedule.morning} viên, Trưa:{' '}
+                  {medicine.schedule.afternoon} viên, Chiều:{' '}
+                  {medicine.schedule.evening} viên, Tối:{' '}
+                  {medicine.schedule.night} viên
+                </Text>
+              </View>
+            ))}
+          </View>
+
+          <View style={styles.section}>
+            <Text style={styles.footerText}>Ngày: {item.date}</Text>
+            <Text style={styles.footerText}>Bác sĩ khám bệnh</Text>
           </View>
         </ScrollView>
       </View>
@@ -146,19 +134,45 @@ const styles = StyleSheet.create({
   },
   section: {
     marginBottom: 16,
+    alignItems: 'flex-start',
+  },
+  headerText: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    textAlign: 'center',
+    marginBottom: 4,
+  },
+  subHeaderText: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 2,
   },
   sectionTitle: {
-    fontSize: 24,
+    fontSize: 18,
     fontWeight: 'bold',
     marginBottom: 8,
   },
-  input: {
-    marginBottom: 16,
+  detailText: {
+    fontSize: 16,
+    marginBottom: 8,
   },
-  downloadButton: {
-    alignSelf: 'center',
+  image: {
+    width: '100%',
+    height: 200,
+    marginBottom: 16,
   },
   medicineContainer: {
-    marginBottom: 16,
+    marginBottom: 8,
+  },
+  medicineText: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  medicineSchedule: {
+    fontSize: 14,
+  },
+  footerText: {
+    fontSize: 16,
+    textAlign: 'center',
   },
 });
