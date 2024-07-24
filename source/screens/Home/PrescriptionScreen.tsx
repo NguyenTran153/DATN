@@ -426,8 +426,32 @@ const PrescriptionScreen: React.FC<any> = ({route, navigation}) => {
       <Button
         mode="contained"
         style={{width: '75%', alignSelf: 'center', marginBottom: 16}}
-        onPress={handleConfirm}>
-        Xác nhận
+        onPress={() =>
+          navigation.navigate('DoctorNavigator', {
+            screen: 'Prescription',
+            params: {
+              pres:pres,
+              examination: route.params?.examination || null,
+              patientInfo:userInfo,
+              doctorInfo:user,
+              prescription: {
+              patientName: `${userInfo?.firstName} ${userInfo?.lastName}`,
+              doctorName: `${user.firstName} ${user.lastName}`,
+              date: moment(date).format('YYYY-MM-DD'),
+              problem: pres,
+              medicines: components.map(comp => ({
+                name: comp.medicine,
+                dosage: comp.quantity,
+                schedule: {
+                  morning: comp.morning,
+                  afternoon: comp.afternoon,
+                  evening: comp.evening,
+                  night: comp.night,
+                },
+              })),
+            }},
+          })}>
+        Tiếp tục
       </Button>
     </>
   );

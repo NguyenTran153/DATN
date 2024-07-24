@@ -17,6 +17,7 @@ const initialState: UserData = {
   role: '',
   updatedAt: '',
   weight: null,
+  specialties:[]
 };
 
 export const userSlice = createSlice({
@@ -39,6 +40,7 @@ export const userSlice = createSlice({
       state.role = action.payload.role;
       state.updatedAt = action.payload.updatedAt;
       state.weight = action.payload.weight;
+      state.specialties =  action.payload.specialties
     },
   },
 });

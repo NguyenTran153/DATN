@@ -13,6 +13,7 @@ interface UserData {
   role: string;
   updatedAt: string;
   weight: number | null;
+  specialties:[];
 }
 
 interface PayloadToken {
