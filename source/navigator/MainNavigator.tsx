@@ -2,11 +2,11 @@ import {createMaterialBottomTabNavigator} from '@react-navigation/material-botto
 import {useTheme, Icon} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 
-import StoreScreen from '../screens/Store/StoreScreen';
 import ProfileScreen from '../screens/Profile/ProfileScreen';
 import PatientListScreen from '../screens/PatientList/PatientListScreen';
 import PatientUserScreen from '../screens/PatientUser/PatientUserScreen';
 import DoctorProfileScreen from '../screens/Profile/DoctorProfileScreen';
+import DoctorServiceScreen from '../screens/Doctor/DoctorServiceScreen';
 
 const BottomTabs = createMaterialBottomTabNavigator<any>();
 
@@ -26,6 +26,20 @@ const BottomTabNavigator = () => {
           tabBarIcon: ({focused}: any) => (
             <Icon
               source="view-list-outline"
+              color={focused ? theme.colors.primary : theme.colors.onBackground}
+              size={24}
+            />
+          ),
+        }}
+      />
+      <BottomTabs.Screen
+        name="DoctorServiceScreen"
+        component={DoctorServiceScreen}
+        options={{
+          tabBarLabel: 'Dịch vụ',
+          tabBarIcon: ({focused}: any) => (
+            <Icon
+              source="application"
               color={focused ? theme.colors.primary : theme.colors.onBackground}
               size={24}
             />

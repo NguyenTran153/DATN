@@ -21,6 +21,7 @@ const ExamineScreen = ({navigation, route}: any) => {
     });
   };
 
+  console.log(JSON.stringify(route.params));
   const handlePickFiles = async () => {
     try {
       const results = await DocumentPicker.pick({

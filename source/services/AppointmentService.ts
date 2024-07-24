@@ -2,6 +2,7 @@ import axios from 'axios';
 import { baseURL } from '../utils/constant';
 
 interface CreateAppointmentRequestDto {
+  note: string,
   beginTimestamp: number;
 }
 

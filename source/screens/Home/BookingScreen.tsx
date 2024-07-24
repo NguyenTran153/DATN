@@ -261,6 +261,7 @@ const BookingScreen = ({route, navigation}: any) => {
         token.accessToken,
         Number.parseInt(doctorID),
         {
+          note,
           beginTimestamp,
         },
       );

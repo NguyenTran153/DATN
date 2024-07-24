@@ -65,4 +65,6 @@ export type HomeRoutes = {
   CallingScreen: any;
   ScheduleScreen: any;
   PatientRecordScreen: any;
+  ExamineScreen: any;
+  PatientSelectionScreen: any;
 };

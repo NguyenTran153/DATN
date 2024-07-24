@@ -72,9 +72,7 @@ const PatientDetailScreen = ({navigation, route}: any) => {
           })}>
           <Tab.Screen name="CurrentInfoScreen" component={CurrentInfo} />
           <Tab.Screen name="FoodDiary" component={FoodDiaryScreen} />
-          <Tab.Screen name="BookingHistoryScreen" component={BookingHistory} />
           <Tab.Screen name="MedicalHistoryScreen" component={MedicalHistory} />
-          <Tab.Screen name="PersonalInfoScreen" component={PersonalInfo} />
         </Tab.Navigator>
       </View>
     </View>
