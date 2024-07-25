@@ -6,6 +6,7 @@ import 'moment/locale/vi';
 moment.locale('vi');
 
 interface ScheduleCardProps {
+  avatar: string;
   doctorName: string;
   timeStamp: number;
   address: string;
@@ -13,6 +14,7 @@ interface ScheduleCardProps {
 }
 
 const ScheduleCard: React.FC<ScheduleCardProps> = ({
+  avatar,
   doctorName,
   timeStamp,
   address,

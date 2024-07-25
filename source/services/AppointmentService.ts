@@ -1,8 +1,8 @@
 import axios from 'axios';
-import { baseURL } from '../utils/constant';
+import {baseURL} from '../utils/constant';
 
 interface CreateAppointmentRequestDto {
-  note: string,
+  note: string;
   beginTimestamp: number;
 }
 
@@ -34,15 +34,12 @@ class AppointmentService {
   }
   static async getAppointment(accessToken: string) {
     try {
-      const response = await axios.get<any[]>(
-        `${baseURL}appointments/me`,
-        {
-          headers: {
-            'content-type': 'application/json',
-            Authorization: `Bearer ${accessToken}`,
-          },
+      const response = await axios.get<any[]>(`${baseURL}appointments/me`, {
+        headers: {
+          'content-type': 'application/json',
+          Authorization: `Bearer ${accessToken}`,
         },
-      );
+      });
       console.log(response.data);
       return response.data;
     } catch (error) {
@@ -64,6 +61,39 @@ class AppointmentService {
       return response.data;
     } catch (error) {
       console.log(error);
+      throw error;
+    }
+  }
+  static async cancelAppointment(
+    appointmentId: number,
+    cancelReason: string,
+    accessToken: string,
+  ): Promise<any> {
+    try {
+      const response = await fetch(
+        `${baseURL}appointments/response/${appointmentId}`,
+        {
+          method: 'PATCH',
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${accessToken}`,
+          },
+          body: JSON.stringify({
+            action: 'decline',
+            cancelReason: cancelReason,
+            beginTimestamp: 0,
+          }),
+        },
+      );
+
+      if (!response.ok) {
+        // Handle errors if the response status is not OK
+        const errorData = await response.json();
+        throw new Error(errorData.message || 'Failed to cancel appointment');
+      }
+
+      return await response.json();
+    } catch (error) {
       throw error;
     }
   }

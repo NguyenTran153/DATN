@@ -418,7 +418,7 @@ const styles = StyleSheet.create({
   },
   textArea: {
     marginVertical: 10,
-    height: 80,
+    height: 100,
     width: '100%',
     flexDirection: 'row',
     alignItems: 'center',

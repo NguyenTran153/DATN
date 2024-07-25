@@ -1,135 +1,184 @@
-import {FlatList, StyleSheet, Text, View} from 'react-native';
-import {useState} from 'react';
-import {useTheme, SegmentedButtons, DataTable} from 'react-native-paper';
-import CustomAppbar from '../../components/CustomAppbar';
-import ScheduleCard from '../../components/ScheduleCard';
-
-const fakeSchedules = [
-  {
-    id: 1,
-    doctorName: 'Dr. John Doe',
-    timeStamp: 1629889200000,
-    address: '123 Main St, Cityville',
-  },
-  {
-    id: 2,
-    doctorName: 'Dr. Jane Smith',
-    timeStamp: 1629975600000,
-    address: '456 Elm St, Townsville',
-  },
-  {
-    id: 3,
-    doctorName: 'Dr. Emma Brown',
-    timeStamp: 1630062000000,
-    address: '789 Oak St, Villageville',
-  },
-  {
-    id: 4,
-    doctorName: 'Dr. Emma Brown',
-    timeStamp: 1630062000000,
-    address: '789 Oak St, Villageville',
-  },
-  {
-    id: 5,
-    doctorName: 'Dr. Emma Brown',
-    timeStamp: 1630062000000,
-    address: '789 Oak St, Villageville',
-  },
-  {
-    id: 6,
-    doctorName: 'Dr. Emma Brown',
-    timeStamp: 1630062000000,
-    address: '789 Oak St, Villageville',
-  },
-  {
-    id: 7,
-    doctorName: 'Dr. Emma Brown',
-    timeStamp: 1630062000000,
-    address: '789 Oak St, Villageville',
-  },
-];
-
-const itemsPerPage = 10;
+import {FlatList, StyleSheet, View, TextInput} from 'react-native';
+import {useState, useEffect} from 'react';
+import {
+  useTheme,
+  Card,
+  Avatar,
+  IconButton,
+  Appbar,
+  Text,
+  Modal,
+  Button,
+} from 'react-native-paper';
+import {useSelector} from 'react-redux';
+import AppointmentService from '../../services/AppointmentService';
+import moment from 'moment';
+import {useIsFocused} from '@react-navigation/native';
+import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
 
 const ScheduleScreen = ({navigation}: any) => {
   const theme = useTheme();
+  const token = useSelector((state: any) => state.token.accessToken);
+  const [appointments, setAppointments] = useState<any[]>([]);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [cancelReason, setCancelReason] = useState<string>('');
+  const [selectedAppointmentId, setSelectedAppointmentId] = useState<
+    number | null
+  >(null);
+  const isFocused = useIsFocused();
 
-  const [value, setValue] = useState<string>('active');
-  const [page, setPage] = useState<number>(0);
-  const [data, setData] = useState(fakeSchedules.slice(0, itemsPerPage));
-  const [schedules, setSchedules] = useState(fakeSchedules);
+  useEffect(() => {
+    fetchAppointments();
+  }, [isFocused]);
+
+  const fetchAppointments = async () => {
+    try {
+      const response = await AppointmentService.getAppointment(token);
+      console.log('API Response:', response);
+
+      const convertedList = response.map((item: any) => {
+        const beginTimestamp = item.beginTimestamp;
+        const date = new Date(beginTimestamp * 1000);
+        const formattedDate = moment(date).format('DD/MM/YYYY HH:mm');
+
+        const user =
+          item.requestUser.role === 'patient'
+            ? item.requestUser
+            : item.confirmUser;
+
+        const userFirstName = user ? user.firstName : '';
+        const userLastName = user ? user.lastName : '';
+        const userAvatar = user ? user.avatar : '';
+        const userAddress = user ? user.address : '';
+        const birthday = moment(user?.birthdate).format('DD/MM/YYYY');
+        const gender = user?.gender === 'male' ? 'Nam' : 'Nữ';
+
+        return {
+          id: item.id,
+          date: formattedDate,
+          userFirstName: userFirstName,
+          userLastName: userLastName,
+          userAvatar: userAvatar,
+          userAddress: userAddress,
+          birthday: birthday,
+          gender,
+          status: item.status,
+        };
+      });
+
+      console.log('Converted List:', convertedList);
+
+      const upcomingAppointments = convertedList.filter(
+        app => app.status === 'ongoing',
+      );
+
+      console.log('Upcoming Appointments:', upcomingAppointments);
+      setAppointments(upcomingAppointments);
+    } catch (error) {
+      console.error('Error fetching appointments:', error);
+    }
+  };
 
   const handleCancel = (id: number) => {
-    const updatedSchedules = schedules.filter(schedule => schedule.id !== id);
-    setSchedules(updatedSchedules);
-    const newPage = Math.min(
-      page,
-      Math.ceil(updatedSchedules.length / itemsPerPage) - 1,
-    );
-    setPage(newPage);
+    setSelectedAppointmentId(id);
+    setModalVisible(true);
   };
 
-  const handlePageChange = (newPage: number) => {
-    setPage(newPage);
-    const start = newPage * itemsPerPage;
-    const end = start + itemsPerPage;
-    setData(fakeSchedules.slice(start, end));
+  const confirmCancel = async () => {
+    if (selectedAppointmentId !== null) {
+      try {
+        await AppointmentService.cancelAppointment(
+          selectedAppointmentId,
+          cancelReason,
+          token,
+        );
+        setModalVisible(false);
+        setCancelReason('');
+        fetchAppointments();
+        Dialog.show({
+          type: ALERT_TYPE.SUCCESS,
+          title: 'Thông báo',
+          textBody: 'Đã huỷ lịch hẹn',
+          button: 'Đóng',
+        });
+      } catch (error) {
+        setModalVisible(false);
+        setCancelReason('');
+        Dialog.show({
+          type: ALERT_TYPE.DANGER,
+          title: 'Thông báo',
+          textBody: 'Huỷ lịch hẹn thất bại',
+          button: 'Đóng',
+        });
+        console.error('Error cancelling appointment:', error);
+      }
+    }
   };
+
+  const renderItem = ({item}: {item: any}) => (
+    <Card style={styles.card}>
+      <Card.Title
+        title={`Họ tên: ${item.userFirstName} ${item.userLastName}`}
+        subtitle={`Ngày sinh: ${item.birthday || 'Chưa có thông tin'}`}
+        left={props => (
+          <Avatar.Image {...props} size={50} source={{uri: item.userAvatar}} />
+        )}
+        right={props => (
+          <IconButton
+            {...props}
+            iconColor={theme.colors.error}
+            icon="cancel"
+            onPress={() => handleCancel(item.id)}
+          />
+        )}
+      />
+      <Card.Content>
+        <Text>Giới tính: {item.gender}</Text>
+        <Text>Địa chỉ: {item.userAddress}</Text>
+      </Card.Content>
+    </Card>
+  );
 
   return (
     <View
       style={[styles.container, {backgroundColor: theme.colors.background}]}>
-      <CustomAppbar
-        title="Danh sách lịch hẹn"
-        goBack={() => navigation.goBack()}
-      />
-      <SegmentedButtons
-        style={{width: '90%', alignSelf: 'center'}}
-        value={value}
-        onValueChange={setValue}
-        buttons={[
-          {
-            value: 'active',
-            label: 'Sắp tới',
-          },
-          {
-            value: 'past',
-            label: 'Đã kết thúc',
-          },
-          {
-            value: 'cancel',
-            label: 'Đã huỷ',
-          },
-        ]}
-      />
+      <Appbar.Header>
+        <Appbar.Content title="Danh sách lịch hẹn sắp tới" />
+      </Appbar.Header>
       <FlatList
-        data={data}
-        showsHorizontalScrollIndicator={false}
-        showsVerticalScrollIndicator={false}
+        data={appointments}
         keyExtractor={(item: any) => item.id.toString()}
-        renderItem={({item}) => (
-          <ScheduleCard
-            doctorName={item.doctorName}
-            timeStamp={item.timeStamp}
-            address={item.address}
-            onCancel={() => handleCancel(item.id)}
+        renderItem={renderItem}
+      />
+
+      {/* Modal for cancel reason */}
+      <Modal visible={modalVisible} onDismiss={() => setModalVisible(false)}>
+        <View
+          style={[
+            styles.modalContainer,
+            {backgroundColor: theme.colors.background},
+          ]}>
+          <Text style={styles.modalTitle}>Nhập lí do huỷ</Text>
+          <TextInput
+            style={[styles.input, {color: theme.colors.onBackground}]}
+            placeholder="Lí do huỷ"
+            value={cancelReason}
+            onChangeText={setCancelReason}
           />
-        )}
-      />
-      <DataTable.Pagination
-        page={page}
-        numberOfPages={Math.ceil(fakeSchedules.length / itemsPerPage)}
-        onPageChange={handlePageChange}
-        label={`${page * itemsPerPage + 1}-${Math.min(
-          (page + 1) * itemsPerPage,
-          fakeSchedules.length,
-        )} of ${fakeSchedules.length}`}
-      />
+          <View style={styles.buttonContainer}>
+            <Button onPress={() => setModalVisible(false)}>Đóng</Button>
+            <Button
+              style={{backgroundColor: theme.colors.error}}
+              mode="contained"
+              onPress={async () => await confirmCancel()}>
+              Huỷ
+            </Button>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
-
-export default ScheduleScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -137,4 +186,32 @@ const styles = StyleSheet.create({
     gap: 10,
     flexDirection: 'column',
   },
+  card: {
+    marginBottom: 16,
+    borderRadius: 8,
+    elevation: 3,
+  },
+  modalContainer: {
+    padding: 20,
+    borderRadius: 8,
+    margin: 20,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  input: {
+    height: 100,
+    borderWidth: 1,
+    borderRadius: 4,
+    paddingHorizontal: 10,
+    marginBottom: 20,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
 });
+
+export default ScheduleScreen;

@@ -7,6 +7,7 @@ import PatientListScreen from '../screens/PatientList/PatientListScreen';
 import PatientUserScreen from '../screens/PatientUser/PatientUserScreen';
 import DoctorProfileScreen from '../screens/Profile/DoctorProfileScreen';
 import DoctorServiceScreen from '../screens/Doctor/DoctorServiceScreen';
+import ScheduleScreen from '../screens/Home/ScheduleScreen';
 
 const BottomTabs = createMaterialBottomTabNavigator<any>();
 
@@ -47,13 +48,13 @@ const BottomTabNavigator = () => {
         }}
       />
       <BottomTabs.Screen
-        name="DoctorProfileScreen"
-        component={DoctorProfileScreen}
+        name="ScheduleScreen"
+        component={ScheduleScreen}
         options={{
-          tabBarLabel: 'Tài khoản',
+          tabBarLabel: 'Lịch hẹn',
           tabBarIcon: ({focused}: any) => (
             <Icon
-              source="account"
+              source="calendar"
               color={focused ? theme.colors.primary : theme.colors.onBackground}
               size={24}
             />

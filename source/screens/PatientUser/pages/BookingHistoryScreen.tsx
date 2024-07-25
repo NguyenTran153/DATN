@@ -45,19 +45,16 @@ const BookingHistoryScreen = ({navigation}: any) => {
         token.accessToken,
       );
 
-      // Lọc và chuyển đổi danh sách lịch hẹn
       const convertedList = appointments.map(item => {
         const beginTimestamp = item.beginTimestamp;
-        const date = new Date(beginTimestamp * 1000); // Chuyển đổi thành mili giây
+        const date = new Date(beginTimestamp * 1000); 
         const formattedDate = moment(date).format('DD/MM/YYYY HH:mm');
 
-        // Xác định thông tin của bác sĩ từ requestUser hoặc confirmUser
         const doctorUser =
           item.requestUser.role === 'doctor'
             ? item.requestUser
             : item.confirmUser;
 
-        // Lấy thông tin từ doctorUser nếu tồn tại
         const doctorFirstName = doctorUser ? doctorUser.firstName : '';
         const doctorLastName = doctorUser ? doctorUser.lastName : '';
         const doctorAvatar = doctorUser ? doctorUser.avatar : '';
