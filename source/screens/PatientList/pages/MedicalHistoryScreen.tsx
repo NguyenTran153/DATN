@@ -32,7 +32,6 @@ const MedicalHistoryScreen = ({navigation, route}: any) => {
   const accessToken = useSelector((state: any) => state.token.accessToken);
 
   const totalPages = Math.ceil(medicalHistoryData.length / ITEMS_PER_PAGE);
-
   const getCurrentPageData = () => {
     const filteredData = searchQuery
       ? medicalHistoryData.filter(
@@ -51,7 +50,8 @@ const MedicalHistoryScreen = ({navigation, route}: any) => {
   };
 
   const handleViewDetails = (item: any) => {
-    navigation.navigate('MedicalDetailScreen', {item});
+    const patient = route.params.patient
+    navigation.navigate('MedicalDetailScreen', {item, patient});
   };
 
   const convertString = (inputString: string): string => {
