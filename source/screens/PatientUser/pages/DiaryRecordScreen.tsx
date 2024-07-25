@@ -43,16 +43,16 @@ const DiaryRecordScreen = ({navigation}: any) => {
 
   const entriesPerPage = 7;
 
-  // Fetch entries when the component mounts or when token or user ID changes
   useEffect(() => {
     const fetchEntries = async () => {
       try {
         setLoading(true); // Start loading
         const fetchedEntries = await DiaryService.getDiaries(
           token.accessToken,
-          1, // default page
+          1, 
           100,
           user.id,
+          'food'
         );
         setEntries(fetchedEntries);
       } catch (error) {
