@@ -6,6 +6,7 @@ import CustomAppbar from '../../components/CustomAppbar';
 import {useSelector} from 'react-redux';
 import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
 import UserService from '../../services/UserService'; // import UserService
+import ModalCodeScan from './ModalCodeScan';
 
 const ConnectDoctorScreen = ({navigation, route}: any) => {
   const theme = useTheme();
@@ -13,9 +14,9 @@ const ConnectDoctorScreen = ({navigation, route}: any) => {
 
   const [phone, setPhone] = useState('');
   const token = useSelector((state: any) => state.token.accessToken);
+  const [modal, setModal] = useState(false);
 
-  const sendFriendRequest = async () => {
-    const phoneNumber = `+84${phone.slice(1)}`;
+  const sendFriendRequest = async (phoneNumber: string) => {
     try {
       const response = await UserService.findUserByPhone(phoneNumber, token);
       if (response) {
@@ -102,7 +103,7 @@ const ConnectDoctorScreen = ({navigation, route}: any) => {
               right={
                 <TextInput.Icon
                   icon="arrow-right-bold"
-                  onPress={sendFriendRequest}
+                  onPress={() => sendFriendRequest(`+84${phone.slice(1)}`)}
                 />
               }
             />
@@ -114,7 +115,7 @@ const ConnectDoctorScreen = ({navigation, route}: any) => {
                 left={() => (
                   <List.Icon style={styles.settingCenter} icon="qrcode" />
                 )}
-                onPress={() => {}}
+                onPress={() => setModal(true)}
               />
               <List.Item
                 title="Danh bạ máy"
@@ -140,6 +141,11 @@ const ConnectDoctorScreen = ({navigation, route}: any) => {
           </View>
         </View>
       </ScrollView>
+      <ModalCodeScan
+        visible={modal}
+        hideModal={() => setModal(false)}
+        setValueSearch={value => sendFriendRequest(value)}
+      />
     </>
   );
 };

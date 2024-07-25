@@ -24,6 +24,7 @@ import NotificationService from '../../services/NotificationService';
 import UserService from '../../services/UserService';
 import {useIsFocused} from '@react-navigation/native';
 import AppointmentService from '../../services/AppointmentService';
+import {baseURL} from '../../utils/constant';
 
 const NotificationScreen = ({navigation}: any) => {
   const theme = useTheme();
@@ -116,17 +117,14 @@ const NotificationScreen = ({navigation}: any) => {
     notificationId: string,
   ) => {
     try {
-      await fetch(
-        `http://10.0.2.2:8080/notifications/${notificationId}/mark-as-read`,
-        {
-          method: 'POST',
-          headers: {
-            Accept: '*/*',
-            Authorization: `Bearer ${token}`,
-          },
-          body: '',
+      await fetch(`${baseURL}notifications/${notificationId}/mark-as-read`, {
+        method: 'POST',
+        headers: {
+          Accept: '*/*',
+          Authorization: `Bearer ${token}`,
         },
-      );
+        body: '',
+      });
       await UserService.acceptFriend(token, friendRequestId, 'accepted');
       Dialog.show({
         type: ALERT_TYPE.SUCCESS,
@@ -234,13 +232,12 @@ const NotificationScreen = ({navigation}: any) => {
     }
   };
 
-
   const declineAppointment = async (
     appointmentId: string,
     notificationId: string,
   ) => {
     try {
-      if(cancelReason === ''){
+      if (cancelReason === '') {
         Dialog.show({
           type: ALERT_TYPE.DANGER,
           title: 'Thông báo',
@@ -269,7 +266,7 @@ const NotificationScreen = ({navigation}: any) => {
           title: 'Từ chối lịch hẹn thành công',
           button: 'Đóng',
         });
-  
+
         setData(prevData =>
           prevData.map(notification =>
             notification.id === notificationId

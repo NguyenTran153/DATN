@@ -1,22 +1,19 @@
 import axios from 'axios';
-import { baseURL } from '../utils/constant';
+import {baseURL} from '../utils/constant';
 
 class AuthService {
   static async login(phoneNumber: string, password: string) {
+    console.log(baseURL);
     try {
       const params = JSON.stringify({
         phoneNumber: phoneNumber,
         password: password,
       });
-      const response = await axios.post<Token>(
-        `${baseURL}auth/login`,
-        params,
-        {
-          headers: {
-            'content-type': 'application/json',
-          },
+      const response = await axios.post<Token>(`${baseURL}auth/login`, params, {
+        headers: {
+          'content-type': 'application/json',
         },
-      );
+      });
       return response.data;
     } catch (error) {
       console.log('Error log in:', error);
