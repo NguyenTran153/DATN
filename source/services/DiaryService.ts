@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { baseURL } from '../utils/constant';
 class DiaryService {
-  static async postDiary(accessToken: string, data: any, files: File[]) {
+  static async postDiary(accessToken: string, data: any, files: File[], type: string) {
     try {
       const formData = new FormData();
 
@@ -10,7 +10,7 @@ class DiaryService {
       files.forEach(file => {
         formData.append('files', file);
       });
-
+      formData.append('type', type);
       const response = await axios.post(
         `${baseURL}diaries`,
         formData,
