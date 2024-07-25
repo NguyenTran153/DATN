@@ -57,6 +57,7 @@ const CurrentInfoScreen = ({route, navigation}: any) => {
         1,
         100,
         patient.id,
+        'food',
       );
       const appointments = await AppointmentService.getAppointment(
         token.accessToken,
@@ -99,10 +100,10 @@ const CurrentInfoScreen = ({route, navigation}: any) => {
   }, [isFocused]);
 
   // Sample data
-  const recentDietLog =
-    diary.length !== 0
-      ? diary[0].data.mockKey
-      : 'Không tìm thấy nhật ký gần nhất';
+const recentDietLog = diary.length !== 0
+  ? `${diary[0]?.data?.morning ? `Sáng: ${diary[0]?.data?.morning}` : ''}${diary[0]?.data?.morning && (diary[0]?.data?.afternoon || diary[0]?.data?.evening) ? ' | ' : ''}${diary[0]?.data?.afternoon ? `Trưa: ${diary[0]?.data?.afternoon}` : ''}${diary[0]?.data?.afternoon && diary[0]?.data?.evening ? ' | ' : ''}${diary[0]?.data?.evening ? `Tối: ${diary[0]?.data?.evening}` : ''}`
+  : 'Không tìm thấy nhật ký gần nhất';
+
   const recentDiagnosis =
     diagnosis !== '' ? diagnosis : 'Không tìm thấy chẩn đoán gần nhất';
   const recentPrescription = med;

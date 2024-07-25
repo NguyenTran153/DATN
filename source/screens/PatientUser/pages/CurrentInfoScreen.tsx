@@ -1,14 +1,20 @@
-import { StyleSheet, SafeAreaView, ScrollView, View, TouchableOpacity } from 'react-native';
-import React, { useEffect, useState, useCallback } from 'react';
-import { useIsFocused } from '@react-navigation/native';
-import { Text, useTheme, Card, IconButton } from 'react-native-paper';
-import { useSelector } from 'react-redux';
+import {
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
+  View,
+  TouchableOpacity,
+} from 'react-native';
+import React, {useEffect, useState, useCallback} from 'react';
+import {useIsFocused} from '@react-navigation/native';
+import {Text, useTheme, Card, IconButton} from 'react-native-paper';
+import {useSelector} from 'react-redux';
 import PrescriptionService from '../../../services/PrescriptionService';
 import DiaryService from '../../../services/DiaryService';
 import AppointmentService from '../../../services/AppointmentService';
 import moment from 'moment';
 
-const CurrentInfoScreen = ({ navigation }: any) => {
+const CurrentInfoScreen = ({navigation}: any) => {
   const theme = useTheme();
   const token = useSelector((state: any) => state.token);
   const patient = useSelector((state: any) => state.user);
@@ -30,6 +36,7 @@ const CurrentInfoScreen = ({ navigation }: any) => {
       1,
       100,
       patient.id,
+      'food',
     );
     const appointments = await AppointmentService.getAppointment(
       token.accessToken,
@@ -70,7 +77,7 @@ const CurrentInfoScreen = ({ navigation }: any) => {
     const medicineStrings = prescriptions[0].data.medicines.map(
       (medicine: {
         name: any;
-        schedule: { morning: any; afternoon: any; evening: any; night: any };
+        schedule: {morning: any; afternoon: any; evening: any; night: any};
         dosage: any;
       }) =>
         `${medicine.name}: Sáng: ${medicine.schedule.morning}, Trưa: ${medicine.schedule.afternoon}, Chiều: ${medicine.schedule.evening}, Tối: ${medicine.schedule.night}\nSố lượng: ${medicine.dosage} viên`,
@@ -85,18 +92,28 @@ const CurrentInfoScreen = ({ navigation }: any) => {
   const nextAppointment = date;
   const recentDietLog =
     diary.length !== 0
-      ? diary[0].data.mockKey
+      ? `${diary[0]?.data?.morning ? `Sáng: ${diary[0]?.data?.morning}` : ''}${
+          diary[0]?.data?.morning &&
+          (diary[0]?.data?.afternoon || diary[0]?.data?.evening)
+            ? ' | '
+            : ''
+        }${
+          diary[0]?.data?.afternoon ? `Trưa: ${diary[0]?.data?.afternoon}` : ''
+        }${diary[0]?.data?.afternoon && diary[0]?.data?.evening ? ' | ' : ''}${
+          diary[0]?.data?.evening ? `Tối: ${diary[0]?.data?.evening}` : ''
+        }`
       : 'Không tìm thấy nhật ký gần nhất';
+
   const recentDiagnosis =
     diagnosis !== '' ? diagnosis : 'Không tìm thấy chẩn đoán gần nhất';
   const recentPrescription = med;
 
   return (
     <SafeAreaView
-      style={[styles.container, { backgroundColor: theme.colors.background }]}>
+      style={[styles.container, {backgroundColor: theme.colors.background}]}>
       <ScrollView contentContainerStyle={styles.scrollView}>
-        <TouchableOpacity onPress={() => navigation.navigate('BookingHistoryScreen'
-        )}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('BookingHistoryScreen')}>
           <Card style={styles.card}>
             <Card.Title
               title="Lịch khám tiếp theo"
@@ -112,8 +129,8 @@ const CurrentInfoScreen = ({ navigation }: any) => {
             </Card.Content>
           </Card>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('DiaryRecordScreen'
-        )}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('DiaryRecordScreen')}>
           <Card style={styles.card}>
             <Card.Title
               title="Nhật ký ăn uống gần nhất"
@@ -125,8 +142,8 @@ const CurrentInfoScreen = ({ navigation }: any) => {
             </Card.Content>
           </Card>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('MedicalHistoryScreen'
-        )}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('MedicalHistoryScreen')}>
           <Card style={styles.card}>
             <Card.Title
               title="Chẩn đoán và kết quả gần nhất"
@@ -138,8 +155,8 @@ const CurrentInfoScreen = ({ navigation }: any) => {
             </Card.Content>
           </Card>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('MedicalHistoryScreen'
-        )}>
+        <TouchableOpacity
+          onPress={() => navigation.navigate('MedicalHistoryScreen')}>
           <Card style={styles.card}>
             <Card.Title
               title="Đơn thuốc gần nhất"

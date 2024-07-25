@@ -1,34 +1,37 @@
 import React, {useState, useEffect} from 'react';
 import {ScrollView, StyleSheet, View} from 'react-native';
 import {
-  Button,
   Searchbar,
   useTheme,
   Text,
   IconButton,
-  DataTable,
   Appbar,
+  Card,
+  Avatar,
   ActivityIndicator,
+  SegmentedButtons,
 } from 'react-native-paper';
 import moment from 'moment';
 import LottieView from 'lottie-react-native';
-
-import EntryItem from '../../../components/EntryItem';
-import DiaryService from '../../../services/DiaryService';
+import {useIsFocused} from '@react-navigation/native';
 import {useSelector} from 'react-redux';
-import { useIsFocused } from '@react-navigation/native';
+import DiaryService from '../../../services/DiaryService';
 
 interface Entry {
   id: string;
   createdAt: string;
   data: {
-    time: string;
-    food: string;
-    bloodPressure: string;
-    bloodSugar: string;
-    exercise: string;
-    note: string;
+    time?: string;
+    food?: string;
+    bloodPressure?: string;
+    bloodSugar?: string;
+    exercise?: string;
+    note?: string;
+    morning?: string;
+    afternoon?: string;
+    evening?: string;
   };
+  type: string;
 }
 
 const DiaryRecordScreen = ({route}: any) => {
@@ -40,10 +43,8 @@ const DiaryRecordScreen = ({route}: any) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [entries, setEntries] = useState<Entry[]>([]);
   const [filteredEntries, setFilteredEntries] = useState<Entry[]>([]);
-  const [currentPage, setCurrentPage] = useState<number>(0);
+  const [currentType, setCurrentType] = useState<string>('food');
   const [loading, setLoading] = useState<boolean>(true);
-
-  const entriesPerPage = 7;
 
   useEffect(() => {
     const fetchEntries = async () => {
@@ -52,8 +53,9 @@ const DiaryRecordScreen = ({route}: any) => {
         const fetchedEntries = await DiaryService.getDiaries(
           token.accessToken,
           1, // default page
-          entriesPerPage,
+          100, // or whatever limit you want
           patientId,
+          currentType,
         );
         setEntries(fetchedEntries);
         setLoading(false);
@@ -64,7 +66,7 @@ const DiaryRecordScreen = ({route}: any) => {
     };
 
     fetchEntries();
-  }, [isFocused]);
+  }, [isFocused, currentType]);
 
   useEffect(() => {
     const filtered = entries.filter(entry => {
@@ -95,14 +97,117 @@ const DiaryRecordScreen = ({route}: any) => {
       );
     });
     setFilteredEntries(filtered);
-    setCurrentPage(0);
   }, [searchQuery, entries]);
 
-  const startIndex = currentPage * entriesPerPage;
-  const paginatedEntries = filteredEntries.slice(
-    startIndex,
-    startIndex + entriesPerPage,
-  );
+  const EntryItem = ({entry}: {entry: Entry}) => {
+    const renderContent = () => {
+      switch (entry.type) {
+        case 'food':
+          return (
+            <>
+              <View style={styles.entryRow}>
+                <Avatar.Icon
+                  size={24}
+                  icon="calendar"
+                  style={{backgroundColor: theme.colors.primary}}
+                />
+                <Text style={styles.entryText}>
+                  Ngày: {moment(entry.createdAt).format('DD/MM/YYYY')}
+                </Text>
+              </View>
+              <View style={styles.entryRow}>
+                <Avatar.Icon
+                  size={24}
+                  icon="food"
+                  style={{backgroundColor: theme.colors.primary}}
+                />
+                <Text style={styles.entryText}>
+                  Sáng: {entry.data.morning || 'Chưa có dữ liệu'}
+                </Text>
+              </View>
+              <View style={styles.entryRow}>
+                <Avatar.Icon
+                  size={24}
+                  icon="food"
+                  style={{backgroundColor: theme.colors.primary}}
+                />
+                <Text style={styles.entryText}>
+                  Trưa: {entry.data.afternoon || 'Chưa có dữ liệu'}
+                </Text>
+              </View>
+              <View style={styles.entryRow}>
+                <Avatar.Icon
+                  size={24}
+                  icon="food"
+                  style={{backgroundColor: theme.colors.primary}}
+                />
+                <Text style={styles.entryText}>
+                  Tối: {entry.data.evening || 'Chưa có dữ liệu'}
+                </Text>
+              </View>
+            </>
+          );
+        case 'blood_pressure':
+          return (
+            <>
+              <View style={styles.entryRow}>
+                <Avatar.Icon
+                  size={24}
+                  icon="clock"
+                  style={{backgroundColor: theme.colors.primary}}
+                />
+                <Text style={styles.entryText}>
+                  Thời gian: {entry.data.time || 'Chưa có dữ liệu'}
+                </Text>
+              </View>
+              <View style={styles.entryRow}>
+                <Avatar.Icon
+                  size={24}
+                  icon="heart-pulse"
+                  style={{backgroundColor: theme.colors.primary}}
+                />
+                <Text style={styles.entryText}>
+                  Huyết áp: {entry.data.bloodPressure || 'Chưa có dữ liệu'}
+                </Text>
+              </View>
+            </>
+          );
+        case 'blood_sugar':
+          return (
+            <>
+              <View style={styles.entryRow}>
+                <Avatar.Icon
+                  size={24}
+                  icon="clock"
+                  style={{backgroundColor: theme.colors.primary}}
+                />
+                <Text style={styles.entryText}>
+                  Thời gian: {entry.data.time || 'Chưa có dữ liệu'}
+                </Text>
+              </View>
+              <View style={styles.entryRow}>
+                <Avatar.Icon
+                  size={24}
+                  icon="water"
+                  style={{backgroundColor: theme.colors.primary}}
+                />
+                <Text style={styles.entryText}>
+                  Đường huyết: {entry.data.bloodSugar || 'Chưa có dữ liệu'}
+                </Text>
+              </View>
+            </>
+          );
+        default:
+          return null;
+      }
+    };
+
+    return (
+      <Card style={[styles.card, {backgroundColor: theme.colors.surface}]}>
+        <Card.Content>{renderContent()}</Card.Content>
+      </Card>
+    );
+  };
 
   return (
     <View
@@ -118,6 +223,16 @@ const DiaryRecordScreen = ({route}: any) => {
           value={searchQuery}
         />
       </View>
+      <SegmentedButtons
+        value={currentType}
+        onValueChange={setCurrentType}
+        buttons={[
+          {value: 'food', label: 'Ăn uống'},
+          {value: 'blood_sugar', label: 'Đường huyết'},
+          {value: 'blood_pressure', label: 'Huyết áp'},
+        ]}
+        style={styles.segmentedButtons}
+      />
       {loading ? (
         <ActivityIndicator
           animating={true}
@@ -128,8 +243,8 @@ const DiaryRecordScreen = ({route}: any) => {
         <ScrollView
           contentContainerStyle={styles.listContainer}
           showsVerticalScrollIndicator={false}>
-          {entries.length ? (
-            entries.map(entry => (
+          {filteredEntries.length ? (
+            filteredEntries.map(entry => (
               <EntryItem key={entry.id} entry={entry} />
             ))
           ) : (
@@ -145,16 +260,6 @@ const DiaryRecordScreen = ({route}: any) => {
           )}
         </ScrollView>
       )}
-
-      {/* <DataTable.Pagination
-        page={currentPage}
-        style={{alignSelf: 'center'}}
-        numberOfPages={Math.ceil(filteredEntries.length / entriesPerPage)}
-        onPageChange={page => setCurrentPage(page)}
-        label={`Page ${currentPage + 1} of ${Math.ceil(
-          filteredEntries.length / entriesPerPage,
-        )}`}
-      /> */}
     </View>
   );
 };
@@ -174,7 +279,7 @@ const styles = StyleSheet.create({
   },
   searchBar: {
     flex: 1,
-    marginHorizontal: 8,
+    marginRight: 8,
   },
   listContainer: {
     padding: 16,
@@ -188,5 +293,19 @@ const styles = StyleSheet.create({
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
+  },
+  segmentedButtons: {
+    marginBottom: 16,
+  },
+  card: {
+    marginBottom: 16,
+  },
+  entryRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  entryText: {
+    marginLeft: 8,
   },
 });

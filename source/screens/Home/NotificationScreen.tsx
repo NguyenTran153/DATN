@@ -8,25 +8,37 @@ import {
   Modal,
   TouchableOpacity,
 } from 'react-native';
-import {Text, useTheme, SegmentedButtons, Button} from 'react-native-paper';
+import {
+  Text,
+  useTheme,
+  SegmentedButtons,
+  Button,
+  TextInput,
+  Modal as RNModal,
+} from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import LottieView from 'lottie-react-native';
 import CustomAppbar from '../../components/CustomAppbar';
 import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
 import NotificationService from '../../services/NotificationService';
 import UserService from '../../services/UserService';
-import { useIsFocused } from '@react-navigation/native';
+import {useIsFocused} from '@react-navigation/native';
+import AppointmentService from '../../services/AppointmentService';
 
 const NotificationScreen = ({navigation}: any) => {
   const theme = useTheme();
   const token = useSelector((state: any) => state.token?.accessToken);
   const isFocused = useIsFocused();
+  const user = useSelector((state: any) => state.user);
 
   const [data, setData] = useState<any[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [type, setType] = useState<string>('');
-  const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [selectedNotification, setSelectedNotification] = useState<any>(null);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [cancelVisible, setCancelVisible] = useState<boolean>(false);
+
+  const [cancelReason, setCancelReason] = useState('');
 
   const getNotifications = async (type: string) => {
     try {
@@ -40,6 +52,12 @@ const NotificationScreen = ({navigation}: any) => {
       setLoading(false);
     }
   };
+
+  useEffect(() => {
+    if (cancelVisible) {
+      setModalVisible(false);
+    }
+  }, [modalVisible, cancelVisible]);
 
   useEffect(() => {
     const fetchNotifications = async () => {
@@ -216,36 +234,50 @@ const NotificationScreen = ({navigation}: any) => {
     }
   };
 
+
   const declineAppointment = async (
     appointmentId: string,
     notificationId: string,
   ) => {
     try {
-      await fetch(
-        `http://10.0.2.2:8080/notifications/${notificationId}/mark-as-read`,
-        {
-          method: 'POST',
-          headers: {
-            Accept: '*/*',
-            Authorization: `Bearer ${token}`,
+      if(cancelReason === ''){
+        Dialog.show({
+          type: ALERT_TYPE.DANGER,
+          title: 'Thông báo',
+          textBody: 'Không được để trống lí do',
+          button: 'Đóng',
+        });
+      } else {
+        await fetch(
+          `http://10.0.2.2:8080/notifications/${notificationId}/mark-as-read`,
+          {
+            method: 'POST',
+            headers: {
+              Accept: '*/*',
+              Authorization: `Bearer ${token}`,
+            },
+            body: '',
           },
-          body: '',
-        },
-      );
-      await UserService.acceptAppointment(token, appointmentId, 'decline');
-      Dialog.show({
-        type: ALERT_TYPE.SUCCESS,
-        title: 'Từ chối lịch hẹn thành công',
-        button: 'Đóng',
-      });
-
-      setData(prevData =>
-        prevData.map(notification =>
-          notification.id === notificationId
-            ? {...notification, isRead: true}
-            : notification,
-        ),
-      );
+        );
+        await AppointmentService.cancelAppointment(
+          Number(appointmentId),
+          cancelReason,
+          token,
+        );
+        Dialog.show({
+          type: ALERT_TYPE.SUCCESS,
+          title: 'Từ chối lịch hẹn thành công',
+          button: 'Đóng',
+        });
+  
+        setData(prevData =>
+          prevData.map(notification =>
+            notification.id === notificationId
+              ? {...notification, isRead: true}
+              : notification,
+          ),
+        );
+      }
     } catch (error) {
       console.log(error);
       Dialog.show({
@@ -254,6 +286,8 @@ const NotificationScreen = ({navigation}: any) => {
         textBody: 'Đã quá thời hạn để từ chối lịch hẹn',
         button: 'Đóng',
       });
+    } finally {
+      setCancelVisible(false);
     }
   };
 
@@ -404,13 +438,43 @@ const NotificationScreen = ({navigation}: any) => {
               </TouchableOpacity>
               <TouchableOpacity
                 style={[styles.button, styles.buttonDecline]}
-                onPress={handleDecline}>
+                onPress={() => setCancelVisible(true)}>
                 <Text style={styles.textStyle}>Từ chối</Text>
               </TouchableOpacity>
             </View>
           </View>
         </View>
       </Modal>
+      <RNModal
+        visible={cancelVisible}
+        onDismiss={() => setCancelVisible(false)}>
+        <View
+          style={[
+            {
+              padding: 20,
+              borderRadius: 8,
+              margin: 20,
+              backgroundColor: theme.colors.background,
+            },
+          ]}>
+          <Text style={styles.modalTitle}>Nhập lí do huỷ</Text>
+          <TextInput
+            style={[styles.input, {color: theme.colors.onBackground}]}
+            placeholder="Lí do huỷ"
+            value={cancelReason}
+            onChangeText={setCancelReason}
+          />
+          <View style={styles.buttonContainer}>
+            <Button onPress={() => setCancelVisible(false)}>Đóng</Button>
+            <Button
+              style={{backgroundColor: theme.colors.error}}
+              mode="contained"
+              onPress={async () => await handleDecline()}>
+              Huỷ
+            </Button>
+          </View>
+        </View>
+      </RNModal>
     </View>
   );
 };
@@ -490,6 +554,22 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'space-between',
     width: '100%',
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  input: {
+    height: 100,
+    borderWidth: 1,
+    borderRadius: 4,
+    paddingHorizontal: 10,
+    marginBottom: 20,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
   button: {
     borderRadius: 10,

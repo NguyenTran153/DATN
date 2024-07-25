@@ -9,6 +9,7 @@ import {
   Text,
   Modal,
   Button,
+  Searchbar,
 } from 'react-native-paper';
 import {useSelector} from 'react-redux';
 import AppointmentService from '../../services/AppointmentService';
@@ -20,6 +21,9 @@ const ScheduleScreen = ({navigation}: any) => {
   const theme = useTheme();
   const token = useSelector((state: any) => state.token.accessToken);
   const [appointments, setAppointments] = useState<any[]>([]);
+  const [sortedAppointments, setSortedAppointments] = useState<any[]>([]);
+  const [sortOrder, setSortOrder] = useState<'asc' | 'desc'>('asc');
+  const [searchQuery, setSearchQuery] = useState<string>('');
   const [modalVisible, setModalVisible] = useState<boolean>(false);
   const [cancelReason, setCancelReason] = useState<string>('');
   const [selectedAppointmentId, setSelectedAppointmentId] = useState<
@@ -30,6 +34,10 @@ const ScheduleScreen = ({navigation}: any) => {
   useEffect(() => {
     fetchAppointments();
   }, [isFocused]);
+
+  useEffect(() => {
+    sortAppointments(appointments, sortOrder);
+  }, [appointments, sortOrder]);
 
   const fetchAppointments = async () => {
     try {
@@ -79,6 +87,19 @@ const ScheduleScreen = ({navigation}: any) => {
     }
   };
 
+  const sortAppointments = (appointments: any[], order: 'asc' | 'desc') => {
+    const sorted = [...appointments].sort((a, b) => {
+      const dateA = moment(a.date, 'DD/MM/YYYY HH:mm').valueOf();
+      const dateB = moment(b.date, 'DD/MM/YYYY HH:mm').valueOf();
+      return order === 'asc' ? dateA - dateB : dateB - dateA;
+    });
+    setSortedAppointments(sorted);
+  };
+
+  const toggleSortOrder = () => {
+    setSortOrder(prevOrder => (prevOrder === 'asc' ? 'desc' : 'asc'));
+  };
+
   const handleCancel = (id: number) => {
     setSelectedAppointmentId(id);
     setModalVisible(true);
@@ -87,20 +108,29 @@ const ScheduleScreen = ({navigation}: any) => {
   const confirmCancel = async () => {
     if (selectedAppointmentId !== null) {
       try {
-        await AppointmentService.cancelAppointment(
-          selectedAppointmentId,
-          cancelReason,
-          token,
-        );
-        setModalVisible(false);
-        setCancelReason('');
-        fetchAppointments();
-        Dialog.show({
-          type: ALERT_TYPE.SUCCESS,
-          title: 'Thông báo',
-          textBody: 'Đã huỷ lịch hẹn',
-          button: 'Đóng',
-        });
+        if (cancelReason === '') {
+          Dialog.show({
+            type: ALERT_TYPE.DANGER,
+            title: 'Thông báo',
+            textBody: 'Không được để trống lí do',
+            button: 'Đóng',
+          });
+        } else {
+          await AppointmentService.cancelAppointment(
+            selectedAppointmentId,
+            cancelReason,
+            token,
+          );
+          setModalVisible(false);
+          setCancelReason('');
+          fetchAppointments();
+          Dialog.show({
+            type: ALERT_TYPE.SUCCESS,
+            title: 'Thông báo',
+            textBody: 'Đã huỷ lịch hẹn',
+            button: 'Đóng',
+          });
+        }
       } catch (error) {
         setModalVisible(false);
         setCancelReason('');
@@ -115,11 +145,20 @@ const ScheduleScreen = ({navigation}: any) => {
     }
   };
 
+  const filteredAppointments = sortedAppointments.filter(appointment => {
+    const searchLower = searchQuery.toLowerCase();
+    return (
+      appointment.userFirstName.toLowerCase().includes(searchLower) ||
+      appointment.userLastName.toLowerCase().includes(searchLower) ||
+      appointment.date.includes(searchQuery)
+    );
+  });
+
   const renderItem = ({item}: {item: any}) => (
     <Card style={styles.card}>
       <Card.Title
         title={`Họ tên: ${item.userFirstName} ${item.userLastName}`}
-        subtitle={`Ngày sinh: ${item.birthday || 'Chưa có thông tin'}`}
+        subtitle={`Ngày hẹn: ${item.date || 'Chưa có thông tin'}`}
         left={props => (
           <Avatar.Image {...props} size={50} source={{uri: item.userAvatar}} />
         )}
@@ -144,9 +183,20 @@ const ScheduleScreen = ({navigation}: any) => {
       style={[styles.container, {backgroundColor: theme.colors.background}]}>
       <Appbar.Header>
         <Appbar.Content title="Danh sách lịch hẹn sắp tới" />
+        <IconButton
+          icon={sortOrder === 'asc' ? 'arrow-up' : 'arrow-down'}
+          onPress={toggleSortOrder}
+        />
       </Appbar.Header>
+      <Searchbar
+        style={[styles.searchBar, {color: theme.colors.onBackground}]}
+        placeholder="Tìm kiếm theo tên hoặc ngày hẹn"
+        value={searchQuery}
+        onChangeText={setSearchQuery}
+      />
       <FlatList
-        data={appointments}
+        data={filteredAppointments}
+        contentContainerStyle={{marginHorizontal: 10}}
         keyExtractor={(item: any) => item.id.toString()}
         renderItem={renderItem}
       />
@@ -190,6 +240,9 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     borderRadius: 8,
     elevation: 3,
+  },
+  searchBar: {
+    margin: 10,
   },
   modalContainer: {
     padding: 20,

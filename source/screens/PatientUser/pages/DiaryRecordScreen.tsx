@@ -5,29 +5,33 @@ import {
   useTheme,
   Text,
   IconButton,
-  DataTable,
-  Appbar,
   ActivityIndicator,
+  SegmentedButtons,
+  Appbar,
+  Card,
+  Avatar,
 } from 'react-native-paper';
 import moment from 'moment';
 import LottieView from 'lottie-react-native';
 import {useIsFocused} from '@react-navigation/native';
-
-import EntryItem from '../../../components/EntryItem';
-import DiaryService from '../../../services/DiaryService';
 import {useSelector} from 'react-redux';
+import DiaryService from '../../../services/DiaryService';
 
 interface Entry {
   id: string;
   createdAt: string;
   data: {
-    time: string;
-    food: string;
-    bloodPressure: string;
-    bloodSugar: string;
-    exercise: string;
-    note: string;
+    time?: string;
+    food?: string;
+    bloodPressure?: string;
+    bloodSugar?: string;
+    exercise?: string;
+    note?: string;
+    morning?: string;
+    afternoon?: string;
+    evening?: string;
   };
+  type: string;
 }
 
 const DiaryRecordScreen = ({navigation}: any) => {
@@ -38,34 +42,31 @@ const DiaryRecordScreen = ({navigation}: any) => {
   const [searchQuery, setSearchQuery] = useState<string>('');
   const [entries, setEntries] = useState<Entry[]>([]);
   const [filteredEntries, setFilteredEntries] = useState<Entry[]>([]);
-  const [currentPage, setCurrentPage] = useState<number>(0);
+  const [currentType, setCurrentType] = useState<string>('food');
   const [loading, setLoading] = useState<boolean>(true);
-
-  const entriesPerPage = 7;
 
   useEffect(() => {
     const fetchEntries = async () => {
       try {
-        setLoading(true); // Start loading
+        setLoading(true);
         const fetchedEntries = await DiaryService.getDiaries(
           token.accessToken,
-          1, 
+          1,
           100,
           user.id,
-          'food'
+          currentType,
         );
         setEntries(fetchedEntries);
       } catch (error) {
         console.error('Error fetching diary entries:', error);
       } finally {
-        setLoading(false); // Stop loading
+        setLoading(false);
       }
     };
 
     fetchEntries();
-  }, [isFocused]);
+  }, [isFocused, currentType]);
 
-  // Filter entries based on the search query
   useEffect(() => {
     const filtered = searchQuery
       ? entries.filter(entry => {
@@ -87,18 +88,128 @@ const DiaryRecordScreen = ({navigation}: any) => {
             value.toLowerCase().includes(searchQuery.toLowerCase()),
           );
 
-          return createdAtMatch || timeMatch || dataMatch;
+          const foodMatch =
+            entry.data.morning
+              ?.toLowerCase()
+              .includes(searchQuery.toLowerCase()) ||
+            entry.data.afternoon
+              ?.toLowerCase()
+              .includes(searchQuery.toLowerCase()) ||
+            entry.data.evening
+              ?.toLowerCase()
+              .includes(searchQuery.toLowerCase());
+
+          return createdAtMatch || timeMatch || dataMatch || foodMatch;
         })
       : entries;
     setFilteredEntries(filtered);
-    setCurrentPage(0);
   }, [searchQuery, entries]);
 
-  const startIndex = currentPage * entriesPerPage;
-  const paginatedEntries = filteredEntries.slice(
-    startIndex,
-    startIndex + entriesPerPage,
-  );
+  const EntryItem = ({entry}: {entry: Entry}) => {
+    const renderContent = () => {
+      switch (entry.type) {
+        case 'food':
+          return (
+            <>
+              <View style={styles.entryRow}>
+                <Avatar.Icon
+                  size={24}
+                  icon="calendar"
+                  style={{backgroundColor: theme.colors.primary}}
+                />
+                <Text style={styles.entryText}>
+                  Ngày: {moment(entry.createdAt).format('DD/MM/YYYY')}
+                </Text>
+              </View>
+              <View style={styles.entryRow}>
+                <Avatar.Icon
+                  size={24}
+                  icon="food"
+                  style={{backgroundColor: theme.colors.primary}}
+                />
+                <Text style={styles.entryText}>Sáng: {entry.data.morning}</Text>
+              </View>
+              <View style={styles.entryRow}>
+                <Avatar.Icon
+                  size={24}
+                  icon="food"
+                  style={{backgroundColor: theme.colors.primary}}
+                />
+                <Text style={styles.entryText}>
+                  Trưa: {entry.data.afternoon}
+                </Text>
+              </View>
+              <View style={styles.entryRow}>
+                <Avatar.Icon
+                  size={24}
+                  icon="food"
+                  style={{backgroundColor: theme.colors.primary}}
+                />
+                <Text style={styles.entryText}>Tối: {entry.data.evening}</Text>
+              </View>
+            </>
+          );
+        case 'blood_pressure':
+          return (
+            <>
+              <View style={styles.entryRow}>
+                <Avatar.Icon
+                  size={24}
+                  icon="clock"
+                  style={{backgroundColor: theme.colors.primary}}
+                />
+                <Text style={styles.entryText}>
+                  Thời gian: {entry.data.time}
+                </Text>
+              </View>
+              <View style={styles.entryRow}>
+                <Avatar.Icon
+                  size={24}
+                  icon="heart-pulse"
+                  style={{backgroundColor: theme.colors.primary}}
+                />
+                <Text style={styles.entryText}>
+                  Huyết áp: {entry.data.bloodPressure}
+                </Text>
+              </View>
+            </>
+          );
+        case 'blood_sugar':
+          return (
+            <>
+              <View style={styles.entryRow}>
+                <Avatar.Icon
+                  size={24}
+                  icon="clock"
+                  style={{backgroundColor: theme.colors.primary}}
+                />
+                <Text style={styles.entryText}>
+                  Thời gian: {entry.data.time}
+                </Text>
+              </View>
+              <View style={styles.entryRow}>
+                <Avatar.Icon
+                  size={24}
+                  icon="water"
+                  style={{backgroundColor: theme.colors.primary}}
+                />
+                <Text style={styles.entryText}>
+                  Đường huyết: {entry.data.bloodSugar}
+                </Text>
+              </View>
+            </>
+          );
+        default:
+          return null;
+      }
+    };
+
+    return (
+      <Card style={[styles.card, {backgroundColor: theme.colors.surface}]}>
+        <Card.Content>{renderContent()}</Card.Content>
+      </Card>
+    );
+  };
 
   return (
     <View
@@ -125,6 +236,16 @@ const DiaryRecordScreen = ({navigation}: any) => {
           style={{marginLeft: 8}}
         />
       </View>
+      <SegmentedButtons
+        value={currentType}
+        onValueChange={setCurrentType}
+        buttons={[
+          {value: 'food', label: 'Ăn uống'},
+          {value: 'blood_sugar', label: 'Đường huyết'},
+          {value: 'blood_pressure', label: 'Huyết áp'},
+        ]}
+        style={styles.segmentedButtons}
+      />
       {loading ? (
         <ActivityIndicator animating={true} size="large" />
       ) : (
@@ -148,15 +269,6 @@ const DiaryRecordScreen = ({navigation}: any) => {
           )}
         </ScrollView>
       )}
-      {/* <DataTable.Pagination
-        style={{alignSelf: 'center'}}
-        page={currentPage}
-        numberOfPages={Math.ceil(filteredEntries.length / entriesPerPage)}
-        onPageChange={page => setCurrentPage(page)}
-        label={`Trang ${currentPage + 1} trên ${Math.ceil(
-          filteredEntries.length / entriesPerPage,
-        )}`}
-      /> */}
     </View>
   );
 };
@@ -186,5 +298,19 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     flex: 1,
     alignSelf: 'center',
+  },
+  segmentedButtons: {
+    marginBottom: 16,
+  },
+  card: {
+    marginBottom: 16,
+  },
+  entryRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 8,
+  },
+  entryText: {
+    marginLeft: 8,
   },
 });

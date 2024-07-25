@@ -125,6 +125,7 @@ const BookingScreen = ({route, navigation}: any) => {
     setSelectedDate(null);
     setSelectedHour(null);
     setSelectedDoctor(null);
+    setNote('');
   };
 
   const toggleDoctorVisibility = () => {
@@ -245,7 +246,17 @@ const BookingScreen = ({route, navigation}: any) => {
     const now = new Date();
     const nowTimestamp = Math.floor(now.getTime() / 1000);
     const oneDayInSeconds = 24 * 60 * 60;
-    if (beginTimestamp && beginTimestamp - nowTimestamp >= oneDayInSeconds) {
+    if (!selectedDoctor || !selectedDate || !selectedHour || note === '') {
+      Dialog.show({
+        type: ALERT_TYPE.DANGER,
+        title: 'Thông báo',
+        textBody: 'Người dùng cần điền đầy đủ thông tin',
+        button: 'Đóng',
+      });
+    } else if (
+      beginTimestamp &&
+      beginTimestamp - nowTimestamp >= oneDayInSeconds
+    ) {
       AppointmentService.sendAppointment(
         token.accessToken,
         Number.parseInt(doctorID),
