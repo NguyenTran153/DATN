@@ -9,13 +9,28 @@ import CustomAppbar from '../../components/CustomAppbar';
 import { ALERT_TYPE, Dialog } from 'react-native-alert-notification';
 import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+import moment from 'moment';
 const PatientDiaryScreen = ({ navigation, route }: any) => {
   const theme = useTheme();
   const user = useSelector((state: any) => state.user);
   const token = useSelector((state: any) => state.token);
   const [isTimePickerVisible, setTimePickerVisibility] = useState(false);
   const [isTimePickerVisible_bs, setTimePickerVisibilityBs] = useState(false);
+  const [isDatePickerVisible, setDatePickerVisibility] = useState(false);
+  const [isDatePickerVisibleBs, setDatePickerVisibilityBs] = useState(false);
   const [entries, setEntries] = useState<Entry[]>([]);
+  const [date, setDate] = useState<Date>();
+  const [date_bs, setDateBs] = useState<Date>();
+  const handleDateConfirmBS = (date: Date) => {
+    setDateBs(date);
+    setDatePickerVisibilityBs(false);
+    setTimePickerVisibilityBs(true);
+  };
+  const handleDateConfirm = (date: Date) => {
+    setDate(date);
+    setDatePickerVisibility(false);
+    setTimePickerVisibility(true);
+  };
   const [form, setForm] = useState<Entry>({
     time: new Date().toLocaleString(),
     morning: '',
@@ -46,13 +61,11 @@ const PatientDiaryScreen = ({ navigation, route }: any) => {
     let hours = time.getHours();
     const minutes = time.getMinutes().toString().padStart(2, '0');
     const ampm = hours >= 12 ? 'PM' : 'AM';
-
-    // Convert hours from 24-hour to 12-hour format
     hours = hours % 12;
-    hours = hours ? hours : 12; // the hour '0' should be '12'
+    hours = hours ? hours : 12;
     const formattedHours = hours.toString().padStart(2, '0');
-
-    const formattedTime = `${formattedHours}:${minutes} ${ampm}`;
+    const formattedDate = moment(date).format('DD/MM/YYYY');
+    const formattedTime = `${formattedDate} ${formattedHours}:${minutes} ${ampm}`;
 
     handleInputChange('time_bp', formattedTime);
 
@@ -67,8 +80,8 @@ const PatientDiaryScreen = ({ navigation, route }: any) => {
     hours = hours % 12;
     hours = hours ? hours : 12; // the hour '0' should be '12'
     const formattedHours = hours.toString().padStart(2, '0');
-
-    const formattedTime = `${formattedHours}:${minutes} ${ampm}`;
+    const formattedDate = moment(date).format('DD/MM/YYYY');
+    const formattedTime = `${formattedDate} ${formattedHours}:${minutes} ${ampm}`;
 
     handleInputChange('time_bs', formattedTime);
 
@@ -85,7 +98,7 @@ const PatientDiaryScreen = ({ navigation, route }: any) => {
     };
     console.log(data)
     try {
-     await DiaryService.postDiary(token.accessToken, data, [], 'food');
+      await DiaryService.postDiary(token.accessToken, data, [], 'food');
       setForm({
         time: new Date().toLocaleString(),
         morning: '',
@@ -169,7 +182,7 @@ const PatientDiaryScreen = ({ navigation, route }: any) => {
     };
     console.log(data)
     try {
-      await DiaryService.postDiary(token.accessToken, data, [],'blood_sugar');
+      await DiaryService.postDiary(token.accessToken, data, [], 'blood_sugar');
       setForm({
         time: new Date().toLocaleString(),
         morning: '',
@@ -320,16 +333,24 @@ const PatientDiaryScreen = ({ navigation, route }: any) => {
                   style={[styles.input, { width: '100%' }]}
                   label="Chọn thời gian"
                   value={form.time_bp}
+                  editable={false}
                 />
                 <TouchableOpacity style={{
                   position: 'absolute',
                   right: '5%',
                   top: '30%', alignItems: 'center', justifyContent: 'center'
-                }} onPress={() => { setTimePickerVisibility(!isTimePickerVisible) }}>
+                }} onPress={() => { setDatePickerVisibility(!isDatePickerVisible) }}>
                   <Icon source="calendar" size={20} />
                 </TouchableOpacity>
               </View>
             </View>
+            <DateTimePickerModal
+              isVisible={isDatePickerVisible}
+              style={{ zIndex: 9, elevation: 9 }}
+              mode="date"
+              onConfirm={handleDateConfirm}
+              onCancel={() => setDatePickerVisibility(false)}
+            />
             <DateTimePickerModal
               isVisible={isTimePickerVisible}
               style={{ zIndex: 9, elevation: 9 }}
@@ -368,16 +389,24 @@ const PatientDiaryScreen = ({ navigation, route }: any) => {
                   style={[styles.input, { width: '100%' }]}
                   label="Chọn thời gian"
                   value={form.time_bs}
+                  editable={false}
                 />
                 <TouchableOpacity style={{
                   position: 'absolute',
                   right: '5%',
                   top: '30%', alignItems: 'center', justifyContent: 'center'
-                }} onPress={() => { setTimePickerVisibilityBs(!isTimePickerVisible_bs) }}>
+                }} onPress={() => { setDatePickerVisibilityBs(!isDatePickerVisibleBs) }}>
                   <Icon source="calendar" size={20} />
                 </TouchableOpacity>
               </View>
             </View>
+            <DateTimePickerModal
+              isVisible={isDatePickerVisibleBs}
+              style={{ zIndex: 9, elevation: 9 }}
+              mode="date"
+              onConfirm={handleDateConfirmBS}
+              onCancel={() => setDatePickerVisibilityBs(false)}
+            />
             <DateTimePickerModal
               isVisible={isTimePickerVisible_bs}
               style={{ zIndex: 9, elevation: 9 }}
