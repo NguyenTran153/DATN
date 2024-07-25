@@ -93,7 +93,7 @@ const PatientDiaryScreen = ({ navigation, route }: any) => {
 
     const data = {
       morning: form.morning,
-      afternoom: form.afternoon,
+      afternoon: form.afternoon,
       evening: form.evening
     };
     console.log(data)
