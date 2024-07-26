@@ -44,9 +44,26 @@ const CurrentInfoScreen = ({navigation}: any) => {
     const beginTimestamp = appointments.filter(
       item => item.status === 'ongoing',
     );
+    const now = new Date();
     const dates = beginTimestamp.map(
       item => new Date(item.beginTimestamp * 1000),
     );
+    dates.sort(
+      (a, b) =>
+        Math.abs(now.getTime() - a.getTime()) -
+        Math.abs(now.getTime() - b.getTime()),
+    );
+    const thresholdDate = new Date(now.getTime() + 24 * 60 * 60 * 1000);
+    console.log("begin dates length " + dates[0].getTime())
+    for (let i = 0; i < dates.length; i++) {
+      console.log(dates[i].getTime())
+      if (dates[i].getTime() - thresholdDate.getTime() > 24 * 60 * 60 * 1000) {
+        const formattedDate = moment(dates[i]).format('DD/MM/YYYY HH:mm:ss');
+        console.log("In for loop")
+        setDate(formattedDate);
+        break;
+      }
+    }
     const dianoses = await PrescriptionService.getDiagnosis(
       prescriptions[0].id,
       token.accessToken,
@@ -56,21 +73,8 @@ const CurrentInfoScreen = ({navigation}: any) => {
       setDiag(dianoses[0].problem);
     }
 
-    const now = new Date();
-    dates.sort(
-      (a, b) =>
-        Math.abs(now.getTime() - a.getTime()) -
-        Math.abs(now.getTime() - b.getTime()),
-    );
-    console.log('Dates array' + dates);
-    const thresholdDate = new Date(now.getTime() + 24 * 60 * 60 * 1000);
-    for (let i = 0; i < dates.length; i++) {
-      if (dates[i].getTime() - thresholdDate.getTime() > 24 * 60 * 60 * 1000) {
-        const formattedDate = moment(dates[i]).format('DD/MM/YYYY HH:mm:ss');
-        setDate(formattedDate);
-        break;
-      }
-    }
+    
+    
     setApp(appointments);
     setPres(prescriptions);
     SetDiary(diaries);
@@ -122,8 +126,8 @@ const CurrentInfoScreen = ({navigation}: any) => {
             />
             <Card.Content>
               <Text style={styles.cardContent}>
-                {nextAppointment !== ''
-                  ? nextAppointment
+                {date !== ''
+                  ? date
                   : 'Không có lịch khám tiếp theo'}
               </Text>
             </Card.Content>
