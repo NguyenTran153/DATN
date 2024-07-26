@@ -196,8 +196,9 @@ const NotificationScreen = ({navigation}: any) => {
     notificationId: string,
   ) => {
     try {
+      console.log('ACCEPT APOINTMENT');
       await fetch(
-        `http://10.0.2.2:8080/notifications/${notificationId}/mark-as-read`,
+        `${baseURL}notifications/${notificationId}/mark-as-read`,
         {
           method: 'POST',
           headers: {
