@@ -9,6 +9,9 @@ import {
   Avatar,
   Text,
   Appbar,
+  Modal,
+  TextInput,
+  Button,
 } from 'react-native-paper';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
 import AppointmentService from '../../../services/AppointmentService';
@@ -33,11 +36,15 @@ const BookingHistoryScreen = ({navigation}: any) => {
   const [isSearchDatePickerVisible, setSearchDatePickerVisibility] =
     useState(false);
   const [newBookingDate, setNewBookingDate] = useState<Date | null>(null);
-  const [newBookingTime, setNewBookingTime] = useState<Date | null>(null);
+  const [modalVisible, setModalVisible] = useState<boolean>(false);
+  const [cancelReason, setCancelReason] = useState<string>('');
   const [searchDate, setSearchDate] = useState<Date | null>(null);
   const patient = useSelector((state: any) => state.user);
   const token = useSelector((state: any) => state.token);
   const [appointments, setAppointments] = useState<any[]>([]);
+  const [selectedAppointmentId, setSelectedAppointmentId] = useState<
+    number | null
+  >(null);
 
   const fetchAppointments = async () => {
     try {
@@ -47,7 +54,7 @@ const BookingHistoryScreen = ({navigation}: any) => {
 
       const convertedList = appointments.map(item => {
         const beginTimestamp = item.beginTimestamp;
-        const date = new Date(beginTimestamp * 1000); 
+        const date = new Date(beginTimestamp * 1000);
         const formattedDate = moment(date).format('DD/MM/YYYY HH:mm');
 
         const doctorUser =
@@ -113,8 +120,8 @@ const BookingHistoryScreen = ({navigation}: any) => {
   };
 
   const handleItemRemove = (id: number) => {
-    // Xử lý logic xóa item theo id
-    console.log('Item removed with id:', id);
+    setSelectedAppointmentId(id);
+    setModalVisible(true);
   };
 
   const handleNewBookingDateConfirm = (date: Date) => {
@@ -182,6 +189,46 @@ const BookingHistoryScreen = ({navigation}: any) => {
   const currentItems = filteredAppointments.slice(start, end);
 
   const itemHeight = height / 10;
+
+  const confirmCancel = async () => {
+    if (selectedAppointmentId !== null) {
+      try {
+        if (cancelReason === '') {
+          Dialog.show({
+            type: ALERT_TYPE.DANGER,
+            title: 'Thông báo',
+            textBody: 'Không được để trống lí do',
+            button: 'Đóng',
+          });
+        } else {
+          await AppointmentService.cancelAppointment(
+            selectedAppointmentId,
+            cancelReason,
+            token.accessToken,
+          );
+          setModalVisible(false);
+          setCancelReason('');
+          fetchAppointments();
+          Dialog.show({
+            type: ALERT_TYPE.SUCCESS,
+            title: 'Thông báo',
+            textBody: 'Đã huỷ lịch hẹn',
+            button: 'Đóng',
+          });
+        }
+      } catch (error) {
+        setModalVisible(false);
+        setCancelReason('');
+        Dialog.show({
+          type: ALERT_TYPE.DANGER,
+          title: 'Thông báo',
+          textBody: 'Huỷ lịch hẹn thất bại',
+          button: 'Đóng',
+        });
+        console.log('Error cancelling appointment:', error);
+      }
+    }
+  };
 
   return (
     <View style={[styles.screen, {backgroundColor: theme.colors.background}]}>
@@ -276,6 +323,31 @@ const BookingHistoryScreen = ({navigation}: any) => {
         onConfirm={handleNewBookingTimeConfirm}
         onCancel={() => setTimePickerVisibility(false)}
       />
+      {/* Modal for cancel reason */}
+      <Modal visible={modalVisible} onDismiss={() => setModalVisible(false)}>
+        <View
+          style={[
+            styles.modalContainer,
+            {backgroundColor: theme.colors.background},
+          ]}>
+          <Text style={styles.modalTitle}>Nhập lí do huỷ</Text>
+          <TextInput
+            style={[styles.input, {color: theme.colors.onBackground}]}
+            placeholder="Lí do huỷ"
+            value={cancelReason}
+            onChangeText={setCancelReason}
+          />
+          <View style={styles.buttonContainer}>
+            <Button onPress={() => setModalVisible(false)}>Đóng</Button>
+            <Button
+              style={{backgroundColor: theme.colors.error}}
+              mode="contained"
+              onPress={async () => await confirmCancel()}>
+              Huỷ
+            </Button>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 };
@@ -301,5 +373,26 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginTop: 20,
     alignSelf: 'center',
+  },
+  modalContainer: {
+    padding: 20,
+    borderRadius: 8,
+    margin: 20,
+  },
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  input: {
+    height: 100,
+    borderWidth: 1,
+    borderRadius: 4,
+    paddingHorizontal: 10,
+    marginBottom: 20,
+  },
+  buttonContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
   },
 });
