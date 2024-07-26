@@ -257,6 +257,7 @@ const BecomeDoctorScreen = ({navigation, route}: any) => {
           <Text variant="titleMedium">Chọn chuyên ngành</Text>
           <DropDown
             mode={'outlined'}
+            dropDownItemTextStyle={{color: theme.colors.onBackground}}
             visible={showDropDown}
             showDropDown={() => setShowDropDown(true)}
             onDismiss={() => setShowDropDown(false)}
