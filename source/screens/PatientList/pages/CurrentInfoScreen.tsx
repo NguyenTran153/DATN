@@ -168,7 +168,7 @@ const CurrentInfoScreen = ({ route, navigation }: any) => {
           style={styles.card}
           onPress={() => navigation.navigate('FoodDiary')}>
           <Card.Title
-            title="Nhật ký ăn uống gần nhất"
+            title="Nhật ký gần nhất"
             left={props => <IconButton {...props} icon="food" />}
             titleStyle={styles.cardTitle}
           />

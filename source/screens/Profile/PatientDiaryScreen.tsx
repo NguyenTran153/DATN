@@ -1,16 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { View, ScrollView, StyleSheet, TouchableOpacity } from 'react-native';
-import { TextInput, Button, Text, useTheme, Icon, } from 'react-native-paper';
+import React, {useState, useEffect} from 'react';
+import {View, ScrollView, StyleSheet, TouchableOpacity} from 'react-native';
+import {TextInput, Button, Text, useTheme, Icon} from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import DiaryService from '../../services/DiaryService';
 import DateTimePickerModal from 'react-native-modal-datetime-picker';
-import { useSelector } from 'react-redux';
+import {useSelector} from 'react-redux';
 import CustomAppbar from '../../components/CustomAppbar';
-import { ALERT_TYPE, Dialog } from 'react-native-alert-notification';
-import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
+import {ALERT_TYPE, Dialog} from 'react-native-alert-notification';
+import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
 import moment from 'moment';
-const PatientDiaryScreen = ({ navigation, route }: any) => {
+const PatientDiaryScreen = ({navigation, route}: any) => {
   const theme = useTheme();
   const user = useSelector((state: any) => state.user);
   const token = useSelector((state: any) => state.token);
@@ -41,11 +41,11 @@ const PatientDiaryScreen = ({ navigation, route }: any) => {
     time_bp: '',
     time_bs: '',
     note_bp: '',
-    note_bs: ''
+    note_bs: '',
   });
 
   const handleInputChange = (name: keyof Entry, value: string) => {
-    setForm({ ...form, [name]: value });
+    setForm({...form, [name]: value});
   };
 
   const clearAsyncStorage = async () => {
@@ -94,9 +94,9 @@ const PatientDiaryScreen = ({ navigation, route }: any) => {
     const data = {
       morning: form.morning,
       afternoon: form.afternoon,
-      evening: form.evening
+      evening: form.evening,
     };
-    console.log(data)
+    console.log(data);
     try {
       await DiaryService.postDiary(token.accessToken, data, [], 'food');
       setForm({
@@ -109,8 +109,7 @@ const PatientDiaryScreen = ({ navigation, route }: any) => {
         time_bp: '',
         time_bs: '',
         note_bp: '',
-        note_bs: ''
-
+        note_bs: '',
       });
       Dialog.show({
         type: ALERT_TYPE.SUCCESS,
@@ -118,7 +117,6 @@ const PatientDiaryScreen = ({ navigation, route }: any) => {
         textBody: 'Nhật ký đã được viết',
         button: 'Đóng',
       });
-      
     } catch (error) {
       Dialog.show({
         type: ALERT_TYPE.DANGER,
@@ -128,20 +126,23 @@ const PatientDiaryScreen = ({ navigation, route }: any) => {
       });
       console.error('Error saving data', error);
     }
-  }
+  };
   const addEntryBloodPressure = async () => {
     const newEntries = [...entries, form];
     setEntries(newEntries);
 
     const data = {
-
       bloodPressure: form.bloodPressure,
-      time: form.time_bp
-
+      time: form.time_bp,
     };
-    console.log(data)
+    console.log(data);
     try {
-      await DiaryService.postDiary(token.accessToken, data, [], 'blood_pressure');
+      await DiaryService.postDiary(
+        token.accessToken,
+        data,
+        [],
+        'blood_pressure',
+      );
       setForm({
         time: new Date().toLocaleString(),
         morning: '',
@@ -152,8 +153,7 @@ const PatientDiaryScreen = ({ navigation, route }: any) => {
         time_bp: '',
         time_bs: '',
         note_bp: '',
-        note_bs: ''
-
+        note_bs: '',
       });
       Dialog.show({
         type: ALERT_TYPE.SUCCESS,
@@ -161,7 +161,6 @@ const PatientDiaryScreen = ({ navigation, route }: any) => {
         textBody: 'Nhật ký đã được viết',
         button: 'Đóng',
       });
-      
     } catch (error) {
       Dialog.show({
         type: ALERT_TYPE.DANGER,
@@ -171,16 +170,16 @@ const PatientDiaryScreen = ({ navigation, route }: any) => {
       });
       console.error('Error saving data', error);
     }
-  }
+  };
   const addEntryBloodSugar = async () => {
     const newEntries = [...entries, form];
     setEntries(newEntries);
 
     const data = {
       bloodSugar: form.bloodSugar,
-      time: form.time_bs
+      time: form.time_bs,
     };
-    console.log(data)
+    console.log(data);
     try {
       await DiaryService.postDiary(token.accessToken, data, [], 'blood_sugar');
       setForm({
@@ -193,8 +192,7 @@ const PatientDiaryScreen = ({ navigation, route }: any) => {
         time_bp: '',
         time_bs: '',
         note_bp: '',
-        note_bs: ''
-
+        note_bs: '',
       });
       Dialog.show({
         type: ALERT_TYPE.SUCCESS,
@@ -202,7 +200,6 @@ const PatientDiaryScreen = ({ navigation, route }: any) => {
         textBody: 'Nhật ký đã được viết',
         button: 'Đóng',
       });
-     
     } catch (error) {
       Dialog.show({
         type: ALERT_TYPE.DANGER,
@@ -222,7 +219,7 @@ const PatientDiaryScreen = ({ navigation, route }: any) => {
       time_bp: '',
       time_bs: '',
       note_bp: '',
-      note_bs: ''
+      note_bs: '',
     });
   };
 
@@ -243,21 +240,19 @@ const PatientDiaryScreen = ({ navigation, route }: any) => {
 
   const Tab = createMaterialTopTabNavigator();
   return (
-
     <View style={styles.container}>
       <CustomAppbar title="Viết nhật ký" goBack={() => navigation.goBack()} />
       <Text style={styles.title}>Nhật ký bệnh nhân</Text>
       <Tab.Navigator
-
-        screenOptions={({ route }) => ({
+        screenOptions={({route}) => ({
           tabBarActiveTintColor: theme.colors.primary,
           tabBarInactiveTintColor: theme.colors.onSurface,
-          tabBarIndicatorStyle: { backgroundColor: theme.colors.primary },
+          tabBarIndicatorStyle: {backgroundColor: theme.colors.primary},
           tabBarStyle: {
             backgroundColor: theme.colors.surface,
           },
           tabBarShowLabel: false,
-          tabBarIcon: ({ color }) => {
+          tabBarIcon: ({color}) => {
             let iconName;
             switch (route.name) {
               case 'Food':
@@ -278,161 +273,197 @@ const PatientDiaryScreen = ({ navigation, route }: any) => {
             );
           },
         })}>
-        <Tab.Screen name="Food" >
-          {() => <View style={styles.inputContainer}>
-            <View>
-              <TextInput
-                label="Bữa sáng"
-                value={form.morning}
-                onChangeText={text => handleInputChange('morning', text)}
-                style={styles.input}
-              />
-              <TextInput
-                label="Bữa trưa"
-                value={form.afternoon}
-                onChangeText={text => handleInputChange('afternoon', text)}
-                style={styles.input}
-              />
-              <TextInput
-                label="Bữa chiều"
-                value={form.evening}
-                onChangeText={text => handleInputChange('evening', text)}
-                style={styles.input}
-              />
+        <Tab.Screen name="Food">
+          {() => (
+            <View style={styles.inputContainer}>
+              <View>
+                <TextInput
+                  label="Bữa sáng"
+                  value={form.morning}
+                  onChangeText={text => handleInputChange('morning', text)}
+                  style={styles.input}
+                />
+                <TextInput
+                  label="Bữa trưa"
+                  value={form.afternoon}
+                  onChangeText={text => handleInputChange('afternoon', text)}
+                  style={styles.input}
+                />
+                <TextInput
+                  label="Bữa chiều"
+                  value={form.evening}
+                  onChangeText={text => handleInputChange('evening', text)}
+                  style={styles.input}
+                />
+              </View>
+              <View style={styles.buttonContainer}>
+                <Button
+                  mode="contained"
+                  onPress={clearAsyncStorage}
+                  style={[
+                    styles.button,
+                    {backgroundColor: theme.colors.error},
+                  ]}>
+                  Xóa dữ liệu
+                </Button>
+                <Button
+                  mode="contained"
+                  onPress={addEntryFood}
+                  style={[
+                    styles.button,
+                    {backgroundColor: theme.colors.primary},
+                  ]}>
+                  Thêm nhật ký
+                </Button>
+              </View>
             </View>
-            <View style={styles.buttonContainer}>
-              <Button
-                mode="contained"
-                onPress={clearAsyncStorage}
-                style={[styles.button, { backgroundColor: theme.colors.error }]}>
-                Xóa dữ liệu
-              </Button>
-              <Button
-                mode="contained"
-                onPress={addEntryFood}
-                style={[styles.button, { backgroundColor: theme.colors.primary }]}>
-                Thêm nhật ký
-              </Button>
-            </View>
-          </View>}
+          )}
         </Tab.Screen>
         <Tab.Screen name="Blood Pressure">
-          {() => <View style={styles.inputContainer}>
-
-            <View>
-              <TextInput
-                label="Huyết áp"
-                value={form.bloodPressure}
-                onChangeText={text => handleInputChange('bloodPressure', text)}
-                style={styles.input}
-              />
-
-
-              <View style={{ flexDirection: 'row' }}>
+          {() => (
+            <View style={styles.inputContainer}>
+              <View>
                 <TextInput
-                  style={[styles.input, { width: '100%' }]}
-                  label="Chọn thời gian"
-                  value={form.time_bp}
-                  editable={false}
+                  label="Huyết áp"
+                  inputMode="numeric"
+                  value={form.bloodPressure}
+                  onChangeText={text =>
+                    handleInputChange('bloodPressure', text)
+                  }
+                  style={styles.input}
                 />
-                <TouchableOpacity style={{
-                  position: 'absolute',
-                  right: '5%',
-                  top: '30%', alignItems: 'center', justifyContent: 'center'
-                }} onPress={() => { setDatePickerVisibility(!isDatePickerVisible) }}>
-                  <Icon source="calendar" size={20} />
-                </TouchableOpacity>
+
+                <View style={{flexDirection: 'row'}}>
+                  <TextInput
+                    style={[styles.input, {width: '100%'}]}
+                    label="Chọn thời gian"
+                    value={form.time_bp}
+                    editable={false}
+                  />
+                  <TouchableOpacity
+                    style={{
+                      position: 'absolute',
+                      right: '5%',
+                      top: '30%',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                    onPress={() => {
+                      setDatePickerVisibility(!isDatePickerVisible);
+                    }}>
+                    <Icon source="calendar" size={20} />
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <DateTimePickerModal
+                isVisible={isDatePickerVisible}
+                style={{zIndex: 9, elevation: 9}}
+                mode="date"
+                onConfirm={handleDateConfirm}
+                onCancel={() => setDatePickerVisibility(false)}
+              />
+              <DateTimePickerModal
+                isVisible={isTimePickerVisible}
+                style={{zIndex: 9, elevation: 9}}
+                mode="time"
+                onConfirm={handleNewTimeConfirm}
+                onCancel={() => setTimePickerVisibility(false)}
+              />
+              <View style={styles.buttonContainer}>
+                <Button
+                  mode="contained"
+                  onPress={clearAsyncStorage}
+                  style={[
+                    styles.button,
+                    {backgroundColor: theme.colors.error},
+                  ]}>
+                  Xóa dữ liệu
+                </Button>
+                <Button
+                  mode="contained"
+                  onPress={addEntryBloodPressure}
+                  style={[
+                    styles.button,
+                    {backgroundColor: theme.colors.primary},
+                  ]}>
+                  Thêm nhật ký
+                </Button>
               </View>
             </View>
-            <DateTimePickerModal
-              isVisible={isDatePickerVisible}
-              style={{ zIndex: 9, elevation: 9 }}
-              mode="date"
-              onConfirm={handleDateConfirm}
-              onCancel={() => setDatePickerVisibility(false)}
-            />
-            <DateTimePickerModal
-              isVisible={isTimePickerVisible}
-              style={{ zIndex: 9, elevation: 9 }}
-              mode="time"
-              onConfirm={handleNewTimeConfirm}
-              onCancel={() => setTimePickerVisibility(false)}
-            />
-            <View style={styles.buttonContainer}>
-              <Button
-                mode="contained"
-                onPress={clearAsyncStorage}
-                style={[styles.button, { backgroundColor: theme.colors.error }]}>
-                Xóa dữ liệu
-              </Button>
-              <Button
-                mode="contained"
-                onPress={addEntryBloodPressure}
-                style={[styles.button, { backgroundColor: theme.colors.primary }]}>
-                Thêm nhật ký
-              </Button>
-            </View>
-          </View>}
+          )}
         </Tab.Screen>
         <Tab.Screen name="Blood Sugar">
-          {() => <View style={styles.inputContainer}>
-
-            <View>
-              <TextInput
-                label="Đường huyết"
-                value={form.bloodSugar}
-                onChangeText={text => handleInputChange('bloodSugar', text)}
-                style={styles.input}
-              />
-              <View style={{ flexDirection: 'row' }}>
+          {() => (
+            <View style={styles.inputContainer}>
+              <View>
                 <TextInput
-                  style={[styles.input, { width: '100%' }]}
-                  label="Chọn thời gian"
-                  value={form.time_bs}
-                  editable={false}
+                  label="Đường huyết"
+                  value={form.bloodSugar}
+                  inputMode="numeric"
+                  onChangeText={text => handleInputChange('bloodSugar', text)}
+                  style={styles.input}
                 />
-                <TouchableOpacity style={{
-                  position: 'absolute',
-                  right: '5%',
-                  top: '30%', alignItems: 'center', justifyContent: 'center'
-                }} onPress={() => { setDatePickerVisibilityBs(!isDatePickerVisibleBs) }}>
-                  <Icon source="calendar" size={20} />
-                </TouchableOpacity>
+                <View style={{flexDirection: 'row'}}>
+                  <TextInput
+                    style={[styles.input, {width: '100%'}]}
+                    label="Chọn thời gian"
+                    value={form.time_bs}
+                    editable={false}
+                  />
+                  <TouchableOpacity
+                    style={{
+                      position: 'absolute',
+                      right: '5%',
+                      top: '30%',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                    }}
+                    onPress={() => {
+                      setDatePickerVisibilityBs(!isDatePickerVisibleBs);
+                    }}>
+                    <Icon source="calendar" size={20} />
+                  </TouchableOpacity>
+                </View>
+              </View>
+              <DateTimePickerModal
+                isVisible={isDatePickerVisibleBs}
+                style={{zIndex: 9, elevation: 9}}
+                mode="date"
+                onConfirm={handleDateConfirmBS}
+                onCancel={() => setDatePickerVisibilityBs(false)}
+              />
+              <DateTimePickerModal
+                isVisible={isTimePickerVisible_bs}
+                style={{zIndex: 9, elevation: 9}}
+                mode="time"
+                onConfirm={handleNewTimeConfirm_bs}
+                onCancel={() => setTimePickerVisibilityBs(false)}
+              />
+              <View style={styles.buttonContainer}>
+                <Button
+                  mode="contained"
+                  onPress={clearAsyncStorage}
+                  style={[
+                    styles.button,
+                    {backgroundColor: theme.colors.error},
+                  ]}>
+                  Xóa dữ liệu
+                </Button>
+                <Button
+                  mode="contained"
+                  onPress={addEntryBloodSugar}
+                  style={[
+                    styles.button,
+                    {backgroundColor: theme.colors.primary},
+                  ]}>
+                  Thêm nhật ký
+                </Button>
               </View>
             </View>
-            <DateTimePickerModal
-              isVisible={isDatePickerVisibleBs}
-              style={{ zIndex: 9, elevation: 9 }}
-              mode="date"
-              onConfirm={handleDateConfirmBS}
-              onCancel={() => setDatePickerVisibilityBs(false)}
-            />
-            <DateTimePickerModal
-              isVisible={isTimePickerVisible_bs}
-              style={{ zIndex: 9, elevation: 9 }}
-              mode="time"
-              onConfirm={handleNewTimeConfirm_bs}
-              onCancel={() => setTimePickerVisibilityBs(false)}
-            />
-            <View style={styles.buttonContainer}>
-              <Button
-                mode="contained"
-                onPress={clearAsyncStorage}
-                style={[styles.button, { backgroundColor: theme.colors.error }]}>
-                Xóa dữ liệu
-              </Button>
-              <Button
-                mode="contained"
-                onPress={addEntryBloodSugar}
-                style={[styles.button, { backgroundColor: theme.colors.primary }]}>
-                Thêm nhật ký
-              </Button>
-            </View>
-          </View>}
+          )}
         </Tab.Screen>
       </Tab.Navigator>
     </View>
-
   );
 };
 const styles = StyleSheet.create({
@@ -442,14 +473,14 @@ const styles = StyleSheet.create({
   inputContainer: {
     padding: 16,
     flex: 1,
-    justifyContent: 'space-between'
+    justifyContent: 'space-between',
   },
   title: {
     fontSize: 30,
     fontWeight: 'bold',
     alignSelf: 'center',
     marginBottom: 20,
-    marginTop: 10
+    marginTop: 10,
   },
   input: {
     marginBottom: 10,
