@@ -1,3 +1,4 @@
+import React, {useEffect, useState, useCallback} from 'react';
 import {
   StyleSheet,
   SafeAreaView,
@@ -7,140 +8,226 @@ import {
   TextStyle,
   ImageStyle,
 } from 'react-native';
-import React, { useEffect, useState } from 'react';
-import { Text, useTheme, Card, IconButton, Avatar } from 'react-native-paper';
-import { useSelector } from 'react-redux';
+import {Text, useTheme, Card, IconButton, Avatar} from 'react-native-paper';
+import {useSelector} from 'react-redux';
+import {useIsFocused} from '@react-navigation/native';
 import PrescriptionService from '../../../services/PrescriptionService';
 import DiaryService from '../../../services/DiaryService';
 import AppointmentService from '../../../services/AppointmentService';
-import moment from 'moment';
-import { useIsFocused } from '@react-navigation/native';
 
-const CurrentInfoScreen = ({ route, navigation }: any) => {
+interface RouteParams {
+  patient: {
+    id: string;
+    firstName: string;
+    lastName: string;
+    birthdate: string;
+    gender: 'male' | 'female' | string;
+    address: string;
+    height: number;
+    weight: number;
+    avatar: string;
+  };
+}
+
+interface State {
+  token: {
+    accessToken: string;
+  };
+}
+
+interface Prescription {
+  id: string;
+  data: {
+    medicines: {
+      name: string;
+      schedule: {
+        morning: string;
+        afternoon: string;
+        evening: string;
+        night: string;
+      };
+      dosage: string;
+    }[];
+  };
+}
+
+interface Diary {
+  data: {
+    morning?: string;
+    afternoon?: string;
+    evening?: string;
+    bloodPressure?: string;
+    bloodSugar?: string;
+    time?: string;
+  };
+}
+
+interface Appointment {
+  status: string;
+  beginTimestamp: number;
+}
+
+const CurrentInfoScreen: React.FC<{
+  route: {params: RouteParams};
+  navigation: any;
+}> = ({route, navigation}) => {
   const theme = useTheme();
-  const token = useSelector((state: any) => state.token);
+  const token = useSelector((state: State) => state.token);
   const isFocused = useIsFocused();
   const patient = route.params.patient;
-  const [pres, setPres] = useState<any[]>([]);
-  const [diary, SetDiary] = useState<any[]>([]);
-  const [diaryBP, SetDiaryBP] = useState<any[]>([]);
-  const [diaryBS, SetDiaryBS] = useState<any[]>([]);
-  const [med, setMed] = useState<any[]>([]);
-  const [app, setApp] = useState<any[]>([]);
-  const [diagnosis, setDiag] = useState('');
-  const user = route.params.patient;
+
+  const [data, setData] = useState({
+    prescriptions: [] as Prescription[],
+    diaries: {
+      food: [] as Diary[],
+      bloodPressure: [] as Diary[],
+      bloodSugar: [] as Diary[],
+    },
+    appointments: [] as Appointment[],
+    diagnosis: '',
+    medicineStrings: [] as string[],
+  });
 
   const personalInfo = {
-    firstName: user.firstName || 'Chưa cập nhật',
-    lastName: user.lastName || 'Chưa cập nhật',
-    birthdate: user.birthdate
-      ? new Date(user.birthdate).toLocaleDateString()
+    firstName: patient.firstName || 'Chưa cập nhật',
+    lastName: patient.lastName || 'Chưa cập nhật',
+    birthdate: patient.birthdate
+      ? new Date(patient.birthdate).toLocaleDateString()
       : 'Chưa cập nhật',
     gender:
-      user.gender === 'male'
+      patient.gender === 'male'
         ? 'Nam'
-        : user.gender === 'female'
-          ? 'Nữ'
-          : 'Chưa cập nhật',
-    address: user.address || 'Chưa cập nhật',
-    height: user.height ? `${user.height} cm` : 'Chưa cập nhật',
-    weight: user.weight ? `${user.weight} kg` : 'Chưa cập nhật',
-    avatar: user.avatar,
+        : patient.gender === 'female'
+        ? 'Nữ'
+        : 'Chưa cập nhật',
+    address: patient.address || 'Chưa cập nhật',
+    height: patient.height ? `${patient.height} cm` : 'Chưa cập nhật',
+    weight: patient.weight ? `${patient.weight} kg` : 'Chưa cập nhật',
+    avatar: patient.avatar,
   };
 
-  useEffect(() => {
-    const fetchAPI = async () => {
-      const prescriptions = await PrescriptionService.getPrescription(
-        patient.id,
-        token.accessToken,
-      );
-      const diaries = await DiaryService.getDiaries(
-        token.accessToken,
-        1,
-        100,
-        patient.id,
-        'food',
-      );
-      const diariesBP = await DiaryService.getDiaries(
-        token.accessToken,
-        1,
-        100,
-        patient.id,
-        'blood_pressure',
-      );
-      const diariesBS = await DiaryService.getDiaries(
-        token.accessToken,
-        1,
-        100,
-        patient.id,
-        'blood_sugar',
-      );
-      const appointments = await AppointmentService.getAppointment(
-        token.accessToken,
-      );
-      const beginTimestamp = appointments.filter(
-        item => item.status === 'ongoing',
-      );
-      const dates = beginTimestamp.map(
-        item => new Date(item.beginTimestamp * 1000),
-      );
-      const dianoses = await PrescriptionService.getDiagnosis(
-        prescriptions[0].id,
-        token.accessToken,
-      );
-      console.log(dianoses);
-      if (dianoses) {
-        setDiag(dianoses[0].problem);
-      }
-      const now = new Date();
-      dates.sort(
-        (a, b) =>
-          Math.abs(now.getTime() - a.getTime()) -
-          Math.abs(now.getTime() - b.getTime()),
-      );
-      console.log('Dates array' + dates);
-      setApp(appointments);
-      setPres(prescriptions);
-      SetDiary(diaries);
-      SetDiaryBP(diariesBP);
-      SetDiaryBS(diariesBS);
-      const medicineStrings = prescriptions[0].data.medicines.map(
-        (medicine: {
-          name: any;
-          schedule: { morning: any; afternoon: any; evening: any; night: any };
-          dosage: any;
-        }) =>
-          `${medicine.name}: Sáng: ${medicine.schedule.morning}, Trưa: ${medicine.schedule.afternoon}, Chiều: ${medicine.schedule.evening}, Tối: ${medicine.schedule.night}\nSố lượng: ${medicine.dosage} viên`,
-      );
-      setMed(medicineStrings);
-    };
-    fetchAPI();
-  }, [isFocused]);
+  const fetchAPI = useCallback(async () => {
+    try {
+      const patientID = Number(patient.id);
 
-  // Sample data
-  const recentDietLog = diary.length !== 0
-    ? `${diary[0]?.data?.morning ? `Sáng: ${diary[0]?.data?.morning}` : ''}${diary[0]?.data?.morning && (diary[0]?.data?.afternoon || diary[0]?.data?.evening) ? ' | ' : ''}${diary[0]?.data?.afternoon ? `Trưa: ${diary[0]?.data?.afternoon}` : ''}${diary[0]?.data?.afternoon && diary[0]?.data?.evening ? ' | ' : ''}${diary[0]?.data?.evening ? `Tối: ${diary[0]?.data?.evening}` : ''}`
-    : 'Không tìm thấy nhật ký gần nhất';
-  const recentBloodPressure = diaryBP.length !== 0 ? `${diaryBP[0]?.data?.bloodPressure ?
-    `${diaryBP[0]?.data?.bloodPressure} mmHg` : ''} | ${diaryBP[0]?.data?.time ?
-      `${diaryBP[0]?.data?.time}` : ''}` : 'Không tìm thấy nhật ký huyết áp gần nhất'
-  const recentBloodSugar = diaryBS.length !== 0 ? `${diaryBS[0]?.data?.bloodSugar ?
-    `${diaryBS[0]?.data?.bloodSugar} mg/dL` : ''} | ${diaryBS[0]?.data?.time ?
-      `${diaryBS[0]?.data?.time}` : ''}` : 'Không tìm thấy nhật ký đường huyết gần nhất'
-  const recentDiagnosis =
-    diagnosis !== '' ? diagnosis : 'Không tìm thấy chẩn đoán gần nhất';
-  const recentPrescription = med;
+      const [prescriptions, diariesFood, diariesBP, diariesBS, appointments] =
+        await Promise.all([
+          PrescriptionService.getPrescription(patient.id, token.accessToken),
+          DiaryService.getDiaries(token.accessToken, 1, 10, patientID, 'food'),
+          DiaryService.getDiaries(
+            token.accessToken,
+            1,
+            10,
+            patientID,
+            'blood_pressure',
+          ),
+          DiaryService.getDiaries(
+            token.accessToken,
+            1,
+            10,
+            patientID,
+            'blood_sugar',
+          ),
+          AppointmentService.getAppointment(token.accessToken),
+        ]);
+
+      let diagnosis = '';
+      let medicineStrings: string[] = [];
+      if (prescriptions.length > 0) {
+        const diagnoses = await PrescriptionService.getDiagnosis(
+          prescriptions[0].id,
+          token.accessToken,
+        );
+        diagnosis = diagnoses.length > 0 ? diagnoses[0].problem : '';
+
+        medicineStrings = prescriptions[0].data.medicines.map(
+          (medicine: any) =>
+            `${medicine.name}: Sáng: ${medicine.schedule.morning}, Trưa: ${medicine.schedule.afternoon}, Chiều: ${medicine.schedule.evening}, Tối: ${medicine.schedule.night}\nSố lượng: ${medicine.dosage} viên`,
+        );
+      }
+
+      setData({
+        prescriptions,
+        diaries: {
+          food: diariesFood,
+          bloodPressure: diariesBP,
+          bloodSugar: diariesBS,
+        },
+        appointments,
+        diagnosis,
+        medicineStrings,
+      });
+    } catch (error) {
+      console.error('Error fetching data:', error);
+      // Handle error (e.g., show error message to user)
+    }
+  }, [patient.id, token.accessToken]);
+
+  useEffect(() => {
+    if (isFocused) {
+      fetchAPI();
+    }
+  }, [isFocused, fetchAPI]);
+
+  const renderDiaryInfo = () => {
+    const {food, bloodPressure, bloodSugar} = data.diaries;
+    const recentDietLog =
+      food.length > 0
+        ? `${food[0]?.data?.morning ? `Sáng: ${food[0]?.data?.morning}` : ''}${
+            food[0]?.data?.morning &&
+            (food[0]?.data?.afternoon || food[0]?.data?.evening)
+              ? ' | '
+              : ''
+          }${
+            food[0]?.data?.afternoon ? `Trưa: ${food[0]?.data?.afternoon}` : ''
+          }${food[0]?.data?.afternoon && food[0]?.data?.evening ? ' | ' : ''}${
+            food[0]?.data?.evening ? `Tối: ${food[0]?.data?.evening}` : ''
+          }`
+        : 'Không tìm thấy nhật ký ăn uống gần nhất';
+
+    const recentBloodPressure =
+      bloodPressure.length > 0
+        ? `${
+            bloodPressure[0]?.data?.bloodPressure
+              ? `${bloodPressure[0]?.data?.bloodPressure} mmHg`
+              : ''
+          } | ${
+            bloodPressure[0]?.data?.time
+              ? `${bloodPressure[0]?.data?.time}`
+              : ''
+          }`
+        : 'Không tìm thấy nhật ký huyết áp gần nhất';
+
+    const recentBloodSugar =
+      bloodSugar.length > 0
+        ? `${
+            bloodSugar[0]?.data?.bloodSugar
+              ? `${bloodSugar[0]?.data?.bloodSugar} mg/dL`
+              : ''
+          } | ${
+            bloodSugar[0]?.data?.time ? `${bloodSugar[0]?.data?.time}` : ''
+          }`
+        : 'Không tìm thấy nhật ký đường huyết gần nhất';
+
+    return (
+      <>
+        <Text style={styles.cardContent}>{recentDietLog}</Text>
+        <Text style={styles.cardContent}>{recentBloodPressure}</Text>
+        <Text style={styles.cardContent}>{recentBloodSugar}</Text>
+      </>
+    );
+  };
 
   return (
     <SafeAreaView
-      style={[styles.container, { backgroundColor: theme.colors.background }]}>
+      style={[styles.container, {backgroundColor: theme.colors.background}]}>
       <ScrollView contentContainerStyle={styles.scrollView}>
         <View style={styles.header}>
           <Avatar.Image
             size={100}
             source={
               personalInfo.avatar
-                ? { uri: personalInfo.avatar }
+                ? {uri: personalInfo.avatar}
                 : require('../../../asset/7677205.jpg')
             }
             style={styles.avatar}
@@ -172,11 +259,7 @@ const CurrentInfoScreen = ({ route, navigation }: any) => {
             left={props => <IconButton {...props} icon="food" />}
             titleStyle={styles.cardTitle}
           />
-          <Card.Content>
-            <Text style={styles.cardContent}>{recentDietLog}</Text>
-            <Text style={styles.cardContent}>{recentBloodPressure}</Text>
-            <Text style={styles.cardContent}>{recentBloodSugar}</Text>
-          </Card.Content>
+          <Card.Content>{renderDiaryInfo()}</Card.Content>
         </Card>
 
         <Card
@@ -188,7 +271,9 @@ const CurrentInfoScreen = ({ route, navigation }: any) => {
             titleStyle={styles.cardTitle}
           />
           <Card.Content>
-            <Text style={styles.cardContent}>{recentDiagnosis}</Text>
+            <Text style={styles.cardContent}>
+              {data.diagnosis || 'Không tìm thấy chẩn đoán gần nhất'}
+            </Text>
           </Card.Content>
         </Card>
 
@@ -200,24 +285,22 @@ const CurrentInfoScreen = ({ route, navigation }: any) => {
             left={props => <IconButton {...props} icon="pill" />}
             titleStyle={styles.cardTitle}
           />
-          {recentPrescription.length !== 0 ? (
-            recentPrescription.map((item, index) => (
-              <Card.Content key={index}>
-                <Text style={styles.cardContent}>{item}</Text>
-              </Card.Content>
-            ))
-          ) : (
-            <Card.Content>
+          <Card.Content>
+            {data.medicineStrings.length > 0 ? (
+              data.medicineStrings.map((item, index) => (
+                <Text key={index} style={styles.cardContent}>
+                  {item}
+                </Text>
+              ))
+            ) : (
               <Text style={styles.cardContent}>Không tìm thấy đơn thuốc</Text>
-            </Card.Content>
-          )}
+            )}
+          </Card.Content>
         </Card>
       </ScrollView>
     </SafeAreaView>
   );
 };
-
-export default CurrentInfoScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -267,3 +350,5 @@ const styles = StyleSheet.create({
     marginTop: 8,
   },
 });
+
+export default CurrentInfoScreen;
