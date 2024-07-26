@@ -91,6 +91,7 @@ const MyDropdownComponent: React.FC<MyDropdownComponentProps> = ({
         <View style={{marginLeft: '10%', width: '30%'}}>
           <Text style={styles.text}>Số lượng</Text>
           <TextInput
+            inputMode="numeric"
             style={styles.cell}
             placeholder="Số lượng"
             onChangeText={setQuantity}
@@ -109,6 +110,7 @@ const MyDropdownComponent: React.FC<MyDropdownComponentProps> = ({
           <Text style={styles.text}>Sáng</Text>
           <TextInput
             placeholder="Sáng"
+            inputMode="numeric"
             style={styles.cell}
             onChangeText={setMorning}
             value={morning}
@@ -119,6 +121,7 @@ const MyDropdownComponent: React.FC<MyDropdownComponentProps> = ({
           <TextInput
             placeholder="Trưa"
             style={styles.cell}
+            inputMode="numeric"
             onChangeText={setAfternoon}
             value={afternoon}
           />
@@ -128,6 +131,7 @@ const MyDropdownComponent: React.FC<MyDropdownComponentProps> = ({
           <TextInput
             placeholder="Chiều"
             style={styles.cell}
+            inputMode="numeric"
             onChangeText={setEvening}
             value={evening}
           />
@@ -137,6 +141,7 @@ const MyDropdownComponent: React.FC<MyDropdownComponentProps> = ({
           <TextInput
             placeholder="Tối"
             style={styles.cell}
+            inputMode="numeric"
             onChangeText={setNight}
             value={night}
           />
@@ -430,27 +435,29 @@ const PrescriptionScreen: React.FC<any> = ({route, navigation}) => {
           navigation.navigate('DoctorNavigator', {
             screen: 'Prescription',
             params: {
-              pres:pres,
+              pres: pres,
               examination: route.params?.examination || null,
-              patientInfo:userInfo,
-              doctorInfo:user,
+              patientInfo: userInfo,
+              doctorInfo: user,
               prescription: {
-              patientName: `${userInfo?.firstName} ${userInfo?.lastName}`,
-              doctorName: `${user.firstName} ${user.lastName}`,
-              date: moment(date).format('YYYY-MM-DD'),
-              problem: pres,
-              medicines: components.map(comp => ({
-                name: comp.medicine,
-                dosage: comp.quantity,
-                schedule: {
-                  morning: comp.morning,
-                  afternoon: comp.afternoon,
-                  evening: comp.evening,
-                  night: comp.night,
-                },
-              })),
-            }},
-          })}>
+                patientName: `${userInfo?.firstName} ${userInfo?.lastName}`,
+                doctorName: `${user.firstName} ${user.lastName}`,
+                date: moment(date).format('YYYY-MM-DD'),
+                problem: pres,
+                medicines: components.map(comp => ({
+                  name: comp.medicine,
+                  dosage: comp.quantity,
+                  schedule: {
+                    morning: comp.morning,
+                    afternoon: comp.afternoon,
+                    evening: comp.evening,
+                    night: comp.night,
+                  },
+                })),
+              },
+            },
+          })
+        }>
         Tiếp tục
       </Button>
     </>

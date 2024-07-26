@@ -64,7 +64,18 @@ const SignupScreen = ({navigation}: any) => {
         form.firstName.length !== 0 &&
         form.lastName.length !== 0
       ) {
+        const res = await AuthService.checkPhone(form.phone);
+        if (res?.data?.status === 'ALREADY-IN-USE') {
+          Dialog.show({
+            type: ALERT_TYPE.DANGER,
+            title: 'Thất bại',
+            textBody: 'Số điện thoại đã đăng ký',
+            button: 'Đóng',
+          });
+          return;
+        }
         const result = await AuthService.PhoneVerification(form.phone);
+
         setPinId(result);
         setOTPModal(true);
         console.log(pinId);
@@ -76,8 +87,13 @@ const SignupScreen = ({navigation}: any) => {
           button: 'Đóng',
         });
       }
-      // Xử lý logic đăng ký tại đây
     } catch (error) {
+      Dialog.show({
+        type: ALERT_TYPE.DANGER,
+        title: 'Thất bại',
+        textBody: 'Số điện thoại đã đăng ký hoặc không tồn tại',
+        button: 'Đóng',
+      });
     } finally {
       setIsLoading(false);
     }
@@ -119,11 +135,17 @@ const SignupScreen = ({navigation}: any) => {
         Dialog.show({
           type: ALERT_TYPE.DANGER,
           title: 'Thất bại',
-          textBody: 'Số điện thoại chưa đăng ký hoặc không cho phép tìm kiếm',
+          textBody: 'Số điện thoại đã đăng ký hoặc không tồn tại',
           button: 'Đóng',
         });
       }
     } catch (error) {
+      Dialog.show({
+        type: ALERT_TYPE.DANGER,
+        title: 'Thất bại',
+        textBody: 'Số điện thoại đã đăng ký hoặc không tồn tại',
+        button: 'Đóng',
+      });
     } finally {
       setIsLoading(false);
     }

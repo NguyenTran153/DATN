@@ -277,7 +277,7 @@ const BookingScreen = ({route, navigation}: any) => {
       Dialog.show({
         type: ALERT_TYPE.DANGER,
         title: 'Thất bại',
-        textBody: 'Lưu ý người dùng chỉ có thể đặt lịch trước 1 ngày',
+        textBody: 'Lưu ý người dùng chỉ có thể đặt lịch cách ít nhất 1 ngày',
         button: 'Đóng',
       });
     }
@@ -380,7 +380,7 @@ const BookingScreen = ({route, navigation}: any) => {
                 borderWidth: 1,
                 borderRadius: 8,
                 padding: 10,
-                color: theme.colors.onBackground
+                color: theme.colors.onBackground,
               },
             ]}
             placeholder=""

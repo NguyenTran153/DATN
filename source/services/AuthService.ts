@@ -42,9 +42,9 @@ class AuthService {
       console.log('Reponse:', data);
       return response.data;
       // return response.data;
-    } catch (error) {
+    } catch (error: any) {
       console.log('Signup:', error);
-      return 'error';
+      throw error;
     }
   }
   static async PhoneVerification(phoneNumber: string) {
@@ -65,7 +65,24 @@ class AuthService {
       return data.pinId;
     } catch (error) {
       console.log('PhoneVerification:', error);
-      return 'error';
+      throw new Error();
+    }
+  }
+  static async checkPhone(phoneNumber: string) {
+    try {
+      const response = await axios.get(
+        `${baseURL}users/check-phone-availability/${phoneNumber}`,
+        {
+          headers: {
+            'content-type': 'application/json',
+          },
+        },
+      );
+      console.log(JSON.stringify(response));
+      return response;
+    } catch (error) {
+      console.log('PhoneVerification:', error);
+      throw new Error();
     }
   }
   static async ForgotPassword(phoneNumber: string) {
@@ -87,6 +104,7 @@ class AuthService {
       return data.pinId;
     } catch (error) {
       console.log('Error logging in:', error);
+      throw error;
     }
   }
   static async ResetPassword(token: string, password: string) {
@@ -109,6 +127,7 @@ class AuthService {
       // return response.data;
     } catch (error) {
       console.log('Error reset password:', error);
+      throw error;
     }
   }
   static async OTPVerification(pinId: string, code: string) {
@@ -131,7 +150,7 @@ class AuthService {
       return data.token;
     } catch (error) {
       console.log('OTPVerification: ' + error);
-      return 'error';
+      throw error;
     }
   }
 
@@ -175,7 +194,7 @@ class AuthService {
       return response.data;
     } catch (error) {
       console.log('logout' + error);
-      return error;
+      throw error;
     }
   }
 }

@@ -15,6 +15,7 @@ import {
 import UserService from '../../services/UserService';
 import {useSelector} from 'react-redux';
 import DoctorModal from '../../components/DoctorModal';
+import { useIsFocused } from '@react-navigation/native';
 
 const DoctorListScreen = ({navigation}: any) => {
   const theme = useTheme();
@@ -25,6 +26,7 @@ const DoctorListScreen = ({navigation}: any) => {
   const [loading, setLoading] = useState<boolean>(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [selectedDoctor, setSelectedDoctor] = useState<any>(null);
+  const isFocused = useIsFocused();
 
   const token = useSelector((state: any) => state.token.accessToken);
 
@@ -45,7 +47,7 @@ const DoctorListScreen = ({navigation}: any) => {
     };
 
     fetchFriendList();
-  }, []);
+  }, [isFocused]);
 
   useEffect(() => {
     const filterDoctors = () => {

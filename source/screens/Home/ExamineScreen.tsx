@@ -1,6 +1,6 @@
-import {StyleSheet, SafeAreaView, ScrollView, View} from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {Button, Text, TextInput, useTheme} from 'react-native-paper';
+import {StyleSheet, SafeAreaView, ScrollView, View, Image, TouchableOpacity} from 'react-native';
+import React, {useState} from 'react';
+import {Button, Text, TextInput, useTheme, IconButton} from 'react-native-paper';
 import CustomAppbar from '../../components/CustomAppbar';
 import DocumentPicker, {
   DocumentPickerResponse,
@@ -21,14 +21,13 @@ const ExamineScreen = ({navigation, route}: any) => {
     });
   };
 
-  console.log(JSON.stringify(route.params));
   const handlePickFiles = async () => {
     try {
       const results = await DocumentPicker.pick({
-        type: [DocumentPicker.types.allFiles],
+        type: [DocumentPicker.types.images],
         allowMultiSelection: true,
       });
-      setExamination(results);
+      setExamination(prevExamination => [...prevExamination, ...results]);
     } catch (err) {
       if (DocumentPicker.isCancel(err)) {
         // User canceled the picker
@@ -37,6 +36,12 @@ const ExamineScreen = ({navigation, route}: any) => {
         console.error(err);
       }
     }
+  };
+
+  const handleDeleteImage = (index: number) => {
+    setExamination(prevExamination => 
+      prevExamination.filter((_, i) => i !== index)
+    );
   };
 
   return (
@@ -57,11 +62,20 @@ const ExamineScreen = ({navigation, route}: any) => {
             Chọn tệp xét nghiệm
           </Button>
           {examination.length > 0 && (
-            <View style={styles.filesContainer}>
+            <View style={styles.imagesContainer}>
               {examination.map((file, index) => (
-                <Text key={index} style={styles.fileName}>
-                  {file.name}
-                </Text>
+                <View key={index} style={styles.imageWrapper}>
+                  <Image
+                    source={{uri: file.uri}}
+                    style={styles.image}
+                  />
+                  <IconButton
+                    icon="close"
+                    size={20}
+                    onPress={() => handleDeleteImage(index)}
+                    style={styles.deleteButton}
+                  />
+                </View>
               ))}
             </View>
           )}
@@ -114,10 +128,27 @@ const styles = StyleSheet.create({
   buttonContent: {
     paddingVertical: 8,
   },
-  filesContainer: {
+  imagesContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'flex-start',
     marginBottom: 16,
   },
-  fileName: {
-    fontSize: 16,
+  imageWrapper: {
+    width: 100,
+    height: 100,
+    margin: 4,
+    position: 'relative',
+  },
+  image: {
+    width: '100%',
+    height: '100%',
+    borderRadius: 8,
+  },
+  deleteButton: {
+    position: 'absolute',
+    top: -8,
+    right: -8,
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
   },
 });
