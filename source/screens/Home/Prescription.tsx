@@ -15,7 +15,7 @@ const Prescription = ({ route, navigation }: any) => {
     const theme = useTheme();
     const token = useSelector((state: any) => state.token.accessToken);
     useEffect(() => {
-        
+        console.log(userInfo.birthdate)
     })
 
     const pres = route.params.pres;
@@ -23,8 +23,11 @@ const Prescription = ({ route, navigation }: any) => {
     const styles = StyleSheet.create({
         container: {
             flex: 1,
-            backgroundColor: theme.colors.background,
+            backgroundColor: theme.colors.onPrimary,
             padding: 5,
+        },
+        text:{
+            color:theme.colors.onSurface
         },
         prescriptionInput: {
             height: 100,
@@ -40,15 +43,18 @@ const Prescription = ({ route, navigation }: any) => {
         },
         infoContainer: {
             flexDirection: 'row',
+            
         },
         label: {
             fontWeight: 'bold',
             marginBottom: 5,
             fontSize: 15,
+            color:theme.colors.onSurface
         },
         value: {
             marginBottom: 10,
             fontSize: 15,
+            color: theme.colors.onSurface
         },
     });
     const handleConfirm = async () => {
@@ -90,15 +96,15 @@ const Prescription = ({ route, navigation }: any) => {
                         marginBottom: 10,
                         marginHorizontal: 10
                     }}>
-                        <Text><Text style={styles.label}>Bác sĩ:</Text> {prescription.doctorName}</Text>
-                        <Text>{moment(date).format('DD/MM/YYYY HH:mm')}</Text>
+                        <Text style={styles.text}><Text style={styles.label}>Bác sĩ:</Text> {prescription.doctorName}</Text>
+                        <Text style={styles.text}>{moment(date).format('DD/MM/YYYY HH:mm')}</Text>
                     </View>
                     <View style={{
                         flexDirection: 'row',
                         justifyContent: 'flex-start',
                         marginHorizontal: 10
                     }}>
-                        <Text>
+                        <Text style={styles.text}>
                             <Text style={styles.label}>Chuyên ngành: </Text>
                             {doctorInfo.specialties.length == 0
                                 ? "Chưa cập nhật"
@@ -113,7 +119,7 @@ const Prescription = ({ route, navigation }: any) => {
                         justifyContent: 'center',
                         marginBottom: 10,
                     }}>
-                    <Text style={{ fontSize: 26, fontWeight: 'bold' }}>Đơn thuốc</Text>
+                    <Text style={{ fontSize: 26, fontWeight: 'bold', color:theme.colors.onSurface }}>Đơn thuốc</Text>
                 </View>
                 <View>
                     <View style={styles.row}>
@@ -164,8 +170,8 @@ const Prescription = ({ route, navigation }: any) => {
                     {prescription.medicines.map((item: any, index: number) => (
                         <View>
                             <View style={styles.row}>
-                                <Text><Text style={styles.label}>{index + 1}. Tên thuốc: </Text>{item.name}</Text>
-                                <Text><Text style={styles.label}>Số lượng: </Text>{item.dosage}</Text>
+                                <Text style={styles.text}><Text style={styles.label}>{index + 1}. Tên thuốc: </Text>{item.name}</Text>
+                                <Text style={styles.text}><Text style={styles.label}>Số lượng: </Text>{item.dosage}</Text>
                             </View>
                             <View style={{ flexDirection: 'row', paddingHorizontal: 10 }}>
                                 <View style={{ width: '24%', marginRight: '1%' }}>
@@ -187,9 +193,9 @@ const Prescription = ({ route, navigation }: any) => {
                 </SafeAreaView>
                 <View style={{ flexDirection: 'row', justifyContent: 'flex-end' }}>
                     <View style={{ margin: 20 }}>
-                        <Text>{moment(date).format('DD/MM/YYYY')}</Text>
+                        <Text style={styles.text}>{moment(date).format('DD/MM/YYYY')}</Text>
                         <Text
-                            style={{ alignSelf: 'center', fontSize: 15, fontWeight: 'bold' }}>
+                            style={{ alignSelf: 'center', fontSize: 15, fontWeight: 'bold', color:theme.colors.onSurface}}>
                             Chữ ký
                         </Text>
                         <View style={{ height: 50, width: 50 }}></View>

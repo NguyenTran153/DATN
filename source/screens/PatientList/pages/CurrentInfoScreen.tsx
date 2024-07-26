@@ -7,22 +7,24 @@ import {
   TextStyle,
   ImageStyle,
 } from 'react-native';
-import React, {useEffect, useState} from 'react';
-import {Text, useTheme, Card, IconButton, Avatar} from 'react-native-paper';
-import {useSelector} from 'react-redux';
+import React, { useEffect, useState } from 'react';
+import { Text, useTheme, Card, IconButton, Avatar } from 'react-native-paper';
+import { useSelector } from 'react-redux';
 import PrescriptionService from '../../../services/PrescriptionService';
 import DiaryService from '../../../services/DiaryService';
 import AppointmentService from '../../../services/AppointmentService';
 import moment from 'moment';
-import {useIsFocused} from '@react-navigation/native';
+import { useIsFocused } from '@react-navigation/native';
 
-const CurrentInfoScreen = ({route, navigation}: any) => {
+const CurrentInfoScreen = ({ route, navigation }: any) => {
   const theme = useTheme();
   const token = useSelector((state: any) => state.token);
   const isFocused = useIsFocused();
   const patient = route.params.patient;
   const [pres, setPres] = useState<any[]>([]);
   const [diary, SetDiary] = useState<any[]>([]);
+  const [diaryBP, SetDiaryBP] = useState<any[]>([]);
+  const [diaryBS, SetDiaryBS] = useState<any[]>([]);
   const [med, setMed] = useState<any[]>([]);
   const [app, setApp] = useState<any[]>([]);
   const [diagnosis, setDiag] = useState('');
@@ -38,8 +40,8 @@ const CurrentInfoScreen = ({route, navigation}: any) => {
       user.gender === 'male'
         ? 'Nam'
         : user.gender === 'female'
-        ? 'Nữ'
-        : 'Chưa cập nhật',
+          ? 'Nữ'
+          : 'Chưa cập nhật',
     address: user.address || 'Chưa cập nhật',
     height: user.height ? `${user.height} cm` : 'Chưa cập nhật',
     weight: user.weight ? `${user.weight} kg` : 'Chưa cập nhật',
@@ -58,6 +60,20 @@ const CurrentInfoScreen = ({route, navigation}: any) => {
         100,
         patient.id,
         'food',
+      );
+      const diariesBP = await DiaryService.getDiaries(
+        token.accessToken,
+        1,
+        100,
+        patient.id,
+        'blood_pressure',
+      );
+      const diariesBS = await DiaryService.getDiaries(
+        token.accessToken,
+        1,
+        100,
+        patient.id,
+        'blood_sugar',
       );
       const appointments = await AppointmentService.getAppointment(
         token.accessToken,
@@ -86,10 +102,12 @@ const CurrentInfoScreen = ({route, navigation}: any) => {
       setApp(appointments);
       setPres(prescriptions);
       SetDiary(diaries);
+      SetDiaryBP(diariesBP);
+      SetDiaryBS(diariesBS);
       const medicineStrings = prescriptions[0].data.medicines.map(
         (medicine: {
           name: any;
-          schedule: {morning: any; afternoon: any; evening: any; night: any};
+          schedule: { morning: any; afternoon: any; evening: any; night: any };
           dosage: any;
         }) =>
           `${medicine.name}: Sáng: ${medicine.schedule.morning}, Trưa: ${medicine.schedule.afternoon}, Chiều: ${medicine.schedule.evening}, Tối: ${medicine.schedule.night}\nSố lượng: ${medicine.dosage} viên`,
@@ -100,24 +118,29 @@ const CurrentInfoScreen = ({route, navigation}: any) => {
   }, [isFocused]);
 
   // Sample data
-const recentDietLog = diary.length !== 0
-  ? `${diary[0]?.data?.morning ? `Sáng: ${diary[0]?.data?.morning}` : ''}${diary[0]?.data?.morning && (diary[0]?.data?.afternoon || diary[0]?.data?.evening) ? ' | ' : ''}${diary[0]?.data?.afternoon ? `Trưa: ${diary[0]?.data?.afternoon}` : ''}${diary[0]?.data?.afternoon && diary[0]?.data?.evening ? ' | ' : ''}${diary[0]?.data?.evening ? `Tối: ${diary[0]?.data?.evening}` : ''}`
-  : 'Không tìm thấy nhật ký gần nhất';
-
+  const recentDietLog = diary.length !== 0
+    ? `${diary[0]?.data?.morning ? `Sáng: ${diary[0]?.data?.morning}` : ''}${diary[0]?.data?.morning && (diary[0]?.data?.afternoon || diary[0]?.data?.evening) ? ' | ' : ''}${diary[0]?.data?.afternoon ? `Trưa: ${diary[0]?.data?.afternoon}` : ''}${diary[0]?.data?.afternoon && diary[0]?.data?.evening ? ' | ' : ''}${diary[0]?.data?.evening ? `Tối: ${diary[0]?.data?.evening}` : ''}`
+    : 'Không tìm thấy nhật ký gần nhất';
+  const recentBloodPressure = diaryBP.length !== 0 ? `${diaryBP[0]?.data?.bloodPressure ?
+    `${diaryBP[0]?.data?.bloodPressure} mmHg` : ''} | ${diaryBP[0]?.data?.time ?
+      `${diaryBP[0]?.data?.time}` : ''}` : 'Không tìm thấy nhật ký huyết áp gần nhất'
+  const recentBloodSugar = diaryBS.length !== 0 ? `${diaryBS[0]?.data?.bloodSugar ?
+    `${diaryBS[0]?.data?.bloodSugar} mg/dL` : ''} | ${diaryBS[0]?.data?.time ?
+      `${diaryBS[0]?.data?.time}` : ''}` : 'Không tìm thấy nhật ký đường huyết gần nhất'
   const recentDiagnosis =
     diagnosis !== '' ? diagnosis : 'Không tìm thấy chẩn đoán gần nhất';
   const recentPrescription = med;
 
   return (
     <SafeAreaView
-      style={[styles.container, {backgroundColor: theme.colors.background}]}>
+      style={[styles.container, { backgroundColor: theme.colors.background }]}>
       <ScrollView contentContainerStyle={styles.scrollView}>
         <View style={styles.header}>
           <Avatar.Image
             size={100}
             source={
               personalInfo.avatar
-                ? {uri: personalInfo.avatar}
+                ? { uri: personalInfo.avatar }
                 : require('../../../asset/7677205.jpg')
             }
             style={styles.avatar}
@@ -151,6 +174,8 @@ const recentDietLog = diary.length !== 0
           />
           <Card.Content>
             <Text style={styles.cardContent}>{recentDietLog}</Text>
+            <Text style={styles.cardContent}>{recentBloodPressure}</Text>
+            <Text style={styles.cardContent}>{recentBloodSugar}</Text>
           </Card.Content>
         </Card>
 
