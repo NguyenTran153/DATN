@@ -11,6 +11,7 @@ import {
   TextInput,
 } from 'react-native-paper';
 import {Calendar, LocaleConfig} from 'react-native-calendars';
+import {TextInput as RNTextInput} from 'react-native';
 
 import Horizon from '../../components/Horizon';
 import CustomAppbar from '../../components/CustomAppbar';
@@ -370,17 +371,23 @@ const BookingScreen = ({route, navigation}: any) => {
         </View>
         <View style={styles.informationContainer}>
           <Text style={{fontSize: 20, fontWeight: 'bold'}}>Ghi chú</Text>
-          <TextInput
-            style={[styles.textArea, {backgroundColor: theme.colors.onPrimary}]}
-            label=""
-            multiline
-            mode="outlined"
+          <RNTextInput
+            style={[
+              styles.textArea,
+              {
+                backgroundColor: theme.colors.background,
+                borderColor: theme.colors.primary,
+                borderWidth: 1,
+                borderRadius: 8,
+                padding: 10,
+                color: theme.colors.onBackground
+              },
+            ]}
+            placeholder=""
+            multiline={true}
             numberOfLines={4}
             value={note}
             onChangeText={setNote}
-            editable
-            disabled={false}
-            theme={{roundness: 8}}
           />
         </View>
       </ScrollView>
@@ -434,6 +441,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
+    margin: 0,
   },
   textField: {
     marginVertical: 10,
