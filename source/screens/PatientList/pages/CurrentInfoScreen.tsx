@@ -149,7 +149,7 @@ const CurrentInfoScreen = ({ route, navigation }: any) => {
             <Text style={styles.name}>
               {personalInfo.lastName} {personalInfo.firstName}
             </Text>
-            <Text style={styles.gender}>{personalInfo.gender}</Text>
+            <Text style={styles.gender}>Giới tính: {personalInfo.gender}</Text>
           </View>
         </View>
 

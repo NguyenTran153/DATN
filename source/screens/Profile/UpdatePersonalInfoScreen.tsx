@@ -118,7 +118,8 @@ const UpdatePersonalInfoScreen = ({navigation}: any) => {
       Dialog.show({
         title: 'Lỗi',
         type: ALERT_TYPE.DANGER,
-        textBody: 'Thông tin cá nhân không được cập nhật thành công! Kiểm tra lại thông tin có hợp lệ hay không',
+        textBody:
+          'Thông tin cá nhân không được cập nhật thành công! Kiểm tra lại thông tin có hợp lệ hay không',
         button: 'Đóng',
       });
     } finally {
@@ -188,11 +189,11 @@ const UpdatePersonalInfoScreen = ({navigation}: any) => {
             value={personalInfo.gender}>
             <View style={styles.radioContainer}>
               <RadioButton value="male" />
-              <Text>Nam</Text>
+              <Text style={{color: theme.colors.onBackground}}>Nam</Text>
             </View>
             <View style={styles.radioContainer}>
               <RadioButton value="female" />
-              <Text>Nữ</Text>
+              <Text style={{color: theme.colors.onBackground}}>Nữ</Text>
             </View>
           </RadioButton.Group>
         </View>

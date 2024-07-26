@@ -391,7 +391,8 @@ const NotificationScreen = ({navigation}: any) => {
                     </Text>
                     <Text>{messageText}</Text>
                   </View>
-                  {(type === 'add_friend' || type === 'appointment') &&
+                  {(type === 'add_friend' ||
+                    (type === 'appointment' && user.role !== 'patient')) &&
                     ![
                       'Your friend request has been accepted',
                       'Your friend request has been declined',

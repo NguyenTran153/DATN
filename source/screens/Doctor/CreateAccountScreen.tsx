@@ -239,7 +239,7 @@ const SignupScreen = ({navigation}: any) => {
           alignItems: 'center',
           justifyContent: 'space-around',
           padding: 20,
-          width: width / 1.2,
+          width: '90%',
           height: height / 4,
           borderRadius: 8,
           borderWidth: 1,
