@@ -30,7 +30,8 @@ const AutocompleteTextInput: React.FC<AutocompleteTextInputProps> = ({
     container: {
       position: 'relative',
       zIndex: 9999,
-      elevation: 8
+      elevation: 8,
+      color: theme.colors.onBackground,
     },
     input: {
       borderWidth: 1,
@@ -38,6 +39,7 @@ const AutocompleteTextInput: React.FC<AutocompleteTextInputProps> = ({
       height: 40,
       fontSize: 15,
       borderRadius: 5,
+      color: theme.colors.onBackground,
     },
     suggestionsContainer: {
       position: 'absolute',
@@ -47,12 +49,15 @@ const AutocompleteTextInput: React.FC<AutocompleteTextInputProps> = ({
       backgroundColor: theme.colors.background,
       borderWidth: 1,
       borderColor: theme.colors.outline,
+      color: theme.colors.primary,
       zIndex: 9999,
     },
     suggestion: {
       fontSize: 10,
       borderBottomWidth: 1,
       borderBottomColor: theme.colors.surfaceVariant,
+      backgroundColor: theme.colors.background,
+      color: theme.colors.primary,
     },
   });
 
@@ -90,7 +95,9 @@ const AutocompleteTextInput: React.FC<AutocompleteTextInputProps> = ({
               key={index}
               style={styles.suggestion}
               onPress={() => handleSuggestionPress(suggestion)}>
-              <Text>{suggestion}</Text>
+              <Text style={{color: theme.colors.onBackground}}>
+                {suggestion}
+              </Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
