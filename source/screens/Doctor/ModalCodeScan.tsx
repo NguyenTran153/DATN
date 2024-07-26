@@ -19,6 +19,7 @@ import {ScrollView} from 'react-native-gesture-handler';
 import {
   Camera,
   useCameraDevice,
+  useCameraPermission,
   useCodeScanner,
 } from 'react-native-vision-camera';
 import {Svg, Mask, Defs, Rect} from 'react-native-svg';
@@ -66,22 +67,19 @@ const ModalCodeScan = (props: ModalCodeScanProps): ReactElement => {
   const styles = createStyles(colors);
 
   const [isFlashOn, setIsFlashOn] = useState(false);
-  const [isAlertShown, setIsAlertShown] = useState(false);
+  const {hasPermission, requestPermission} = useCameraPermission();
+
   const [scanResult, setScanResult] = useState<ScanResultType>({
     codes: [],
     frame: null,
   });
 
-  const jsonData = JSON.parse(BARCODEPATTERNS);
+  useEffect(() => {
+    (async () => {
+      await Camera.requestCameraPermission();
+    })();
+  }, []);
 
-  // const jsonData = [
-  //   {
-  //     CheckPattern: '',
-  //     GetPattern: '',
-  //   },
-  // ];
-
-  const reg = new RegExp(jsonData[0].CheckPattern, 'g');
   const regionOfInterest = {
     x: (1 - SCAN_FRAME_HEIGHT_RATIO) / 3,
     y: (1 - SCAN_FRAME_WIDTH_RATIO) / 2,
@@ -101,19 +99,6 @@ const ModalCodeScan = (props: ModalCodeScanProps): ReactElement => {
       frame: null,
     });
   };
-
-  const handleUniqueCodes = useCallback((codes: any[]) => {
-    const uniqueCodes: any[] = [];
-    const seenValues = new Set();
-
-    codes.forEach(code => {
-      if (!seenValues.has(code.value)) {
-        uniqueCodes.push(code);
-        seenValues.add(code.value);
-      }
-    });
-    return uniqueCodes;
-  }, []);
 
   const codeScanner = useCodeScanner({
     codeTypes: [
