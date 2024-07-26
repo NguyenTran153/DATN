@@ -118,7 +118,7 @@ const PatientDiaryScreen = ({ navigation, route }: any) => {
         textBody: 'Nhật ký đã được viết',
         button: 'Đóng',
       });
-      navigation.goBack();
+      
     } catch (error) {
       Dialog.show({
         type: ALERT_TYPE.DANGER,
@@ -161,7 +161,7 @@ const PatientDiaryScreen = ({ navigation, route }: any) => {
         textBody: 'Nhật ký đã được viết',
         button: 'Đóng',
       });
-      navigation.goBack();
+      
     } catch (error) {
       Dialog.show({
         type: ALERT_TYPE.DANGER,
@@ -202,7 +202,7 @@ const PatientDiaryScreen = ({ navigation, route }: any) => {
         textBody: 'Nhật ký đã được viết',
         button: 'Đóng',
       });
-      navigation.goBack();
+     
     } catch (error) {
       Dialog.show({
         type: ALERT_TYPE.DANGER,
